@@ -25,10 +25,25 @@
         </v-app-bar>
         <v-main>
             <v-tabs-window>
-                <v-tabs-window-item>
-                    <v-card>
-                    </v-card>
-                </v-tabs-window-item>
+                <v-card>
+                    <v-row>
+                        <v-col cols="2">
+                            <v-card>
+                                <v-card-title>Last transformations:</v-card-title>
+                                <v-card-text>
+                                    Test
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+                        <v-col>
+                            <v-card>
+                                <v-card-text>
+                                    Test
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-card>
             </v-tabs-window>
         </v-main>
     </v-app>
