@@ -4,7 +4,7 @@
             <v-app-bar-title>DeMAF</v-app-bar-title>
             <v-row></v-row>
             <v-row>
-                <v-file-input label="File" min-width="200px" variant="outlined"></v-file-input>
+                <v-file-input v-model="uploadedFile" label="File" min-width="200px" variant="outlined"></v-file-input>
                 <v-spacer></v-spacer>
                 <v-select label="Technology" :items="['Helm', 'Kubernetes']" min-width="150px"
                     variant="outlined"></v-select>
@@ -58,6 +58,20 @@
   export default {
     data: () => ({
       tab: null,
+      uploadedFile: null, // Data property to store the uploaded file
     }),
+    methods: {
+      handleFileUpload() {
+        if (this.uploadedFile) {
+          // Access the uploaded file here
+          console.log("uploaded file: "+ this.uploadedFile.name);
+        }
+      }
+    },
+    watch: {
+      uploadedFile(newFile) {
+        this.handleFileUpload();
+      }
+    }
   }
 </script>

@@ -11,6 +11,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './', // Add this line to set the base URL
   plugins: [
     VueRouter(),
     Vue({
