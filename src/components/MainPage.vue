@@ -6,16 +6,16 @@
             <v-row>
                 <v-file-input v-model="uploadedFile" label="File" min-width="200px" variant="outlined"></v-file-input>
                 <v-spacer></v-spacer>
-                <v-select label="Technology" :items="['Helm', 'Kubernetes']" min-width="150px"
+                <v-select v-model="selectedTechnology" label="Technology" :items="['Helm', 'Kubernetes']" min-width="150px"
                     variant="outlined"></v-select>
                 <v-spacer></v-spacer>
-                <v-select clearable label="Options" :items="['flat', 'partial']" min-width="150px" multiple
+                <v-select v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']" min-width="150px" multiple
                     variant="outlined"></v-select>
                 <v-spacer></v-spacer>
-                <v-text-field label="Commands" min-width="200px" variant="outlined"></v-text-field>
+                <v-text-field v-model="commands" label="Commands" min-width="200px" variant="outlined"></v-text-field>
             </v-row>
             <v-spacer></v-spacer>
-            <v-btn rounded="LG">Transform</v-btn>
+            <v-btn rounded="LG" @click="startTransformation">Transform</v-btn>
             <v-spacer></v-spacer>
             <template v-slot:extension>
                 <v-tabs align-with-title v-model="tab">
@@ -56,15 +56,65 @@
 
 <script>
   export default {
-    data: () => ({
-      tab: null,
-      uploadedFile: null, // Data property to store the uploaded file
-    }),
+    data() {
+      return {
+        tab: null,
+        uploadedFile: null, // Data property to store the uploaded file
+        selectedTechnology: null, // Data property to store the selected technology
+        selectedOptions: [], // Data property to store the selected options
+        commands: '', // Data property to store the commands
+      };
+    },
     methods: {
       handleFileUpload() {
         if (this.uploadedFile) {
           // Access the uploaded file here
-          console.log("uploaded file: "+ this.uploadedFile.name);
+          console.log("uploaded file: " + this.uploadedFile.name);
+        }
+      },
+      async startTransformation() {
+        console.log("Transformation started");
+        console.log("Selected Technology: " + this.selectedTechnology);
+        console.log("Selected Options: " + this.selectedOptions);
+        console.log("Commands: " + this.commands);
+
+        // Check if all fields have been filled out
+        if (!this.uploadedFile) {
+          alert("Please upload a file first.");
+          return;
+        }
+        if (!this.selectedTechnology) {
+          alert("Please select a technology first.");
+          return;
+        }
+
+        // Save the uploaded file for transformation
+        await this.saveUploadedFileForTransformation();
+      },
+      async saveUploadedFileForTransformation() {
+        if (!this.uploadedFile) {
+          return;
+        }
+
+        // Save the uploaded file for transformation
+        console.log("Saving uploaded file for transformation");
+
+        const formData = new FormData();
+        formData.append('file', this.uploadedFile);
+
+        try {
+          const response = await fetch('http://localhost:3000/upload', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to upload file');
+          }
+
+          console.log('File uploaded successfully');
+        } catch (error) {
+          console.error('Error uploading file:', error);
         }
       }
     },
