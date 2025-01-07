@@ -59,9 +59,9 @@
         <v-tabs-window-item
           v-for="(tab, t) in viewTabs"
           :key="t"
-          :value="tab.value"          
+          :value="tab.value"
         >
-          <ViewTab :_showWinery="true" :_wineryUrl="tab.path"></ViewTab>
+          <ViewTab :_showTADM="false" :_wineryUrl="tab.path"></ViewTab>
         </v-tabs-window-item>
       </v-tabs-window>
     </v-main>
@@ -164,14 +164,16 @@ export default {
           const wineryPath = statusMessage.path;
           console.log("Winery path 1: " + wineryPath);
           this.viewTabs.push({
-            title: this.uploadedFile.name, value: this.uploadedFile.name,  path: wineryPath
+            title: this.uploadedFile.name,
+            value: this.uploadedFile.name,
+            path: wineryPath,
           });
         } else {
           this.error = true;
           this.updateStatus();
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
         this.error = true;
         this.updateStatus();
       }
