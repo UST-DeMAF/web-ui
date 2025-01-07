@@ -82,7 +82,7 @@ export async function pollTransformationProcessStatusForResult(transformationPro
 
     if (message.isFinished) {
       console.log("Transformation completed!", message.result);
-      return "SUCCESS";
+      return message.result;
     } else {
       console.log("Polling...");
       await new Promise(resolve => setTimeout(resolve, delayInMilliSeconds ));

@@ -42,7 +42,7 @@
       <template v-slot:extension>
         <v-tabs align-with-title v-model="selectedTab">
           <v-tab value="start">Start</v-tab>
-          <v-tab v-for="(tab, t) in ViewTabs" :key="t" :value="tab.value">{{
+          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.value">{{
             tab.title
           }}</v-tab>
         </v-tabs>
@@ -57,11 +57,11 @@
           ></StartTab>
         </v-tabs-window-item>
         <v-tabs-window-item
-          v-for="(tab, t) in ViewTabs"
+          v-for="(tab, t) in viewTabs"
           :key="t"
-          :value="tab.value"
+          :value="tab.value"          
         >
-          <component :is="tab.component"></component>
+          <ViewTab :_showWinery="true" :_wineryUrl="tab.path"></ViewTab>
         </v-tabs-window-item>
       </v-tabs-window>
     </v-main>
@@ -96,10 +96,7 @@ export default {
       selectedTechnology: null, // Data property to store the selected technology
       selectedOptions: [], // Data property to store the selected options
       selectedTab: null, // Data property to store the selected tab
-      ViewTabs: [
-        { title: "Test1", value: "test1", component: "ViewTab" },
-        { title: "Test2", value: "test2", component: "ViewTab" },
-      ], // Data property to store the available tabs
+      viewTabs: [], // Data property to store the available tabs
       technologies: ["helm", "kubernetes", "terraform"], // Data property to store the available technologies
       transform: false, // Data property to store the transformation status
       transformationProcesses: [],
@@ -157,16 +154,24 @@ export default {
           10
         );
 
-        if (statusMessage === "SUCCESS") {
+        if (statusMessage) {
           //TODO: change this be more robust?
           this.lastTransformations.push(this.uploadedFile.name); //TODO: add stuff needed for I-frame for Winery
           this.transform = false;
           this.updateStatus();
+
+          // Create a new view tab with the Winery path
+          const wineryPath = statusMessage.path;
+          console.log("Winery path 1: " + wineryPath);
+          this.viewTabs.push({
+            title: this.uploadedFile.name, value: this.uploadedFile.name,  path: wineryPath
+          });
         } else {
           this.error = true;
           this.updateStatus();
         }
       } catch (error) {
+        console.log(error)
         this.error = true;
         this.updateStatus();
       }
