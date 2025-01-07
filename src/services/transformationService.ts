@@ -16,6 +16,8 @@ export async function getRegisteredPlugins() {
   }
 }
 
+
+//BUG: Fails if the transformation is called a second time with out selecting a new file
 export async function saveUploadedFileForTransformation(uploadedFile: File) {
   const formData = new FormData();
   formData.append("file", uploadedFile);
@@ -56,6 +58,38 @@ export async function callAnalysisManagerTransformation(tsdm: any) {
     return data;
   } catch (error) {
     console.error("Error starting transformation process:", error);
+    throw error;
+  }
+}
+
+// Polls the status endpoint of the analysis manager for the result of the transformation process.
+// It polls the endpoint in an interval given by delayInMilliSeconds until the returned message
+// indicates a finished process.
+export async function pollTransformationProcessStatusForResult(transformationProcessId: string, delayInMilliSeconds: number): Promise<string> {
+  try {
+    const response = await fetch(`http://localhost:8080/demaf/status/${transformationProcessId}`, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to get status for transformation process ${transformationProcessId}`);
+    }
+
+    const message = await response.json();
+
+    if (message.isFinished) {
+      console.log("Transformation completed!", message.result);
+      return "SUCCESS";
+    } else {
+      console.log("Polling...");
+      await new Promise(resolve => setTimeout(resolve, delayInMilliSeconds ));
+      return pollTransformationProcessStatusForResult(transformationProcessId, delayInMilliSeconds);
+    }
+  } catch (error) {
+    console.error("Error polling transformation process status:", error);
     throw error;
   }
 }

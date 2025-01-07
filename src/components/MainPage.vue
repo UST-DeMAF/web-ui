@@ -83,7 +83,9 @@ import {
   getRegisteredPlugins,
   saveUploadedFileForTransformation,
   callAnalysisManagerTransformation,
+  pollTransformationProcessStatusForResult,
 } from '@/services/transformationService';
+import { transform } from 'typescript';
 
 export default {
   created() {
@@ -103,6 +105,7 @@ export default {
       selectedTab: null,
       technologies: ["helm", "kubernetes", "terraform"],
       transform: false,
+      transformationProcesses: [],
     };
   },
   methods: {
@@ -143,7 +146,19 @@ export default {
             : [""],
           options: this.selectedOptions,
         };
-        await callAnalysisManagerTransformation(tsdm);
+        const currentTransformationProcessId = await callAnalysisManagerTransformation(tsdm);
+        this.transformationProcesses.push(currentTransformationProcessId);
+        const statusMessage = await pollTransformationProcessStatusForResult(currentTransformationProcessId, 10);
+
+        if (statusMessage === "SUCCESS") {//TODO: change this be more robust?
+          this.lastTransformations.push(this.uploadedFile.name);//TODO: add stuff needed for I-frame for Winery
+          this.transform = false;
+          this.updateStatus();
+        } else {
+          this.error = true;
+          this.updateStatus();
+        }
+
       } catch (error) {
         this.error = true;
         this.updateStatus();
