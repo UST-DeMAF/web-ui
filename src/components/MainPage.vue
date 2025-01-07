@@ -42,36 +42,26 @@
       <template v-slot:extension>
         <v-tabs align-with-title v-model="selectedTab">
           <v-tab value="start">Start</v-tab>
+          <v-tab v-for="(tab, t) in ViewTabs" :key="t" :value="tab.value">{{
+            tab.title
+          }}</v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
     <v-main>
       <v-tabs-window v-model="selectedTab">
         <v-tabs-window-item value="start">
-          <v-row>
-            <v-col align-self="center" cols="2">
-              <v-container>
-                <v-card title="Last transformations">
-                  <v-list v-model="selectedTransformation" color="primary">
-                      <v-list-item v-for="(transformation, t) in lastTransformations" :key="t" :value="transformation">
-                         <template v-slot:prepend>
-                          <v-icon>far fa-file</v-icon>
-                        </template>
-                          <v-list-item-title>{{transformation}}</v-list-item-title>
-                      </v-list-item>
-                  </v-list>
-                </v-card>
-              </v-container>
-            </v-col>
-            <v-col align-self="center" cols="8">
-              <v-container>
-                <v-row>
-                  <v-icon size="64px">{{ statusIcon }}</v-icon>
-                </v-row>
-                <v-row>{{ statusMessage }}</v-row>
-              </v-container>
-            </v-col>
-          </v-row>
+          <StartTab
+            :_lastTransformations="this.lastTransformations"
+            :_status="this.status"
+          ></StartTab>
+        </v-tabs-window-item>
+        <v-tabs-window-item
+          v-for="(tab, t) in ViewTabs"
+          :key="t"
+          :value="tab.value"
+        >
+          <component :is="tab.component"></component>
         </v-tabs-window-item>
       </v-tabs-window>
     </v-main>
@@ -79,13 +69,16 @@
 </template>
 
 <script>
+import StartTab from "./StartTab.vue";
+import ViewTab from "./ViewTab.vue";
+
 import {
   getRegisteredPlugins,
   saveUploadedFileForTransformation,
   callAnalysisManagerTransformation,
   pollTransformationProcessStatusForResult,
-} from '@/services/transformationService';
-import { transform } from 'typescript';
+} from "@/services/transformationService";
+import { transform } from "typescript";
 
 export default {
   created() {
@@ -93,20 +86,29 @@ export default {
   },
   data() {
     return {
-      error: false,
-      commands: "",
-      lastTransformations: [],
-      uploadedFile: null,
-      statusIcon: "fas fa-cloud-arrow-up",
-      statusMessage: "To start drag and drop or upload a file.",
-      selectedTechnology: null,
-      selectedTransformation: null,
-      selectedOptions: [],
-      selectedTab: null,
-      technologies: ["helm", "kubernetes", "terraform"],
-      transform: false,
+      error: false, // Data property to store the error status
+      commands: "", // Data property to store the commands
+      lastTransformations: [], // Data property to store the last transformations
+      status: {
+        icon: "fas fa-cloud-arrow-up",
+        message: "To start drag and drop or upload a file.",
+      }, // Data property to store the status
+      selectedTechnology: null, // Data property to store the selected technology
+      selectedOptions: [], // Data property to store the selected options
+      selectedTab: null, // Data property to store the selected tab
+      ViewTabs: [
+        { title: "Test1", value: "test1", component: "ViewTab" },
+        { title: "Test2", value: "test2", component: "ViewTab" },
+      ], // Data property to store the available tabs
+      technologies: ["helm", "kubernetes", "terraform"], // Data property to store the available technologies
+      transform: false, // Data property to store the transformation status
       transformationProcesses: [],
+      uploadedFile: null, // Data property to store the uploaded file
     };
+  },
+  components: {
+    StartTab,
+    ViewTab,
   },
   methods: {
     handleFileUpload() {
@@ -119,8 +121,9 @@ export default {
         this.technologies = await getRegisteredPlugins();
         console.log("Registered extensions successfully received.");
       } catch (error) {
-        this.error = true;
-        this.updateStatus();
+        //this.error = true;
+        //this.updateStatus();
+        console.log("Error while receiving registered extensions.");
       }
     },
     async startTransformation() {
@@ -146,19 +149,23 @@ export default {
             : [""],
           options: this.selectedOptions,
         };
-        const currentTransformationProcessId = await callAnalysisManagerTransformation(tsdm);
+        const currentTransformationProcessId =
+          await callAnalysisManagerTransformation(tsdm);
         this.transformationProcesses.push(currentTransformationProcessId);
-        const statusMessage = await pollTransformationProcessStatusForResult(currentTransformationProcessId, 10);
+        const statusMessage = await pollTransformationProcessStatusForResult(
+          currentTransformationProcessId,
+          10
+        );
 
-        if (statusMessage === "SUCCESS") {//TODO: change this be more robust?
-          this.lastTransformations.push(this.uploadedFile.name);//TODO: add stuff needed for I-frame for Winery
+        if (statusMessage === "SUCCESS") {
+          //TODO: change this be more robust?
+          this.lastTransformations.push(this.uploadedFile.name); //TODO: add stuff needed for I-frame for Winery
           this.transform = false;
           this.updateStatus();
         } else {
           this.error = true;
           this.updateStatus();
         }
-
       } catch (error) {
         this.error = true;
         this.updateStatus();
@@ -166,17 +173,18 @@ export default {
     },
     async updateStatus() {
       if (this.transform && !this.error) {
-        this.statusIcon = "fas fa-gear fa-spin";
-        this.statusMessage =
+        this.status.icon = "fas fa-gear fa-spin";
+        this.status.message =
           "Transform " +
           this.uploadedFile.name +
           " this may take a few moments.";
       } else if (this.error) {
-        this.statusIcon = "fas fa-exclamation-triangle";
-        this.statusMessage = "An error has occurred during the transformation.";
+        this.status.icon = "fas fa-exclamation-triangle";
+        this.status.message =
+          "An error has occurred during the transformation.";
       } else {
-        this.statusIcon = "fas fa-cloud-arrow-up";
-        this.statusMessage = "To start drag and drop or upload a file.";
+        this.status.icon = "fas fa-cloud-arrow-up";
+        this.status.message = "To start drag and drop or upload a file.";
       }
     },
   },
