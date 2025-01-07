@@ -51,9 +51,15 @@
           <v-row>
             <v-col align-self="center" cols="2">
               <v-container>
-                <v-card>
-                  <v-card-title>Last transformations:</v-card-title>
-                  <v-card-text> Test </v-card-text>
+                <v-card title="Last transformations">
+                  <v-list v-model="selectedTransformation" color="primary">
+                      <v-list-item v-for="(transformation, t) in lastTransformations" :key="t" :value="transformation">
+                         <template v-slot:prepend>
+                          <v-icon>far fa-file</v-icon>
+                        </template>
+                          <v-list-item-title>{{transformation}}</v-list-item-title>
+                      </v-list-item>
+                  </v-list>
                 </v-card>
               </v-container>
             </v-col>
@@ -80,12 +86,14 @@ export default {
   data() {
     return {
       error: false, // Data property to store the error status
+      commands: "", // Data property to store the commands
+      lastTransformations: [], // Data property to store the last transformations
       uploadedFile: null, // Data property to store the uploaded file
       statusIcon: "fas fa-cloud-arrow-up", // Data property to store the status icon
       statusMessage: "To start drag and drop or upload a file.", // Data property to store the status message
       selectedTechnology: null, // Data property to store the selected technology
+      selectedTransformation: null, // Data property to store the selected transformation
       selectedOptions: [], // Data property to store the selected options
-      commands: "", // Data property to store the commands
       selectedTab: null, // Data property to store the selected tab
       technologies: ["helm", "kubernetes", "terraform"], // Data property to store the available technologies
       transform: false, // Data property to store the transformation status
