@@ -40,13 +40,13 @@
       <v-btn rounded="LG" @click="startTransformation">Transform</v-btn>
       <v-spacer></v-spacer>
       <template v-slot:extension>
-        <v-tabs align-with-title v-model="tab">
+        <v-tabs align-with-title v-model="selectedTab">
           <v-tab value="start">Start</v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
     <v-main>
-      <v-tabs-window v-model="tab">
+      <v-tabs-window v-model="selectedTab">
         <v-tabs-window-item value="start">
           <v-row>
             <v-col align-self="center" cols="2">
@@ -60,9 +60,9 @@
             <v-col align-self="center" cols="8">
               <v-container>
                 <v-row>
-                  <v-icon icon="fas fa-cloud-arrow-up" size="64px" />
+                  <v-icon size="64px">{{ statusIcon }}</v-icon>
                 </v-row>
-                <v-row> To start drag and drop or upload a file. </v-row>
+                <v-row>{{ statusMessage }}</v-row>
               </v-container>
             </v-col>
           </v-row>
@@ -79,12 +79,16 @@ export default {
   },
   data() {
     return {
-      tab: null,
+      error: false, // Data property to store the error status
       uploadedFile: null, // Data property to store the uploaded file
+      statusIcon: "fas fa-cloud-arrow-up", // Data property to store the status icon
+      statusMessage: "To start drag and drop or upload a file.", // Data property to store the status message
       selectedTechnology: null, // Data property to store the selected technology
       selectedOptions: [], // Data property to store the selected options
       commands: "", // Data property to store the commands
-      technologies: ["helm", "kubernetes", "terraform"],
+      selectedTab: null, // Data property to store the selected tab
+      technologies: ["helm", "kubernetes", "terraform"], // Data property to store the available technologies
+      transform: false, // Data property to store the transformation status
     };
   },
   methods: {
@@ -129,6 +133,8 @@ export default {
         return;
       }
 
+      this.transform = true;
+      this.updateStatus();
       // Save the uploaded file for transformation
       await this.saveUploadedFileForTransformation();
     },
@@ -159,7 +165,24 @@ export default {
         // Call the transform endpoint after the file is uploaded
         await this.callAnalysisManagerTransformation();
       } catch (error) {
+        this.error = true;
+        this.updateStatus();
         console.error("Error uploading file:", error);
+      }
+    },
+    async updateStatus() {
+      if (this.transform && !this.error) {
+        this.statusIcon = "fas fa-gear fa-spin";
+        this.statusMessage =
+          "Transform " +
+          this.uploadedFile.name +
+          " this may take a few moments.";
+      } else if (this.error) {
+        this.statusIcon = "fas fa-exclamation-triangle";
+        this.statusMessage = "An error has occurred during the transformation.";
+      } else {
+        this.statusIcon = "fas fa-cloud-arrow-up";
+        this.statusMessage = "To start drag and drop or upload a file.";
       }
     },
     async callAnalysisManagerTransformation() {
@@ -188,6 +211,8 @@ export default {
         const data = await response.json();
         console.log("Transformation process started with ID:", data);
       } catch (error) {
+        this.error = true;
+        this.updateStatus();
         console.error("Error starting transformation process:", error);
       }
     },
