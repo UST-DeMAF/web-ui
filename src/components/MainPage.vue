@@ -79,59 +79,48 @@
 </template>
 
 <script>
+import {
+  getRegisteredPlugins,
+  saveUploadedFileForTransformation,
+  callAnalysisManagerTransformation,
+} from '@/services/transformationService';
+
 export default {
   created() {
-    this.getRegisteredPlugins();
+    this.loadRegisteredPlugins();
   },
   data() {
     return {
-      error: false, // Data property to store the error status
-      commands: "", // Data property to store the commands
-      lastTransformations: [], // Data property to store the last transformations
-      uploadedFile: null, // Data property to store the uploaded file
-      statusIcon: "fas fa-cloud-arrow-up", // Data property to store the status icon
-      statusMessage: "To start drag and drop or upload a file.", // Data property to store the status message
-      selectedTechnology: null, // Data property to store the selected technology
-      selectedTransformation: null, // Data property to store the selected transformation
-      selectedOptions: [], // Data property to store the selected options
-      selectedTab: null, // Data property to store the selected tab
-      technologies: ["helm", "kubernetes", "terraform"], // Data property to store the available technologies
-      transform: false, // Data property to store the transformation status
+      error: false,
+      commands: "",
+      lastTransformations: [],
+      uploadedFile: null,
+      statusIcon: "fas fa-cloud-arrow-up",
+      statusMessage: "To start drag and drop or upload a file.",
+      selectedTechnology: null,
+      selectedTransformation: null,
+      selectedOptions: [],
+      selectedTab: null,
+      technologies: ["helm", "kubernetes", "terraform"],
+      transform: false,
     };
   },
   methods: {
     handleFileUpload() {
       if (this.uploadedFile) {
-        // Access the uploaded file here
         console.log("uploaded file: " + this.uploadedFile.name);
       }
     },
-    async getRegisteredPlugins() {
-      console.log("Getting registered plugins");
+    async loadRegisteredPlugins() {
       try {
-        const response = await fetch("http://localhost:8080/demaf/plugins", {
-          method: "GET",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to get registered plugins");
-        }
-
-        const data = await response.json();
-        this.technologies = data.pluginNames;
-
+        this.technologies = await getRegisteredPlugins();
         console.log("Registered extensions successfully received.");
       } catch (error) {
-        console.error("Error getting registered plugins:", error);
+        this.error = true;
+        this.updateStatus();
       }
     },
     async startTransformation() {
-      console.log("Transformation started");
-      console.log("Selected Technology: " + this.selectedTechnology);
-      console.log("Selected Options: " + this.selectedOptions);
-      console.log("Commands: " + this.commands);
-
-      // Check if all fields have been filled out
       if (!this.uploadedFile) {
         alert("Please upload a file first.");
         return;
@@ -143,39 +132,21 @@ export default {
 
       this.transform = true;
       this.updateStatus();
-      // Save the uploaded file for transformation
-      await this.saveUploadedFileForTransformation();
-    },
-    async saveUploadedFileForTransformation() {
-      if (!this.uploadedFile) {
-        return;
-      }
 
-      // Save the uploaded file for transformation
-      console.log("Saving uploaded file for transformation");
-
-      const formData = new FormData();
-      formData.append("file", this.uploadedFile);
-
-      //BUG: fails if transformation is called a second time
       try {
-        const response = await fetch("http://localhost:3000/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to upload file");
-        }
-
-        console.log("File uploaded successfully");
-
-        // Call the transform endpoint after the file is uploaded
-        await this.callAnalysisManagerTransformation();
+        await saveUploadedFileForTransformation(this.uploadedFile);
+        const tsdm = {
+          technology: this.selectedTechnology.toLowerCase(),
+          locationURL: "file:/usr/share/" + this.uploadedFile.name,
+          commands: this.commands
+            ? this.commands.split(",").map((cmd) => cmd.trim())
+            : [""],
+          options: this.selectedOptions,
+        };
+        await callAnalysisManagerTransformation(tsdm);
       } catch (error) {
         this.error = true;
         this.updateStatus();
-        console.error("Error uploading file:", error);
       }
     },
     async updateStatus() {
@@ -191,37 +162,6 @@ export default {
       } else {
         this.statusIcon = "fas fa-cloud-arrow-up";
         this.statusMessage = "To start drag and drop or upload a file.";
-      }
-    },
-    async callAnalysisManagerTransformation() {
-      const tsdm = {
-        technology: this.selectedTechnology.toLowerCase(), // Convert to lowercase
-        locationURL: "file://./usr/share/" + this.uploadedFile.name, // Use file:// protocol
-        commands: this.commands
-          ? this.commands.split(",").map((cmd) => cmd.trim())
-          : [""], // Ensure commands is an array of strings
-        options: this.selectedOptions,
-      };
-
-      try {
-        const response = await fetch("http://localhost:8080/demaf/transform", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(tsdm),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to start transformation process");
-        }
-
-        const data = await response.json();
-        console.log("Transformation process started with ID:", data);
-      } catch (error) {
-        this.error = true;
-        this.updateStatus();
-        console.error("Error starting transformation process:", error);
       }
     },
   },
