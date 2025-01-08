@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "watch": "watch 'npm run build' src"
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
@@ -41,6 +42,7 @@
     "vite": "^6.0.1",
     "vite-plugin-vuetify": "^2.0.3",
     "vue-router": "^4.4.5",
-    "vue-tsc": "^2.1.10"
+    "vue-tsc": "^2.1.10",
+    "watch": "^1.0.2"
   }
 }
