@@ -22,6 +22,7 @@ export default {
       showTADM: this._showTADM,
       tadm: null,
       transformationProcessId: this._transformationProcessId,
+      wineryUrl: "http://localhost/#/servicetemplates/ust.tad.servicetemplates/" + this._transformationProcessId + "/topologytemplate",
     };
   },
   props: {
@@ -39,7 +40,8 @@ export default {
       this.showTADM = value;
     },
     _transformationProcessId: function (value) {
-      this._transformationProcessId = value;
+      this.transformationProcessId = value;
+      this.wineryUrl = "http://localhost/#/servicetemplates/ust.tad.servicetemplates/" + value + "/topologytemplate";
     },
   },
   methods:
