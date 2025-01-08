@@ -39,6 +39,18 @@
       <v-spacer></v-spacer>
       <v-btn rounded="LG" @click="startTransformation">Transform</v-btn>
       <v-spacer></v-spacer>
+      <v-btn 
+        class="ma-2"
+        v-if="theme.global.current.value.dark"
+        icon="fas fa-moon"
+        @click="toggleTheme"
+        ></v-btn>
+      <v-btn 
+        class="ma-2"
+        v-if="!theme.global.current.value.dark"
+        icon="fas fa-sun"
+        @click="toggleTheme"
+        ></v-btn>
       <template v-slot:extension>
         <v-tabs align-with-title v-model="selectedTab">
           <v-tab value="Start">Start</v-tab>
@@ -67,6 +79,16 @@
     </v-main>
   </v-app>
 </template>
+
+<script setup>
+import { useTheme } from 'vuetify'
+
+const theme = useTheme()
+
+function toggleTheme () {
+  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+}
+</script>
 
 <script>
 import StartTab from "./StartTab.vue";
