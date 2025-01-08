@@ -54,7 +54,7 @@
       <template v-slot:extension>
         <v-tabs align-with-title v-model="selectedTab">
           <v-tab value="Start">Start</v-tab>
-          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.name">{{
+          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">{{
             tab.name
           }}</v-tab>
         </v-tabs>
@@ -71,7 +71,7 @@
         <v-tabs-window-item
           v-for="(tab, t) in viewTabs"
           :key="t"
-          :value="tab.name"
+          :value="tab.id"
         >
           <ViewTab :_showTADM="false" :_transformationProcessId="tab.id"></ViewTab>
         </v-tabs-window-item>

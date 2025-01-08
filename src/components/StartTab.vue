@@ -7,12 +7,12 @@
             <v-list-item
               v-for="(transformation, t) in lastTransformations"
               :key="t"
-              :value="transformation"
+              :value="transformation.id"
             >
               <template v-slot:prepend>
                 <v-icon>far fa-file</v-icon>
               </template>
-              <v-list-item-title>{{ transformation }}</v-list-item-title>
+              <v-list-item-title>{{ transformation.name }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card>
