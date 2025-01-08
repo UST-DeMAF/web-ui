@@ -41,16 +41,16 @@
       <v-spacer></v-spacer>
       <template v-slot:extension>
         <v-tabs align-with-title v-model="selectedTab">
-          <v-tab value="start">Start</v-tab>
-          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.value">{{
-            tab.title
+          <v-tab value="Start">Start</v-tab>
+          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.name">{{
+            tab.name
           }}</v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
     <v-main>
       <v-tabs-window v-model="selectedTab">
-        <v-tabs-window-item value="start">
+        <v-tabs-window-item value="Start">
           <StartTab
             :_lastTransformations="this.lastTransformations"
             :_status="this.status"
@@ -59,9 +59,9 @@
         <v-tabs-window-item
           v-for="(tab, t) in viewTabs"
           :key="t"
-          :value="tab.value"
+          :value="tab.name"
         >
-          <ViewTab :_showTADM="false" :_wineryUrl="tab.path"></ViewTab>
+          <ViewTab :_showTADM="false" :_transformationProcessId="tab.id"></ViewTab>
         </v-tabs-window-item>
       </v-tabs-window>
     </v-main>
@@ -146,17 +146,17 @@ export default {
             : [""],
           options: this.selectedOptions,
         };
-        const currentTransformationProcessId =
+        const transformationProcessId =
           await callAnalysisManagerTransformation(tsdm);
-        this.transformationProcesses.push(currentTransformationProcessId);
+        this.transformationProcesses.push(transformationProcessId);
         const statusMessage = await pollTransformationProcessStatusForResult(
-          currentTransformationProcessId,
+          transformationProcessId,
           10
         );
 
         if (statusMessage) {
           //TODO: change this be more robust?
-          this.lastTransformations.push(this.uploadedFile.name); //TODO: add stuff needed for I-frame for Winery
+          this.lastTransformations.push({name: this.uploadedFile.name, id: transformationProcessId}); //TODO: add stuff needed for I-frame for Winery
           this.transform = false;
           this.updateStatus();
 
@@ -164,9 +164,8 @@ export default {
           const wineryPath = statusMessage.path;
           console.log("Winery path 1: " + wineryPath);
           this.viewTabs.push({
-            title: this.uploadedFile.name,
-            value: this.uploadedFile.name,
-            path: wineryPath,
+            name: this.uploadedFile.name,
+            id: transformationProcessId,
           });
         } else {
           this.error = true;

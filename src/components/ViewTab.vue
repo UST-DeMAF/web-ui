@@ -1,20 +1,16 @@
 <template>
   <v-container v-if="showTADM">
-    <v-textarea disabled variant="outlined"></v-textarea>
+    <v-textarea :value="this.tadm" variant="outlined"></v-textarea>
   </v-container>
   <v-container v-else>
     <iframe :src="wineryUrl" width="100%" height="600px"></iframe>
   </v-container>
   <v-container>
     <v-row>
-      <v-switch v-model="showTADM" color="primary" label="Show TADM" @click="loadTADM"></v-switch>
+      <v-switch v-model="showTADM" color="primary" @change="loadTADM" label="Show TADM"></v-switch>
       <v-spacer></v-spacer>
-      <v-btn class="mx-2" color="primary" @click="downloadCSAR"
-        >Download CSAR</v-btn
-      >
-      <v-btn class="mx-2" color="primary" @click="downloadTADM"
-        >Download TADM</v-btn
-      >
+      <v-btn class="mx-2" disabled color="primary" @click="downloadCSAR">Download CSAR</v-btn>
+      <v-btn class="mx-2" color="primary" @click="downloadTADM">Download TADM</v-btn>
     </v-row>
   </v-container>
 </template>
@@ -24,8 +20,8 @@ export default {
   data() {
     return {
       showTADM: this._showTADM,
-      tadmPath: null,
-      wineryUrl: this._wineryUrl,
+      tadm: null,
+      transformationProcessId: this._transformationProcessId,
     };
   },
   props: {
@@ -33,7 +29,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    _wineryUrl: {
+    _transformationProcessId: {
       type: String,
       required: true,
     },
@@ -42,10 +38,21 @@ export default {
     _showTADM: function (value) {
       this.showTADM = value;
     },
-    _wineryUrl: function (value) {
-      this.wineryUrl = value;
-      console.log("WineryURL: " + value);
+    _transformationProcessId: function (value) {
+      this._transformationProcessId = value;
     },
   },
+  methods:
+  {
+    async loadTADM() {
+      const url = "http://localhost:3000/tadms/" + this.transformationProcessId + ".yaml";
+      try {
+        const response = await fetch(url);
+        this.tadm = await response.text();
+      } catch (err) {
+        console.error("Error loading TADM: " + err);
+      }
+    }
+  }
 };
 </script>
