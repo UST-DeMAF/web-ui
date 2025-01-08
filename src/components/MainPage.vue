@@ -41,13 +41,13 @@
       <v-spacer></v-spacer>
       <v-btn 
         class="ma-2"
-        v-if="theme.global.current.value.dark"
+        v-if="theme.global.current.dark"
         icon="fas fa-moon"
         @click="toggleTheme"
         ></v-btn>
       <v-btn 
         class="ma-2"
-        v-if="!theme.global.current.value.dark"
+        v-if="!theme.global.current.dark"
         icon="fas fa-sun"
         @click="toggleTheme"
         ></v-btn>
@@ -80,17 +80,8 @@
   </v-app>
 </template>
 
-<script setup>
-import { useTheme } from 'vuetify'
-
-const theme = useTheme()
-
-function toggleTheme () {
-  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
-}
-</script>
-
 <script>
+import { useTheme } from 'vuetify';
 import StartTab from "./StartTab.vue";
 import ViewTab from "./ViewTab.vue";
 
@@ -100,7 +91,6 @@ import {
   callAnalysisManagerTransformation,
   pollTransformationProcessStatusForResult,
 } from "@/services/transformationService";
-import { transform } from "typescript";
 
 export default {
   created() {
@@ -123,6 +113,7 @@ export default {
       transform: false, // Data property to store the transformation status
       transformationProcesses: [],
       uploadedFile: null, // Data property to store the uploaded file
+      theme: useTheme(), // Add theme to data properties
     };
   },
   components: {
@@ -214,6 +205,9 @@ export default {
         this.status.icon = "fas fa-cloud-arrow-up";
         this.status.message = "To start drag and drop or upload a file.";
       }
+    },
+    toggleTheme() {
+      this.theme.global.name = this.theme.global.current.dark ? 'light' : 'dark';
     },
   },
   watch: {
