@@ -10,7 +10,7 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --fix",
-    "watch": "watch 'npm run build' src"
+    "watch": "NODE_ENV=development watch 'npm run build' src"
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
