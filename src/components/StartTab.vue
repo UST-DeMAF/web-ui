@@ -4,11 +4,8 @@
       <v-container>
         <v-card title="Last transformations">
           <v-list v-model="selectedTransformation" color="primary">
-            <v-list-item
-              v-for="(transformation, t) in lastTransformations"
-              :key="t"
-              :value="transformation.id"
-            >
+            <v-list-item v-for="(transformation, t) in lastTransformations" :key="t" :value="transformation.id"
+              @click="openTransformation">
               <template v-slot:prepend>
                 <v-icon>far fa-file</v-icon>
               </template>
@@ -37,6 +34,11 @@ export default {
       selectedTransformation: null, // Data to store the selected transformation
       status: this._status, // Data to store the status
     };
+  },
+  methods: {
+    openTransformation() {
+      console.log("Open transformation: " + this.selectedTransformation);
+    }
   },
   props: {
     _lastTransformations: Array, // Prop to store the last transformations

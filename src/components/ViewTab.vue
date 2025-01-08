@@ -22,7 +22,7 @@ export default {
       showTADM: this._showTADM,
       tadm: null,
       transformationProcessId: this._transformationProcessId,
-      wineryUrl: "http://localhost/#/servicetemplates/ust.tad.servicetemplates/" + this._transformationProcessId + "/topologytemplate",
+      wineryUrl: "http://localhost/winery-topologymodeler/?repositoryURL=http:%2F%2Flocalhost:%2Fwinery&uiURL=http:%2F%2Flocalhost%2F%23%2F&ns=ust.tad.servicetemplates&id=" + this._transformationProcessId + "&topologyProDecURL=http:%2F%2Flocalhost:9090",
     };
   },
   props: {
@@ -41,7 +41,7 @@ export default {
     },
     _transformationProcessId: function (value) {
       this.transformationProcessId = value;
-      this.wineryUrl = "http://localhost/#/servicetemplates/ust.tad.servicetemplates/" + value + "/topologytemplate";
+      this.wineryUrl = "http://localhost/winery-topologymodeler/?repositoryURL=http:%2F%2Flocalhost:%2Fwinery&uiURL=http:%2F%2Flocalhost%2F%23%2F&ns=ust.tad.servicetemplates&id=" + this._transformationProcessId + "&topologyProDecURL=http:%2F%2Flocalhost:9090";
     },
   },
   methods:

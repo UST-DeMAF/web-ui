@@ -4,53 +4,21 @@
       <v-app-bar-title>DeMAF</v-app-bar-title>
       <v-row></v-row>
       <v-row>
-        <v-file-input
-          v-model="uploadedFile"
-          label="File"
-          min-width="200px"
-          variant="outlined"
-        ></v-file-input>
+        <v-file-input v-model="uploadedFile" label="File" min-width="200px" variant="outlined"></v-file-input>
         <v-spacer></v-spacer>
-        <v-select
-          v-model="selectedTechnology"
-          label="Technology"
-          :items="technologies"
-          min-width="150px"
-          variant="outlined"
-        ></v-select>
+        <v-select v-model="selectedTechnology" label="Technology" :items="technologies" min-width="150px"
+          variant="outlined"></v-select>
         <v-spacer></v-spacer>
-        <v-select
-          v-model="selectedOptions"
-          clearable
-          label="Options"
-          :items="['flat', 'partial']"
-          min-width="150px"
-          multiple
-          variant="outlined"
-        ></v-select>
+        <v-select v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']" min-width="150px"
+          multiple variant="outlined"></v-select>
         <v-spacer></v-spacer>
-        <v-text-field
-          v-model="commands"
-          label="Commands"
-          min-width="200px"
-          variant="outlined"
-        ></v-text-field>
+        <v-text-field v-model="commands" label="Commands" min-width="200px" variant="outlined"></v-text-field>
       </v-row>
       <v-spacer></v-spacer>
       <v-btn rounded="LG" @click="startTransformation">Transform</v-btn>
       <v-spacer></v-spacer>
-      <v-btn 
-        class="ma-2"
-        v-if="theme.global.current.dark"
-        icon="fas fa-moon"
-        @click="toggleTheme"
-        ></v-btn>
-      <v-btn 
-        class="ma-2"
-        v-if="!theme.global.current.dark"
-        icon="fas fa-sun"
-        @click="toggleTheme"
-        ></v-btn>
+      <v-btn class="ma-2" v-if="theme.global.current.dark" icon="fas fa-moon" @click="toggleTheme"></v-btn>
+      <v-btn class="ma-2" v-if="!theme.global.current.dark" icon="fas fa-sun" @click="toggleTheme"></v-btn>
       <template v-slot:extension>
         <v-tabs align-with-title v-model="selectedTab">
           <v-tab value="Start">Start</v-tab>
@@ -63,16 +31,9 @@
     <v-main>
       <v-tabs-window v-model="selectedTab">
         <v-tabs-window-item value="Start">
-          <StartTab
-            :_lastTransformations="this.lastTransformations"
-            :_status="this.status"
-          ></StartTab>
+          <StartTab :_lastTransformations="this.lastTransformations" :_status="this.status"></StartTab>
         </v-tabs-window-item>
-        <v-tabs-window-item
-          v-for="(tab, t) in viewTabs"
-          :key="t"
-          :value="tab.id"
-        >
+        <v-tabs-window-item v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
           <ViewTab :_showTADM="false" :_transformationProcessId="tab.id"></ViewTab>
         </v-tabs-window-item>
       </v-tabs-window>
@@ -110,10 +71,10 @@ export default {
       selectedTab: null, // Data property to store the selected tab
       viewTabs: [], // Data property to store the available tabs
       technologies: ["helm", "kubernetes", "terraform"], // Data property to store the available technologies
+      theme: useTheme(), // Add theme to data properties
       transform: false, // Data property to store the transformation status
       transformationProcesses: [],
       uploadedFile: null, // Data property to store the uploaded file
-      theme: useTheme(), // Add theme to data properties
     };
   },
   components: {
@@ -169,7 +130,7 @@ export default {
 
         if (statusMessage) {
           //TODO: change this be more robust?
-          this.lastTransformations.push({name: this.uploadedFile.name, id: transformationProcessId}); //TODO: add stuff needed for I-frame for Winery
+          this.lastTransformations.push({ name: this.uploadedFile.name, id: transformationProcessId }); //TODO: add stuff needed for I-frame for Winery
           this.transform = false;
           this.updateStatus();
 
