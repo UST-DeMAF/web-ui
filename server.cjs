@@ -22,12 +22,22 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// POST endpoint for file uploads
+// POST endpoint for single file uploads
 app.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }
+  console.log('Single file saved on storage:' + req.file);
   res.send('File uploaded successfully.');
+});
+
+// POST endpoint for multiple file uploads
+app.post('/upload-multiple', upload.array('files', 10), (req, res) => {
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).send('No files uploaded.');
+  }
+  console.log('Multiple files saved on storage:' + req.files);
+  res.send('Files uploaded successfully.');
 });
 
 // GET endpoint to return a tadm with a given ID

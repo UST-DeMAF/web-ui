@@ -39,6 +39,36 @@ export async function saveUploadedFileForTransformation(uploadedFile: File) {
   }
 }
 
+export async function saveUploadedFilesForTransformation(uploadedFiles: File[]): Promise<void> {
+  const formData = new FormData();
+  console.log("Uploaded files length:", uploadedFiles.length);
+
+  if (uploadedFiles.length === 1) {
+    formData.append('file', uploadedFiles[0]);
+  } else {
+    uploadedFiles.forEach(file => {
+      formData.append('files', file, file.webkitRelativePath);
+    });
+  }
+
+  try {
+    const endpoint = uploadedFiles.length === 1 ? 'http://localhost:3000/upload' : 'http://localhost:3000/upload-multiple';
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload files');
+    }
+
+    console.log('Files uploaded successfully');
+  } catch (error) {
+    console.error('Error uploading files:', error);
+    throw error;
+  }
+}
+
 export async function callAnalysisManagerTransformation(tsdm: any) {
   try {
     const response = await fetch("http://localhost:8080/demaf/transform", {

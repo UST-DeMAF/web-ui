@@ -4,7 +4,9 @@
       <v-app-bar-title>DeMAF</v-app-bar-title>
       <v-row></v-row>
       <v-row>
-        <v-file-input v-model="uploadedFile" label="File" min-width="200px" variant="outlined"></v-file-input>
+        <!-- Use native input element for file and folder upload -->
+        <input type="file" webkitdirectory multiple @change="handleFileOrFolderUpload" style="display: none;" ref="fileInput">
+        <v-btn @click="selectFileOrFolder" min-width="200px" variant="outlined">Select File or Folder</v-btn>
         <v-spacer></v-spacer>
         <v-select v-model="selectedTechnology" label="Technology" :items="technologies" min-width="150px"
           variant="outlined"></v-select>
@@ -49,6 +51,7 @@ import ViewTab from "./ViewTab.vue";
 import {
   getRegisteredPlugins,
   saveUploadedFileForTransformation,
+  saveUploadedFilesForTransformation,
   callAnalysisManagerTransformation,
   pollTransformationProcessStatusForResult,
 } from "@/services/transformationService";
@@ -74,7 +77,7 @@ export default {
       theme: useTheme(), // Add theme to data properties
       transform: false, // Data property to store the transformation status
       transformationProcesses: [],
-      uploadedFile: null, // Data property to store the uploaded file
+      uploadedFiles: [], // Data property to store the uploaded files
     };
   },
   components: {
@@ -82,24 +85,17 @@ export default {
     ViewTab,
   },
   methods: {
-    handleFileUpload() {
-      if (this.uploadedFile) {
-        console.log("uploaded file: " + this.uploadedFile.name);
-      }
+    selectFileOrFolder() {
+      // Trigger the file input element
+      this.$refs.fileInput.click();
     },
-    async loadRegisteredPlugins() {
-      try {
-        this.technologies = await getRegisteredPlugins();
-        console.log("Registered extensions successfully received.");
-      } catch (error) {
-        //this.error = true;
-        //this.updateStatus();
-        console.log("Error while receiving registered extensions.");
-      }
+    handleFileOrFolderUpload(event) {
+      this.uploadedFiles = Array.from(event.target.files);
+      console.log("Uploaded files:", this.uploadedFiles);
     },
     async startTransformation() {
-      if (!this.uploadedFile) {
-        alert("Please upload a file first.");
+      if (!this.uploadedFiles.length) {
+        alert("Please upload a file or folder first.");
         return;
       }
       if (!this.selectedTechnology) {
@@ -111,34 +107,41 @@ export default {
       this.updateStatus();
 
       try {
-        await saveUploadedFileForTransformation(this.uploadedFile);
-        const tsdm = {
+        var tsdm;
+        if(this.uploadedFiles.length === 1){
+          await saveUploadedFileForTransformation(this.uploadedFiles[0]);
+          tsdm = {
           technology: this.selectedTechnology.toLowerCase(),
-          locationURL: "file:/usr/share/" + this.uploadedFile.name,
-          commands: this.commands
-            ? this.commands.split(",").map((cmd) => cmd.trim())
-            : [""],
+          locationURL: "file:/usr/share/" + this.uploadedFiles[0].name,
+          commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
           options: this.selectedOptions,
         };
-        const transformationProcessId =
-          await callAnalysisManagerTransformation(tsdm);
+        }else if(this.uploadedFiles.length > 1){
+          await saveUploadedFilesForTransformation(this.uploadedFiles);
+          tsdm = {
+          technology: this.selectedTechnology.toLowerCase(),
+          locationURL: "file:/usr/share/" + this.uploadedFiles[0].webkitRelativePath.split('/')[0],
+          commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
+          options: this.selectedOptions,
+        };
+        }else{
+          alert("Please upload a file or folder first.");
+          return;
+        }
+        
+        const transformationProcessId = await callAnalysisManagerTransformation(tsdm);
         this.transformationProcesses.push(transformationProcessId);
-        const statusMessage = await pollTransformationProcessStatusForResult(
-          transformationProcessId,
-          10
-        );
+        const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, 10);
 
         if (statusMessage) {
-          //TODO: change this be more robust?
-          this.lastTransformations.push({ name: this.uploadedFile.name, id: transformationProcessId }); //TODO: add stuff needed for I-frame for Winery
+          this.lastTransformations.push({ name: this.uploadedFiles[0].webkitRelativePath.split('/')[0], id: transformationProcessId });
           this.transform = false;
           this.updateStatus();
 
-          // Create a new view tab with the Winery path
           const wineryPath = statusMessage.path;
           console.log("Winery path 1: " + wineryPath);
           this.viewTabs.push({
-            name: this.uploadedFile.name,
+            name: this.uploadedFiles[0].webkitRelativePath.split('/')[0],
             id: transformationProcessId,
           });
         } else {
@@ -151,17 +154,22 @@ export default {
         this.updateStatus();
       }
     },
-    async updateStatus() {
+    
+    async loadRegisteredPlugins() {
+      try {
+        this.technologies = await getRegisteredPlugins();
+        console.log("Registered extensions successfully received.");
+      } catch (error) {
+        console.log("Error while receiving registered extensions.");
+      }
+    },
+    updateStatus() {
       if (this.transform && !this.error) {
         this.status.icon = "fas fa-gear fa-spin";
-        this.status.message =
-          "Transform " +
-          this.uploadedFile.name +
-          " this may take a few moments.";
+        this.status.message = "Transformation in progress...";
       } else if (this.error) {
         this.status.icon = "fas fa-exclamation-triangle";
-        this.status.message =
-          "An error has occurred during the transformation.";
+        this.status.message = "An error occurred during transformation.";
       } else {
         this.status.icon = "fas fa-cloud-arrow-up";
         this.status.message = "To start drag and drop or upload a file.";
@@ -169,11 +177,6 @@ export default {
     },
     toggleTheme() {
       this.theme.global.name = this.theme.global.current.dark ? 'catppuccinLatteTheme' : 'catppuccinFrappeTheme';
-    },
-  },
-  watch: {
-    uploadedFile(newFile) {
-      this.handleFileUpload();
     },
   },
 };
