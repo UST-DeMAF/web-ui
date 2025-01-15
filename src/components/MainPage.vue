@@ -168,7 +168,7 @@ export default {
       }
     },
     toggleTheme() {
-      this.theme.global.name = this.theme.global.current.dark ? 'light' : 'dark';
+      this.theme.global.name = this.theme.global.current.dark ? 'catppuccinLatteTheme' : 'catppuccinFrappeTheme';
     },
   },
   watch: {
