@@ -71,7 +71,7 @@ export default {
       }, // Data property to store the status
       selectedTechnology: null, // Data property to store the selected technology
       selectedOptions: [], // Data property to store the selected options
-      selectedTab: null, // Data property to store the selected tab
+      selectedTab: "Start", // Data property to store the selected tab
       viewTabs: [], // Data property to store the available tabs
       technologies: ["helm", "kubernetes", "terraform"], // Data property to store the available technologies
       theme: useTheme(), // Add theme to data properties
@@ -144,6 +144,7 @@ export default {
             name: this.uploadedFiles[0].webkitRelativePath.split('/')[0],
             id: transformationProcessId,
           });
+          this.selectedTab = transformationProcessId; // Automatically select the new tab
         } else {
           this.error = true;
           this.updateStatus();
@@ -154,7 +155,6 @@ export default {
         this.updateStatus();
       }
     },
-    
     async loadRegisteredPlugins() {
       try {
         this.technologies = await getRegisteredPlugins();

@@ -7,7 +7,7 @@
       <iframe :src="wineryUrl" class="dynamic-iframe"></iframe>
     </div>
   </v-container>
-  <v-container>
+  <v-container class="controls-container">
     <v-row>
       <v-switch v-model="showTADM" color="primary" @change="loadTADM" label="Show TADM"></v-switch>
       <v-spacer></v-spacer>
@@ -78,5 +78,9 @@ export default {
   width: 100%;
   height: 100%;
   border: none;
+}
+
+.controls-container {
+  height: auto;
 }
 </style>
