@@ -1,29 +1,30 @@
 <template>
   <v-app>
-    <v-app-bar color="primary" prominent>
-      <v-app-bar-title>DeMAF</v-app-bar-title>
-      <v-row></v-row>
-      <v-row>
-        <!-- Use native input element for file and folder upload -->
-        <input type="file" webkitdirectory multiple @change="handleFileOrFolderUpload" style="display: none;" ref="fileInput">
-        <v-btn @click="selectFileOrFolder" min-width="200px" variant="outlined">Select File or Folder</v-btn>
-        <v-spacer></v-spacer>
-        <v-select v-model="selectedTechnology" label="Technology" :items="technologies" min-width="150px"
-          variant="outlined"></v-select>
-        <v-spacer></v-spacer>
-        <v-select v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']" min-width="150px"
-          multiple variant="outlined"></v-select>
-        <v-spacer></v-spacer>
-        <v-text-field v-model="commands" label="Commands" min-width="200px" variant="outlined"></v-text-field>
+    <v-app-bar class="space-around" color="primary" height="auto">
+      <v-app-bar-title class="text-secondary" style="min-width: 80px; max-width: 80px; font-size: 1.5rem; font-weight: bolder;">DeMAF</v-app-bar-title>
+      <v-spacer></v-spacer>
+      <!-- Use native input element for file and folder upload -->
+      <input class="ma-2" type="file" webkitdirectory multiple @change="handleFileOrFolderUpload" style="display: none;" ref="fileInput">
+      <v-btn class="ma-2" @click="selectFileOrFolder" min-width="200px" variant="outlined">Select File or Folder</v-btn>
+      <v-row class="ma-2">
+        <v-select class="ma-2" v-model="selectedTechnology" label="Technology" :items="technologies" min-width="150px"
+          variant="outlined" hide-details></v-select>
+        <v-select class="ma-2" v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']" min-width="150px"
+          multiple chips variant="outlined" hide-details></v-select>
+        <v-text-field class="ma-2" v-model="commands" label="Commands" min-width="200px" variant="outlined" hide-details></v-text-field>
       </v-row>
+      <v-btn class="ma-2" rounded="LG" @click="startTransformation" variant="outlined">Transform</v-btn>
       <v-spacer></v-spacer>
-      <v-btn rounded="LG" @click="startTransformation">Transform</v-btn>
-      <v-spacer></v-spacer>
-      <v-btn class="ma-2" v-if="theme.global.current.dark" icon="fas fa-moon" @click="toggleTheme"></v-btn>
-      <v-btn class="ma-2" v-if="!theme.global.current.dark" icon="fas fa-sun" @click="toggleTheme"></v-btn>
+      <div class="mr-3 ml-2" min-width="80px" max-width="80px">
+        <v-btn v-if="theme.global.current.dark" icon="fas fa-moon" @click="toggleTheme"></v-btn>
+        <v-btn v-if="!theme.global.current.dark" icon="fas fa-sun" @click="toggleTheme"></v-btn>
+      </div>
       <template v-slot:extension>
         <v-tabs align-with-title v-model="selectedTab">
-          <v-tab value="Start">Start</v-tab>
+          <v-tab value="Start">
+            <v-icon class="mr-2" icon="fas fa-house"></v-icon>
+            Start
+          </v-tab>
           <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">{{
             tab.name
           }}</v-tab>
@@ -42,6 +43,12 @@
     </v-main>
   </v-app>
 </template>
+
+<style>
+  .v-toolbar__extension {
+    background-color: color-mix(in srgb, rgb(var(--v-theme-primary)) 75%, rgb(var(--v-theme-on-primary)));
+  }
+</style>
 
 <script>
 import { useTheme } from 'vuetify';
@@ -128,7 +135,7 @@ export default {
           alert("Please upload a file or folder first.");
           return;
         }
-        
+
         const transformationProcessId = await callAnalysisManagerTransformation(tsdm);
         this.transformationProcesses.push(transformationProcessId);
         const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, 10);
