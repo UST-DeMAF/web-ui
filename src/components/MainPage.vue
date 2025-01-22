@@ -3,10 +3,13 @@
     <v-app-bar color="primary" height="80">
       <v-app-bar-title class="text-secondary" style="min-width: 80px; max-width: 80px; font-size: 1.5rem; font-weight: bolder;">DeMAF</v-app-bar-title>
       <v-spacer></v-spacer>
-      <!-- Use native input element for file and folder upload -->
-      <input class="ma-2" type="file" webkitdirectory multiple @change="handleFileOrFolderUpload" style="display: none;" ref="fileInput">
-      <v-btn class="ma-2" @click="selectFileOrFolder" variant="outlined">Select File or Folder</v-btn>
+      <!-- Use native input elements for file and folder upload -->
+      <input class="ma-2" type="file" name="file" @change="handleFileUpload" style="display: none;" ref="fileInput">
+      <input class="ma-2" type="file" name="files" webkitdirectory multiple @change="handleFolderUpload" style="display: none;" ref="folderInput">
+      <v-btn class="ma-2" @click="selectFile" variant="outlined">Select File</v-btn>
+      <v-btn class="ma-2" @click="selectFolder" variant="outlined">Select Folder</v-btn>
       <v-row class="ma-2">
+        <v-text-field class="ma-2" v-if="showStartFileInput" v-model="startFileName" label="Path to start file" variant="outlined" hide-details></v-text-field>
         <v-select class="ma-2" v-model="selectedTechnology" label="Technology" min-width="6pc" :items="technologies"
           variant="outlined" hide-details></v-select>
         <v-select class="ma-2" v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']"
@@ -25,9 +28,7 @@
             <v-icon class="mr-2" icon="fas fa-house"></v-icon>
             Start
           </v-tab>
-          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">{{
-            tab.name
-          }}</v-tab>
+          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">{{tab.name}}</v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
@@ -69,22 +70,24 @@ export default {
   },
   data() {
     return {
-      error: false, // Data property to store the error status
-      commands: "", // Data property to store the commands
-      lastTransformations: [], // Data property to store the last transformations
+      error: false,
+      commands: "",
+      lastTransformations: [],
       status: {
         icon: "fas fa-cloud-arrow-up",
         message: "To start drag and drop or upload a file.",
-      }, // Data property to store the status
-      selectedTechnology: null, // Data property to store the selected technology
-      selectedOptions: [], // Data property to store the selected options
-      selectedTab: "Start", // Data property to store the selected tab
-      viewTabs: [], // Data property to store the available tabs
-      technologies: ["helm", "kubernetes", "terraform"], // Data property to store the available technologies
-      theme: useTheme(), // Add theme to data properties
-      transform: false, // Data property to store the transformation status
+      },
+      selectedTechnology: null,
+      selectedOptions: [],
+      selectedTab: "Start",
+      viewTabs: [],
+      technologies: ["helm", "kubernetes", "terraform"],
+      theme: useTheme(),
+      transform: false,
       transformationProcesses: [],
-      uploadedFiles: [], // Data property to store the uploaded files
+      uploadedFiles: [],
+      showStartFileInput: false,
+      startFileName: "",
     };
   },
   components: {
@@ -92,13 +95,23 @@ export default {
     ViewTab,
   },
   methods: {
-    selectFileOrFolder() {
+    selectFile() {
       // Trigger the file input element
       this.$refs.fileInput.click();
+      this.showStartFileInput = false;
     },
-    handleFileOrFolderUpload(event) {
+    selectFolder() {
+      // Trigger the folder input element
+      this.$refs.folderInput.click();
+      this.showStartFileInput = true;
+    },
+    handleFileUpload(event) {
       this.uploadedFiles = Array.from(event.target.files);
-      console.log("Uploaded files:", this.uploadedFiles);
+      console.log("Uploaded file:", this.uploadedFiles[0]);
+    },
+    handleFolderUpload(event) {
+      this.uploadedFiles = Array.from(event.target.files);
+      console.log("Uploaded folder:", this.uploadedFiles);
     },
     async startTransformation() {
       if (!this.uploadedFiles.length) {
@@ -125,14 +138,25 @@ export default {
         };
         }else if(this.uploadedFiles.length > 1){
           await saveUploadedFilesForTransformation(this.uploadedFiles);
+          const startFile = this.uploadedFiles.find(file => file.name === this.startFileName);
+
+          if (!startFile) {
+            alert("Start file not found in the uploaded folder.");
+            this.transform = false;
+            this.updateStatus();
+            return;
+          }
+          console.log("Start file path:", startFile.webkitRelativePath);
+          
           tsdm = {
           technology: this.selectedTechnology.toLowerCase(),
-          locationURL: "file:/usr/share/" + this.uploadedFiles[0].webkitRelativePath.split('/')[0],
+          locationURL: "file:/usr/share/" + startFile.webkitRelativePath,
           commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
           options: this.selectedOptions,
         };
         }else{
           alert("Please upload a file or folder first.");
+          this.transform = false;
           return;
         }
 
@@ -188,3 +212,7 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Add your styles here */
+</style>

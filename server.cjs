@@ -3,20 +3,28 @@ const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
-
 const app = express();
 const port = 3000; // Port for the Express server
 
 // Enable CORS for all routes
 app.use(cors());
 
-// Set up multer for file uploads with original file names
+// Ensure the destination directory exists
+const ensureDirExists = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
+
+// Set up multer for file uploads with original file names and directory structure
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, '/usr/share/');
+    const uploadPath = path.join('/usr/share/', path.dirname(file.originalname));
+    ensureDirExists(uploadPath);
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    cb(null, path.basename(file.originalname));
   }
 });
 
@@ -27,31 +35,43 @@ app.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }
-  console.log('Single file saved on storage:' + req.file);
+  console.log('Single file saved on storage:', req.file);
   res.send('File uploaded successfully.');
 });
 
-// POST endpoint for multiple file uploads
-app.post('/upload-multiple', upload.array('files', 10), (req, res) => {
+// POST endpoint for multiple file uploads, max 200 files
+app.post('/upload-multiple', upload.array('files', 200), (req, res) => {
   if (!req.files || req.files.length === 0) {
     return res.status(400).send('No files uploaded.');
   }
-  console.log('Multiple files saved on storage:' + req.files);
+
+  req.files.forEach(file => {
+    const relativePath = file.originalname;
+    const uploadPath = path.join('/usr/share/', relativePath);
+    ensureDirExists(path.dirname(uploadPath));
+    fs.writeFileSync(uploadPath, file.buffer);
+  });
+
+  console.log('Multiple files saved on storage:', req.files);
   res.send('Files uploaded successfully.');
 });
 
 // GET endpoint to return a tadm with a given ID
 app.get('/tadms/:fileName', (req, res) => {
   const fileName = req.params.fileName;
-  const filePath = path.join('/usr/share/tadms', fileName);
-
-  fs.access(filePath, fs.constants.F_OK, (err) => {
+  const filePath = `/usr/share/${fileName}`;
+  res.download(filePath, (err) => {
     if (err) {
-      return res.status(404).send('File not found.');
+      console.error('Error downloading file:', err);
+      res.status(500).send('Error downloading file.');
     }
-
-    res.sendFile(filePath);
   });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 app.listen(port, () => {
