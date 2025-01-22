@@ -1,17 +1,17 @@
 <template>
   <v-app>
-    <v-app-bar class="space-around" color="primary" height="auto">
+    <v-app-bar color="primary" height="80">
       <v-app-bar-title class="text-secondary" style="min-width: 80px; max-width: 80px; font-size: 1.5rem; font-weight: bolder;">DeMAF</v-app-bar-title>
       <v-spacer></v-spacer>
       <!-- Use native input element for file and folder upload -->
       <input class="ma-2" type="file" webkitdirectory multiple @change="handleFileOrFolderUpload" style="display: none;" ref="fileInput">
-      <v-btn class="ma-2" @click="selectFileOrFolder" min-width="200px" variant="outlined">Select File or Folder</v-btn>
+      <v-btn class="ma-2" @click="selectFileOrFolder" variant="outlined">Select File or Folder</v-btn>
       <v-row class="ma-2">
-        <v-select class="ma-2" v-model="selectedTechnology" label="Technology" :items="technologies" min-width="150px"
+        <v-select class="ma-2" v-model="selectedTechnology" label="Technology" min-width="6pc" :items="technologies"
           variant="outlined" hide-details></v-select>
-        <v-select class="ma-2" v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']" min-width="150px"
+        <v-select class="ma-2" v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']"
           multiple chips variant="outlined" hide-details></v-select>
-        <v-text-field class="ma-2" v-model="commands" label="Commands" min-width="200px" variant="outlined" hide-details></v-text-field>
+        <v-text-field class="ma-2" v-model="commands" label="Commands" variant="outlined" hide-details></v-text-field>
       </v-row>
       <v-btn class="ma-2" rounded="LG" @click="startTransformation" variant="outlined">Transform</v-btn>
       <v-spacer></v-spacer>
