@@ -9,8 +9,7 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --fix",
-    "watch": "NODE_ENV=development watch 'npm run build' src"
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "@catppuccin/palette": "^1.7.1",
@@ -43,7 +42,6 @@
     "vite": "^6.0.1",
     "vite-plugin-vuetify": "^2.0.3",
     "vue-router": "^4.4.5",
-    "vue-tsc": "^2.1.10",
-    "watch": "^1.0.2"
+    "vue-tsc": "^2.1.10"
   }
 }
