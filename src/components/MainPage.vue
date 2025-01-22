@@ -1,19 +1,22 @@
 <template>
   <v-app>
     <v-app-bar color="primary" height="80">
-      <v-app-bar-title class="text-secondary" style="min-width: 80px; max-width: 80px; font-size: 1.5rem; font-weight: bolder;">DeMAF</v-app-bar-title>
+      <v-app-bar-title class="text-secondary"
+        style="min-width: 80px; max-width: 80px; font-size: 1.5rem; font-weight: bolder;">DeMAF</v-app-bar-title>
       <v-spacer></v-spacer>
       <!-- Use native input elements for file and folder upload -->
       <input class="ma-2" type="file" name="file" @change="handleFileUpload" style="display: none;" ref="fileInput">
-      <input class="ma-2" type="file" name="files" webkitdirectory multiple @change="handleFolderUpload" style="display: none;" ref="folderInput">
+      <input class="ma-2" type="file" name="files" webkitdirectory multiple @change="handleFolderUpload"
+        style="display: none;" ref="folderInput">
       <v-btn class="ma-2" @click="selectFile" variant="outlined">Select File</v-btn>
       <v-btn class="ma-2" @click="selectFolder" variant="outlined">Select Folder</v-btn>
       <v-row class="ma-2">
-        <v-text-field class="ma-2" v-if="showStartFileInput" v-model="startFileName" label="Path to start file" variant="outlined" hide-details></v-text-field>
+        <v-text-field class="ma-2" v-if="showStartFileInput" v-model="startFilePath" label="Relative Path to Start File"
+          variant="outlined" hide-details auto-grow></v-text-field>
         <v-select class="ma-2" v-model="selectedTechnology" label="Technology" min-width="6pc" :items="technologies"
           variant="outlined" hide-details></v-select>
-        <v-select class="ma-2" v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']"
-          multiple chips variant="outlined" hide-details></v-select>
+        <v-select class="ma-2" v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']" multiple
+          chips variant="outlined" hide-details></v-select>
         <v-text-field class="ma-2" v-model="commands" label="Commands" variant="outlined" hide-details></v-text-field>
       </v-row>
       <v-btn class="ma-2" rounded="LG" @click="startTransformation" variant="outlined">Transform</v-btn>
@@ -28,7 +31,7 @@
             <v-icon class="mr-2" icon="fas fa-house"></v-icon>
             Start
           </v-tab>
-          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">{{tab.name}}</v-tab>
+          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">{{ tab.name }}</v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
@@ -46,9 +49,9 @@
 </template>
 
 <style>
-  .v-toolbar__extension {
-    background-color: color-mix(in srgb, rgb(var(--v-theme-primary)) 75%, rgb(var(--v-theme-on-primary)));
-  }
+.v-toolbar__extension {
+  background-color: color-mix(in srgb, rgb(var(--v-theme-primary)) 75%, rgb(var(--v-theme-on-primary)));
+}
 </style>
 
 <script>
@@ -87,7 +90,7 @@ export default {
       transformationProcesses: [],
       uploadedFiles: [],
       showStartFileInput: false,
-      startFileName: "",
+      startFilePath: "", // Changed from startFileName to startFilePath
     };
   },
   components: {
@@ -128,33 +131,33 @@ export default {
 
       try {
         var tsdm;
-        if(this.uploadedFiles.length === 1){
+        if (this.uploadedFiles.length === 1) {
           await saveUploadedFileForTransformation(this.uploadedFiles[0]);
           tsdm = {
-          technology: this.selectedTechnology.toLowerCase(),
-          locationURL: "file:/usr/share/" + this.uploadedFiles[0].name,
-          commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
-          options: this.selectedOptions,
-        };
-        }else if(this.uploadedFiles.length > 1){
-          await saveUploadedFilesForTransformation(this.uploadedFiles);
-          const startFile = this.uploadedFiles.find(file => file.name === this.startFileName);
-
+            technology: this.selectedTechnology.toLowerCase(),
+            locationURL: "file:/usr/share/" + this.uploadedFiles[0].name,
+            commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
+            options: this.selectedOptions,
+          };
+        } else if (this.uploadedFiles.length > 1) {
+          const folderName = this.uploadedFiles[0].webkitRelativePath.split('/')[0];
+          const startFile = this.uploadedFiles.find(file => file.webkitRelativePath === `${folderName}${this.startFilePath}`);
           if (!startFile) {
             alert("Start file not found in the uploaded folder.");
             this.transform = false;
             this.updateStatus();
             return;
           }
+          await saveUploadedFilesForTransformation(this.uploadedFiles);
           console.log("Start file path:", startFile.webkitRelativePath);
-          
+
           tsdm = {
-          technology: this.selectedTechnology.toLowerCase(),
-          locationURL: "file:/usr/share/" + startFile.webkitRelativePath,
-          commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
-          options: this.selectedOptions,
-        };
-        }else{
+            technology: this.selectedTechnology.toLowerCase(),
+            locationURL: "file:/usr/share/" + startFile.webkitRelativePath,
+            commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
+            options: this.selectedOptions,
+          };
+        } else {
           alert("Please upload a file or folder first.");
           this.transform = false;
           return;
