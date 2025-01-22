@@ -43,13 +43,10 @@ export async function saveUploadedFilesForTransformation(uploadedFiles: File[]):
   const formData = new FormData();
   console.log("Uploaded files length:", uploadedFiles.length);
 
-  if (uploadedFiles.length === 1) {
-    formData.append('file', uploadedFiles[0]);
-  } else {
-    uploadedFiles.forEach(file => {
-      formData.append('files', file, file.webkitRelativePath);
-    });
-  }
+  uploadedFiles.forEach(file => {
+    formData.append('files', file, file.webkitRelativePath);
+    formData.append('relativePaths', file.webkitRelativePath); // Add relative path to form data
+  });
 
   try {
     const endpoint = uploadedFiles.length === 1 ? 'http://localhost:3000/upload' : 'http://localhost:3000/upload-multiple';

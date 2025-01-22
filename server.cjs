@@ -16,17 +16,8 @@ const ensureDirExists = (dir) => {
   }
 };
 
-// Set up multer for file uploads with original file names and directory structure
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join('/usr/share/', path.dirname(file.originalname));
-    ensureDirExists(uploadPath);
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(null, path.basename(file.originalname));
-  }
-});
+// Set up multer for file uploads with memory storage
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
@@ -35,6 +26,9 @@ app.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }
+  const uploadPath = path.join('/usr/share/', req.file.originalname);
+  ensureDirExists(path.dirname(uploadPath));
+  fs.writeFileSync(uploadPath, req.file.buffer);
   console.log('Single file saved on storage:', req.file);
   res.send('File uploaded successfully.');
 });
@@ -45,8 +39,10 @@ app.post('/upload-multiple', upload.array('files', 200), (req, res) => {
     return res.status(400).send('No files uploaded.');
   }
 
-  req.files.forEach(file => {
-    const relativePath = file.originalname;
+  req.files.forEach((file, index) => {
+    console.log('File original name:', file.originalname);
+    const relativePath = req.body.relativePaths[index];
+    console.log('Relative path:', relativePath);
     const uploadPath = path.join('/usr/share/', relativePath);
     ensureDirExists(path.dirname(uploadPath));
     fs.writeFileSync(uploadPath, file.buffer);
