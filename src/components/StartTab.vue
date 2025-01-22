@@ -1,10 +1,10 @@
 <template>
-  <v-row>
-    <v-col align-self="center" cols="2">
+  <v-row no-gutters>
+    <v-col class="fit-content-container" align-self="center">
       <v-container>
-        <v-card title="Last transformations">
-          <v-list v-model="selectedTransformation" color="primary">
-            <v-list-item v-for="(transformation, t) in lastTransformations" :key="t" :value="transformation.id"
+        <v-card class="border-md border-primary rounded-lg" title="Last transformations" density="compact" flat>
+          <v-list class="pa-0 py-2 border-t-md" v-model="selectedTransformation" color="primary">
+            <v-list-item class="ma-2 border-md rounded-pill" v-for="(transformation, t) in lastTransformations" :key="t" :value="transformation.id"
               @click="openTransformation">
               <template v-slot:prepend>
                 <v-icon>far fa-file</v-icon>
@@ -15,12 +15,18 @@
         </v-card>
       </v-container>
     </v-col>
-    <v-col align-self="center" cols="8">
+    <v-col class="flex-grow-1" align-self="center">
       <v-container>
         <v-row>
-          <v-icon size="64px">{{ status.icon }}</v-icon>
+          <v-spacer></v-spacer>
+          <v-icon :style="{ color: status.color }" size="64px">{{ status.icon }}</v-icon>
+          <v-spacer></v-spacer>
         </v-row>
-        <v-row>{{ status.message }}</v-row>
+        <v-row class="text-h6" :style="{ color: status.color }">
+          <v-spacer></v-spacer>
+          {{ status.message }}
+          <v-spacer></v-spacer>
+        </v-row>
       </v-container>
     </v-col>
   </v-row>
@@ -57,3 +63,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+:deep(.fit-content-container) {
+  max-width: fit-content;
+}
+:deep(.v-card-title) {
+  margin: 8px 8px 0 8px;
+}
+</style>

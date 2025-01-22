@@ -72,10 +72,15 @@ export default {
     return {
       error: false,
       commands: "",
-      lastTransformations: [{name: "test", id: "1234"}],
+      lastTransformations: [
+        {name: "test1", id: "1234"},
+        {name: "test2", id: "5678"},
+        {name: "test3", id: "9012"},
+      ],
       status: {
         icon: "fas fa-cloud-arrow-up",
         message: "To start drag and drop or upload a file.",
+        color: "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))",
       },
       selectedTechnology: null,
       selectedOptions: [],
@@ -198,12 +203,15 @@ export default {
       if (this.transform && !this.error) {
         this.status.icon = "fas fa-gear fa-spin";
         this.status.message = "Transformation in progress...";
+        this.status.color = "rgba(var(--v-theme-primary), var(--v-high-emphasis-opacity))";
       } else if (this.error) {
         this.status.icon = "fas fa-exclamation-triangle";
         this.status.message = "An error occurred during transformation.";
+        this.status.color = "rgba(var(--v-theme-error), var(--v-high-emphasis-opacity))";
       } else {
         this.status.icon = "fas fa-cloud-arrow-up";
         this.status.message = "To start drag and drop or upload a file.";
+        this.status.color = "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))";
       }
     },
     toggleTheme() {
