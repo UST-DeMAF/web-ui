@@ -37,6 +37,9 @@ const catppuccinLatteTheme = {
     success: latte.green.hex,
     warning: latte.yellow.hex,
 
+    // Custom colors
+    extension: "#40ADB4",
+
     // Text colors
     'on-primary': latte.base.hex,
     'on-background': latte.text.hex,
@@ -89,6 +92,9 @@ const catppuccinFrappeTheme = {
     success: frappe.green.hex,
     warning: frappe.yellow.hex,
 
+    // Custom colors
+    extension: '#66ADA3',
+
     // Text colors
     'on-primary': frappe.base.hex,
     'on-background': frappe.text.hex,
@@ -134,6 +140,11 @@ export default createVuetify({
   },
   theme: {
     defaultTheme: 'catppuccinLatteTheme',
+    variations: {
+      colors: ['primary', 'secondary'],
+      lighten: 1,
+      darken: 1,
+    },
     themes: {
       catppuccinLatteTheme,
       catppuccinFrappeTheme

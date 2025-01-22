@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar color="primary" height="80">
       <v-app-bar-nav-icon class="ml-3"icon="fas fa-diagram-project"></v-app-bar-nav-icon>
-      <v-app-bar-title class="mx-0" style="min-width: 120px; max-width: 120px; font-size: 2rem; font-weight: bolder;">DeMAF</v-app-bar-title>
+      <v-app-bar-title class="mx-0 small-caps text-h4" style="min-width: 120px; max-width: 120px;">DeMAF</v-app-bar-title>
       <v-spacer></v-spacer>
       <!-- Use native input elements for file and folder upload -->
       <input class="ma-2" type="file" name="file" @change="handleFileUpload" style="display: none;" ref="fileInput">
@@ -46,12 +46,6 @@
     </v-main>
   </v-app>
 </template>
-
-<style>
-.v-toolbar__extension {
-  background-color: color-mix(in srgb, rgb(var(--v-theme-primary)) 75%, rgb(var(--v-theme-on-primary)));
-}
-</style>
 
 <script>
 import { useTheme } from 'vuetify';
@@ -216,5 +210,7 @@ export default {
 </script>
 
 <style scoped>
-/* Add your styles here */
+:deep(.v-toolbar__extension) {
+  background-color: rgb(var(--v-theme-extension));
+}
 </style>

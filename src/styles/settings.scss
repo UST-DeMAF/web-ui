@@ -4,6 +4,10 @@
  * Configures SASS variables and Vuetify overwrites
  */
 
+ .small-caps {
+  font-variant: small-caps;
+}
+
 // https://vuetifyjs.com/features/sass-variables/`
 // @use 'vuetify/settings' with (
 //   $color-pack: false
