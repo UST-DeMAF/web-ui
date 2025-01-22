@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar color="primary" height="80">
+    <v-app-bar color="primary" height="100">
       <v-app-bar-nav-icon class="ml-3"icon="fas fa-diagram-project"></v-app-bar-nav-icon>
       <v-app-bar-title class="mx-0 small-caps text-h4" style="min-width: 120px; max-width: 120px;">DeMAF</v-app-bar-title>
       <v-spacer></v-spacer>
@@ -8,8 +8,12 @@
       <input class="ma-2" type="file" name="file" @change="handleFileUpload" style="display: none;" ref="fileInput">
       <input class="ma-2" type="file" name="files" webkitdirectory multiple @change="handleFolderUpload"
         style="display: none;" ref="folderInput">
-      <v-btn class="ma-2" @click="selectFile" variant="outlined">Select File</v-btn>
-      <v-btn class="ma-2" @click="selectFolder" variant="outlined">Select Folder</v-btn>
+      <v-container class="pa-0 ma-2 w-auto">
+        <v-row class="pa-0 ma-0 d-flex flex-column align-center">
+          <v-btn class="mb-1" @click="selectFile" variant="outlined" dense block>Select File</v-btn>
+          <v-btn class="mt-1" @click="selectFolder" variant="outlined" dense block>Select Folder</v-btn>
+        </v-row>
+      </v-container>
       <v-row class="ma-2 flex-shrink-1 flex-grow-0" style="max-width: 600px; min-width: 388px;">
         <v-text-field class="ma-2 flex-grow-0" v-if="showStartFileInput" v-model="startFileName" label="Start file" placeholder="Relative path" min-width="130px" variant="outlined" hide-details></v-text-field>
         <v-select class="ma-2 flex-grow-0" v-model="selectedTechnology" label="Technology" min-width="148px" :items="technologies"
