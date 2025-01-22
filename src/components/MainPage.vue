@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <v-app-bar color="primary" height="80">
-      <v-app-bar-title class="text-secondary"
-        style="min-width: 80px; max-width: 80px; font-size: 1.5rem; font-weight: bolder;">DeMAF</v-app-bar-title>
+      <v-app-bar-nav-icon class="ml-3"icon="fas fa-diagram-project"></v-app-bar-nav-icon>
+      <v-app-bar-title class="mx-0" style="min-width: 120px; max-width: 120px; font-size: 2rem; font-weight: bolder;">DeMAF</v-app-bar-title>
       <v-spacer></v-spacer>
       <!-- Use native input elements for file and folder upload -->
       <input class="ma-2" type="file" name="file" @change="handleFileUpload" style="display: none;" ref="fileInput">
@@ -10,18 +10,17 @@
         style="display: none;" ref="folderInput">
       <v-btn class="ma-2" @click="selectFile" variant="outlined">Select File</v-btn>
       <v-btn class="ma-2" @click="selectFolder" variant="outlined">Select Folder</v-btn>
-      <v-row class="ma-2">
-        <v-text-field class="ma-2" v-if="showStartFileInput" v-model="startFilePath" label="Relative Path to Start File"
-          variant="outlined" hide-details auto-grow></v-text-field>
-        <v-select class="ma-2" v-model="selectedTechnology" label="Technology" min-width="6pc" :items="technologies"
+      <v-row class="ma-2 flex-shrink-1 flex-grow-0" style="max-width: 600px; min-width: 388px;">
+        <v-text-field class="ma-2 flex-grow-0" v-if="showStartFileInput" v-model="startFileName" label="Start file" placeholder="Relative path" min-width="130px" variant="outlined" hide-details></v-text-field>
+        <v-select class="ma-2 flex-grow-0" v-model="selectedTechnology" label="Technology" min-width="148px" :items="technologies"
           variant="outlined" hide-details></v-select>
-        <v-select class="ma-2" v-model="selectedOptions" clearable label="Options" :items="['flat', 'partial']" multiple
-          chips variant="outlined" hide-details></v-select>
-        <v-text-field class="ma-2" v-model="commands" label="Commands" variant="outlined" hide-details></v-text-field>
+        <v-select class="ma-2 flex-grow-0" v-model="selectedOptions" clearable label="Options" min-width="120px" :items="['flat', 'partial']"
+          multiple chips variant="outlined" hide-details></v-select>
+        <v-text-field class="ma-2 flex-grow-0" v-model="commands" label="Commands" min-width="120px" variant="outlined" hide-details></v-text-field>
       </v-row>
       <v-btn class="ma-2" rounded="LG" @click="startTransformation" variant="outlined">Transform</v-btn>
       <v-spacer></v-spacer>
-      <div class="mr-3 ml-2" min-width="80px" max-width="80px">
+      <div class="mr-3 ml-2" style="min-width: 168px; max-width: 168px; text-align: end;">
         <v-btn v-if="theme.global.current.dark" icon="fas fa-moon" @click="toggleTheme"></v-btn>
         <v-btn v-if="!theme.global.current.dark" icon="fas fa-sun" @click="toggleTheme"></v-btn>
       </div>
@@ -75,7 +74,7 @@ export default {
     return {
       error: false,
       commands: "",
-      lastTransformations: [],
+      lastTransformations: [{name: "test", id: "1234"}],
       status: {
         icon: "fas fa-cloud-arrow-up",
         message: "To start drag and drop or upload a file.",
