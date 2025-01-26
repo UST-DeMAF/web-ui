@@ -15,7 +15,7 @@
         </v-row>
       </v-container>
       <v-row class="ma-2 flex-shrink-1 flex-grow-0" style="max-width: 600px; min-width: 388px;">
-        <v-text-field class="ma-2 flex-grow-0" v-if="showStartFileInput" v-model="startFileName" label="Start file" placeholder="Relative path" min-width="130px" variant="outlined" hide-details></v-text-field>
+        <v-text-field class="ma-2 flex-grow-0" v-if="showStartFileInput" v-model="startFilePath" label="Start file" placeholder="Relative path" min-width="130px" variant="outlined" hide-details></v-text-field>
         <v-select class="ma-2 flex-grow-0" v-model="selectedTechnology" label="Technology" min-width="148px" :items="technologies"
           variant="outlined" hide-details></v-select>
         <v-select class="ma-2 flex-grow-0" v-model="selectedOptions" clearable label="Options" min-width="120px" :items="['flat', 'partial']"
@@ -160,7 +160,7 @@ export default {
             options: this.selectedOptions,
           };
         } else {
-          alert("Please upload a file or folder first.");
+          alert("Uploaded folder is empty.");
           this.transform = false;
           return;
         }
