@@ -55,6 +55,7 @@
 import { useTheme } from 'vuetify';
 import StartTab from "./StartTab.vue";
 import ViewTab from "./ViewTab.vue";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   getRegisteredPlugins,
@@ -66,6 +67,7 @@ import {
 
 export default {
   created() {
+    this.initializeSession();
     this.loadRegisteredPlugins();
   },
   data() {
@@ -85,6 +87,7 @@ export default {
       selectedTechnology: null,
       selectedOptions: [],
       selectedTab: "Start",
+      session: null,
       viewTabs: [],
       technologies: ["helm", "kubernetes", "terraform"],
       theme: useTheme(),
@@ -100,6 +103,13 @@ export default {
     ViewTab,
   },
   methods: {
+    initializeSession() {
+      this.session = localStorage.getItem("session");
+      if (!this.session) {
+        this.session = uuidv4();
+        localStorage.setItem("session", this.session);
+      }
+    },
     selectFile() {
       // Trigger the file input element
       this.$refs.fileInput.click();

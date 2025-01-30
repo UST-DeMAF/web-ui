@@ -19,6 +19,7 @@
     "express": "^4.21.2",
     "multer": "^1.4.5-lts.1",
     "roboto-fontface": "*",
+    "uuid": "^11.0.5",
     "vue": "^3.5.13",
     "vuetify": "^3.6.14"
   },
