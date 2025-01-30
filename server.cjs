@@ -55,7 +55,7 @@ app.post('/upload-multiple', upload.array('files', 200), (req, res) => {
 // GET endpoint to return a tadm with a given ID
 app.get('/tadms/:fileName', (req, res) => {
   const fileName = req.params.fileName;
-  const filePath = `/usr/share/${fileName}`;
+  const filePath = `/usr/share/tadms/${fileName}`;
   res.download(filePath, (err) => {
     if (err) {
       console.error('Error downloading file:', err);
