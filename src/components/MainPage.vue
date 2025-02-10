@@ -35,6 +35,10 @@
             Start
           </v-tab>
           <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">{{ tab.name }}</v-tab>
+          <v-tab value="Documentation">
+            <v-icon class="mr-2" icon="fas fa-book"></v-icon>
+            Documentation
+          </v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
@@ -45,6 +49,11 @@
         </v-tabs-window-item>
         <v-tabs-window-item v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
           <ViewTab :_showTADM="false" :_transformationProcessId="tab.id"></ViewTab>
+        </v-tabs-window-item>
+        <v-tabs-window-item value="Documentation">
+          <v-container>
+            <iframe src="https://ust-demaf.github.io/web-ui/" class="documentation-iframe"></iframe>
+          </v-container>
         </v-tabs-window-item>
       </v-tabs-window>
     </v-main>
@@ -236,5 +245,10 @@ export default {
 <style scoped>
 :deep(.v-toolbar__extension) {
   background-color: rgb(var(--v-theme-extension));
+}
+.documentation-iframe {
+  width: 100%;
+  height: 100vh;
+  border: none;
 }
 </style>
