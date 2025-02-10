@@ -1,6 +1,6 @@
 <template>
   <v-container v-if="showTADM">
-    <v-textarea :value="this.tadm" variant="outlined"></v-textarea>
+    <v-textarea :value="tadm" variant="outlined"></v-textarea>
   </v-container>
   <v-container v-else>
     <div class="iframe-container">
@@ -45,21 +45,41 @@ export default {
       this.transformationProcessId = value;
     },
   },
+  created() {
+    this.loadTADM();
+  },
   methods: {
     async loadTADM() {
-      const url = "http://localhost:3000/tadms/" + this.transformationProcessId + ".yaml";
-      try {
-        const response = await fetch(url);
-        this.tadm = await response.text();
-      } catch (err) {
-        console.error("Error loading TADM: " + err);
+      if (this.tadm === null) {
+        const url = "http://localhost:3000/tadms/" + this.transformationProcessId + ".yaml";
+        try {
+          const response = await fetch(url);
+          this.tadm = await response.text();
+        } catch (err) {
+          console.error("Error loading TADM: " + err);
+        }
       }
     },
     downloadCSAR() {
       // Implement the logic to download CSAR
     },
     downloadTADM() {
-      // Implement the logic to download TADM
+      if (this.tadm === null) {
+        alert("No TADM available to download.");
+      } else {
+        try {
+          const blob = new Blob([this.tadm], { type: 'text/yaml' });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = `${this.transformationProcessId}.yaml`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          console.log("TADM file downloaded successfully");
+        } catch (error) {
+          console.error("Error downloading TADM file:", error);
+        }
+      }
     },
   },
 };
@@ -70,8 +90,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px 20px 5px 20px; /* Top, Right, Bottom, Left */
-  height: calc(100vh - 225px); /* Adjust height based on margins */
+  margin: 20px 20px 5px 20px;
+  /* Top, Right, Bottom, Left */
+  height: calc(100vh - 225px);
+  /* Adjust height based on margins */
 }
 
 .dynamic-iframe {
