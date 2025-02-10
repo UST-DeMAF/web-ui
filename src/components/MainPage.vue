@@ -213,12 +213,14 @@ export default {
       this.updateStatus();
 
       try {
+        var transformationProcessName;
         var tsdm;
         if (this.uploadedFiles.length === 1) {
           await saveUploadedFileForTransformation(this.uploadedFiles[0], this.session);
+          transformationProcessName = this.uploadedFiles[0].name;
           tsdm = {
             technology: this.selectedTechnology.toLowerCase(),
-            locationURL: "file:/usr/share/uploads/" + this.session + "/" + this.uploadedFiles[0].name,
+            locationURL: "file:/usr/share/uploads/" + this.session + "/" + transformationProcessName,
             commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
             options: this.selectedOptions,
           };
@@ -233,7 +235,7 @@ export default {
           }
           await saveUploadedFilesForTransformation(this.uploadedFiles, this.session);
           console.log("Start file path:", startFile.webkitRelativePath);
-
+          transformationProcessName = startFile.webkitRelativePath.split('/').at(-1);
           tsdm = {
             technology: this.selectedTechnology.toLowerCase(),
             locationURL: "file:/usr/share/uploads/" + this.session + "/" + startFile.webkitRelativePath,
@@ -251,14 +253,14 @@ export default {
         const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, 10);
 
         if (statusMessage) {
-          this.lastTransformations.push({ name: this.uploadedFiles[0].webkitRelativePath.split('/')[0], id: transformationProcessId });
+          this.lastTransformations.push({ name: transformationProcessName, id: transformationProcessId });
           this.transform = false;
           this.updateStatus();
 
           const wineryPath = statusMessage.path;
           console.log("Winery path 1: " + wineryPath);
           this.viewTabs.push({
-            name: this.uploadedFiles[0].webkitRelativePath.split('/')[0],
+            name: transformationProcessName,
             id: transformationProcessId,
           });
           this.selectedTab = transformationProcessId; // Automatically select the new tab
