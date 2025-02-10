@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export async function getRegisteredPlugins() {
   try {
     const response = await fetch("http://localhost:8080/demaf/plugins", {
@@ -16,14 +18,18 @@ export async function getRegisteredPlugins() {
   }
 }
 
+// Function to generate a random UUID as a session ID
+export function generateSessionId(): string {
+  return uuidv4();
+}
 
 //BUG: Fails if the transformation is called a second time with out selecting a new file
-export async function saveUploadedFileForTransformation(uploadedFile: File) {
+export async function saveUploadedFileForTransformation(uploadedFile: File, sessionId: string) {
   const formData = new FormData();
   formData.append("file", uploadedFile);
 
   try {
-    const response = await fetch("http://localhost:3000/upload", {
+    const response = await fetch(`http://localhost:3000/upload?sessionId=${sessionId}`, {
       method: "POST",
       body: formData,
     });
@@ -39,7 +45,7 @@ export async function saveUploadedFileForTransformation(uploadedFile: File) {
   }
 }
 
-export async function saveUploadedFilesForTransformation(uploadedFiles: File[]): Promise<void> {
+export async function saveUploadedFilesForTransformation(uploadedFiles: File[], sessionId: string): Promise<void> {
   const formData = new FormData();
   console.log("Uploaded files length:", uploadedFiles.length);
 
@@ -49,7 +55,7 @@ export async function saveUploadedFilesForTransformation(uploadedFiles: File[]):
   });
 
   try {
-    const endpoint = uploadedFiles.length === 1 ? 'http://localhost:3000/upload' : 'http://localhost:3000/upload-multiple';
+    const endpoint = uploadedFiles.length === 1 ? `http://localhost:3000/upload?sessionId=${sessionId}` : `http://localhost:3000/upload-multiple?sessionId=${sessionId}`;
     const response = await fetch(endpoint, {
       method: 'POST',
       body: formData,

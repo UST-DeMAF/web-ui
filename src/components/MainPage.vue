@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar color="primary" height="100">
-      <v-app-bar-nav-icon class="ml-3"icon="fas fa-diagram-project"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon class="ml-3" icon="fas fa-diagram-project"></v-app-bar-nav-icon>
       <v-app-bar-title class="mx-0 small-caps text-h4" style="min-width: 120px; max-width: 120px;">DeMAF</v-app-bar-title>
       <v-spacer></v-spacer>
       <!-- Use native input elements for file and folder upload -->
@@ -55,7 +55,7 @@
 import { useTheme } from 'vuetify';
 import StartTab from "./StartTab.vue";
 import ViewTab from "./ViewTab.vue";
-import { v4 as uuidv4 } from "uuid";
+import { generateSessionId } from "@/services/transformationService";
 
 import {
   getRegisteredPlugins,
@@ -106,7 +106,7 @@ export default {
     initializeSession() {
       this.session = localStorage.getItem("session");
       if (!this.session) {
-        this.session = uuidv4();
+        this.session = generateSessionId();
         localStorage.setItem("session", this.session);
       }
     },
@@ -138,16 +138,18 @@ export default {
         return;
       }
 
+      console.log("Session ID:", this.session);
+
       this.transform = true;
       this.updateStatus();
 
       try {
         var tsdm;
         if (this.uploadedFiles.length === 1) {
-          await saveUploadedFileForTransformation(this.uploadedFiles[0]);
+          await saveUploadedFileForTransformation(this.uploadedFiles[0], this.session);
           tsdm = {
             technology: this.selectedTechnology.toLowerCase(),
-            locationURL: "file:/usr/share/" + this.uploadedFiles[0].name,
+            locationURL: "file:/usr/share/uploads/" + this.session + "/" + this.uploadedFiles[0].name,
             commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
             options: this.selectedOptions,
           };
@@ -160,12 +162,12 @@ export default {
             this.updateStatus();
             return;
           }
-          await saveUploadedFilesForTransformation(this.uploadedFiles);
+          await saveUploadedFilesForTransformation(this.uploadedFiles, this.session);
           console.log("Start file path:", startFile.webkitRelativePath);
 
           tsdm = {
             technology: this.selectedTechnology.toLowerCase(),
-            locationURL: "file:/usr/share/" + startFile.webkitRelativePath,
+            locationURL: "file:/usr/share/uploads/" + this.session + "/" + startFile.webkitRelativePath,
             commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
             options: this.selectedOptions,
           };

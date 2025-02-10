@@ -23,10 +23,14 @@ const upload = multer({ storage: storage });
 
 // POST endpoint for single file uploads
 app.post('/upload', upload.single('file'), (req, res) => {
+  const sessionId = req.query.sessionId; // Get session ID from query parameter
+  if (!sessionId) {
+    return res.status(400).send('Session ID is required.');
+  }
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }
-  const uploadPath = path.join('/usr/share/', req.file.originalname);
+  const uploadPath = path.join('/usr/share/uploads/', sessionId, req.file.originalname);
   ensureDirExists(path.dirname(uploadPath));
   fs.writeFileSync(uploadPath, req.file.buffer);
   console.log('Single file saved on storage:', req.file);
@@ -35,6 +39,10 @@ app.post('/upload', upload.single('file'), (req, res) => {
 
 // POST endpoint for multiple file uploads, max 200 files
 app.post('/upload-multiple', upload.array('files', 200), (req, res) => {
+  const sessionId = req.query.sessionId; // Get session ID from query parameter
+  if (!sessionId) {
+    return res.status(400).send('Session ID is required.');
+  }
   if (!req.files || req.files.length === 0) {
     return res.status(400).send('No files uploaded.');
   }
@@ -43,7 +51,7 @@ app.post('/upload-multiple', upload.array('files', 200), (req, res) => {
     console.log('File original name:', file.originalname);
     const relativePath = req.body.relativePaths[index];
     console.log('Relative path:', relativePath);
-    const uploadPath = path.join('/usr/share/', relativePath);
+    const uploadPath = path.join('/usr/share/uploads/', sessionId, relativePath);
     ensureDirExists(path.dirname(uploadPath));
     fs.writeFileSync(uploadPath, file.buffer);
   });
