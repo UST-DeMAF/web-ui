@@ -45,7 +45,7 @@
     <v-main>
       <v-tabs-window v-model="selectedTab">
         <v-tabs-window-item value="Start">
-          <StartTab :_lastTransformations="this.lastTransformations" :_status="this.status"></StartTab>
+          <StartTab :_lastTransformations="this.lastTransformations" :_status="this.status" @openTrans="openTrans" @removeTrans="removeTrans"></StartTab>
         </v-tabs-window-item>
         <v-tabs-window-item v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
           <ViewTab :_showTADM="false" :_transformationProcessId="tab.id"></ViewTab>
@@ -113,6 +113,44 @@ export default {
     ViewTab,
   },
   methods: {
+    openTrans(value) {
+      console.log("Open transformation: " + value);
+      var hasTab = false;
+      for (let i = 0; i < this.viewTabs.length; i++) {
+        if (this.viewTabs[i].id === value) {
+          hasTab = true;
+          break;
+        }
+      }
+      if (!hasTab) {
+        for (let i = 0; i < this.lastTransformations.length; i++) {
+          if (this.lastTransformations[i].id === value) {
+            this.viewTabs.push({
+              name: this.lastTransformations[i].name,
+              id: value,
+            });
+            break;
+          }
+        }
+      }
+      this.selectedTab = value;
+    },
+    removeTrans(value) {
+      console.log("Delete transformation: " + value);
+      for (let i = 0; i < this.lastTransformations.length; i++) {
+        if (this.lastTransformations[i].id === value) {
+          this.lastTransformations.splice(i, 1);
+          break;
+        }
+      }
+      localStorage.setItem("lastTransformations", JSON.stringify(this.lastTransformations));
+      for (let i = 0; i < this.viewTabs.length; i++) {
+        if (this.viewTabs[i].id === value) {
+          this.viewTabs.splice(i, 1);
+          break;
+        }
+      }
+    },
     initializeSession() {
       this.session = localStorage.getItem("session");
       if (!this.session) {
