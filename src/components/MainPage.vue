@@ -15,7 +15,7 @@
         </v-row>
       </v-container>
       <v-row class="ma-2 flex-shrink-1 flex-grow-0" style="max-width: 600px; min-width: 388px;">
-        <v-text-field class="ma-2 flex-grow-0" v-if="showStartFileInput" v-model="startFilePath" label="Start file" placeholder="Relative path" min-width="130px" variant="outlined" hide-details></v-text-field>
+        <v-text-field class="ma-2 flex-grow-0" v-if="showStartFileInput" v-model="startFilePath" :prefix="folderPrefix" label="Start file" placeholder="Relative path" min-width="130px" variant="outlined" hide-details></v-text-field>
         <v-select class="ma-2 flex-grow-0" v-model="selectedTechnology" label="Technology" min-width="148px" :items="technologies"
           variant="outlined" hide-details></v-select>
         <v-select class="ma-2 flex-grow-0" v-model="selectedOptions" clearable label="Options" min-width="120px" :items="['flat', 'partial']"
@@ -105,6 +105,7 @@ export default {
       uploadedFiles: [],
       showStartFileInput: false,
       startFilePath: "", // Changed from startFileName to startFilePath
+      folderPrefix: "",
     };
   },
   components: {
@@ -136,6 +137,10 @@ export default {
     handleFolderUpload(event) {
       this.uploadedFiles = Array.from(event.target.files);
       console.log("Uploaded folder:", this.uploadedFiles);
+      if (this.uploadedFiles.length > 0) {
+        const folderName = this.uploadedFiles[0].webkitRelativePath.split('/')[0];
+        this.folderPrefix = folderName + '/';
+      }
     },
     async startTransformation() {
       if (!this.uploadedFiles.length) {
@@ -164,7 +169,7 @@ export default {
           };
         } else if (this.uploadedFiles.length > 1) {
           const folderName = this.uploadedFiles[0].webkitRelativePath.split('/')[0];
-          const startFile = this.uploadedFiles.find(file => file.webkitRelativePath === `${folderName}${this.startFilePath}`);
+          const startFile = this.uploadedFiles.find(file => file.webkitRelativePath === `${folderName}${'/' + this.startFilePath}`);
           if (!startFile) {
             alert("Start file not found in the uploaded folder.");
             this.transform = false;
