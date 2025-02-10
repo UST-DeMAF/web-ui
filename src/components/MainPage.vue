@@ -34,7 +34,12 @@
             <v-icon class="mr-2" icon="fas fa-house"></v-icon>
             Start
           </v-tab>
-          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">{{ tab.name }}</v-tab>
+          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
+            {{ tab.name }}
+            <template v-slot:append>
+              <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="closeTab(tab.id)"></v-btn>
+            </template>
+          </v-tab>
           <v-tab value="Documentation">
             <v-icon class="mr-2" icon="fas fa-book"></v-icon>
             Documentation
@@ -113,6 +118,18 @@ export default {
     ViewTab,
   },
   methods: {
+    closeTab(value) {
+      console.log("Close tab: " + value);
+      for (let i = 0; i < this.viewTabs.length; i++) {
+        if (this.viewTabs[i].id === value) {
+          this.viewTabs.splice(i, 1);
+          break;
+        }
+      }
+      if (this.selectedTab === value) {
+        this.selectedTab = "Start";
+      }
+    },
     openTrans(value) {
       console.log("Open transformation: " + value);
       var hasTab = false;
