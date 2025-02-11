@@ -34,7 +34,12 @@
             <v-icon class="mr-2" icon="fas fa-house"></v-icon>
             Start
           </v-tab>
-          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">{{ tab.name }}</v-tab>
+          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
+            {{ tab.name }}
+            <template v-slot:append>
+              <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="closeTab(tab.id)"></v-btn>
+            </template>
+          </v-tab>
           <v-tab value="Documentation">
             <v-icon class="mr-2" icon="fas fa-book"></v-icon>
             Documentation
@@ -45,7 +50,7 @@
     <v-main>
       <v-tabs-window v-model="selectedTab">
         <v-tabs-window-item value="Start">
-          <StartTab :_lastTransformations="this.lastTransformations" :_status="this.status"></StartTab>
+          <StartTab :_lastTransformations="this.lastTransformations" :_status="this.status" @openTrans="openTrans" @removeTrans="removeTrans"></StartTab>
         </v-tabs-window-item>
         <v-tabs-window-item v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
           <ViewTab :_showTADM="false" :_transformationProcessId="tab.id"></ViewTab>
@@ -113,6 +118,56 @@ export default {
     ViewTab,
   },
   methods: {
+    closeTab(value) {
+      console.log("Close tab: " + value);
+      for (let i = 0; i < this.viewTabs.length; i++) {
+        if (this.viewTabs[i].id === value) {
+          this.viewTabs.splice(i, 1);
+          break;
+        }
+      }
+      if (this.selectedTab === value) {
+        this.selectedTab = "Start";
+      }
+    },
+    openTrans(value) {
+      console.log("Open transformation: " + value);
+      var hasTab = false;
+      for (let i = 0; i < this.viewTabs.length; i++) {
+        if (this.viewTabs[i].id === value) {
+          hasTab = true;
+          break;
+        }
+      }
+      if (!hasTab) {
+        for (let i = 0; i < this.lastTransformations.length; i++) {
+          if (this.lastTransformations[i].id === value) {
+            this.viewTabs.push({
+              name: this.lastTransformations[i].name,
+              id: value,
+            });
+            break;
+          }
+        }
+      }
+      this.selectedTab = value;
+    },
+    removeTrans(value) {
+      console.log("Delete transformation: " + value);
+      for (let i = 0; i < this.lastTransformations.length; i++) {
+        if (this.lastTransformations[i].id === value) {
+          this.lastTransformations.splice(i, 1);
+          break;
+        }
+      }
+      localStorage.setItem("lastTransformations", JSON.stringify(this.lastTransformations));
+      for (let i = 0; i < this.viewTabs.length; i++) {
+        if (this.viewTabs[i].id === value) {
+          this.viewTabs.splice(i, 1);
+          break;
+        }
+      }
+    },
     initializeSession() {
       this.session = localStorage.getItem("session");
       if (!this.session) {
@@ -158,12 +213,14 @@ export default {
       this.updateStatus();
 
       try {
+        var transformationProcessName;
         var tsdm;
         if (this.uploadedFiles.length === 1) {
           await saveUploadedFileForTransformation(this.uploadedFiles[0], this.session);
+          transformationProcessName = this.uploadedFiles[0].name;
           tsdm = {
             technology: this.selectedTechnology.toLowerCase(),
-            locationURL: "file:/usr/share/uploads/" + this.session + "/" + this.uploadedFiles[0].name,
+            locationURL: "file:/usr/share/uploads/" + this.session + "/" + transformationProcessName,
             commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
             options: this.selectedOptions,
           };
@@ -178,7 +235,7 @@ export default {
           }
           await saveUploadedFilesForTransformation(this.uploadedFiles, this.session);
           console.log("Start file path:", startFile.webkitRelativePath);
-
+          transformationProcessName = startFile.webkitRelativePath.split('/').at(-1);
           tsdm = {
             technology: this.selectedTechnology.toLowerCase(),
             locationURL: "file:/usr/share/uploads/" + this.session + "/" + startFile.webkitRelativePath,
@@ -196,14 +253,14 @@ export default {
         const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, 10);
 
         if (statusMessage) {
-          this.lastTransformations.push({ name: this.uploadedFiles[0].webkitRelativePath.split('/')[0], id: transformationProcessId });
+          this.lastTransformations.push({ name: transformationProcessName, id: transformationProcessId });
           this.transform = false;
           this.updateStatus();
 
           const wineryPath = statusMessage.path;
           console.log("Winery path 1: " + wineryPath);
           this.viewTabs.push({
-            name: this.uploadedFiles[0].webkitRelativePath.split('/')[0],
+            name: transformationProcessName,
             id: transformationProcessId,
           });
           this.selectedTab = transformationProcessId; // Automatically select the new tab

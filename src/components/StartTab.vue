@@ -3,13 +3,15 @@
     <v-col class="fit-content-container" align-self="center">
       <v-container>
         <v-card class="border-md border-primary rounded-lg" title="Last transformations" density="compact" flat>
-          <v-list class="pa-0 py-2 border-t-md" v-model="selectedTransformation" color="primary">
-            <v-list-item class="ma-2 border-md rounded-pill" v-for="(transformation, t) in lastTransformations" :key="t" :value="transformation.id"
-              @click="openTransformation">
+          <v-list class="pa-0 py-2 border-t-md" color="primary">
+            <v-list-item class="ma-2 border-md rounded-pill" v-for="(transformation, t) in lastTransformations" :key="t" :value="transformation.id" @click="openTrans(transformation.id)">
               <template v-slot:prepend>
                 <v-icon>far fa-file</v-icon>
               </template>
               <v-list-item-title>{{ transformation.name }}</v-list-item-title>
+              <template v-slot:append>
+                <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="removeTrans(transformation.id)"></v-btn>
+                </template>
             </v-list-item>
           </v-list>
         </v-card>
@@ -37,13 +39,15 @@ export default {
   data() {
     return {
       lastTransformations: this._lastTransformations, // Data to store the last transformations
-      selectedTransformation: null, // Data to store the selected transformation
       status: this._status, // Data to store the status
     };
   },
   methods: {
-    openTransformation() {
-      console.log("Open transformation: " + this.selectedTransformation);
+    openTrans(value) {
+      this.$emit("openTrans", value);
+    },
+    removeTrans(value) {
+      this.$emit("removeTrans", value);
     }
   },
   props: {
