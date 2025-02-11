@@ -173,6 +173,9 @@ export default {
       if (!this.session) {
         this.session = generateSessionId();
         localStorage.setItem("session", this.session);
+      } else {
+        // Load last transformations
+        this.lastTransformations = JSON.parse(localStorage.getItem("lastTransformations"));
       }
     },
     selectFile() {
@@ -254,6 +257,7 @@ export default {
 
         if (statusMessage) {
           this.lastTransformations.push({ name: transformationProcessName, id: transformationProcessId });
+          localStorage.setItem("lastTransformations", JSON.stringify(this.lastTransformations));
           this.transform = false;
           this.updateStatus();
 
