@@ -14,8 +14,8 @@
           <v-btn class="mt-1" @click="selectFolder" variant="outlined" dense block>Select Folder</v-btn>
         </v-row>
       </v-container>
-      <v-row class="ma-2 flex-shrink-1 flex-grow-0" style="max-width: 600px; min-width: 388px;">
-        <v-text-field class="ma-2 flex-grow-0" v-if="showStartFileInput" v-model="startFilePath" :prefix="folderPrefix" label="Start file" placeholder="Relative path" min-width="130px" variant="outlined" hide-details></v-text-field>
+      <v-row class="ma-2 flex-shrink-1 flex-grow-0" style="max-width: 652px; min-width: 388px;">
+        <v-text-field class="ma-2 flex-grow-0" v-if="showStartFileInput" v-model="startFilePath" :prefix="folderPrefix" label="Start file" placeholder="Relative path" min-width="200px" variant="outlined" hide-details></v-text-field>
         <v-select class="ma-2 flex-grow-0" v-model="selectedTechnology" label="Technology" min-width="148px" :items="technologies"
           variant="outlined" hide-details></v-select>
         <v-select class="ma-2 flex-grow-0" v-model="selectedOptions" clearable label="Options" min-width="120px" :items="['flat', 'partial']"
@@ -48,8 +48,8 @@
       </template>
     </v-app-bar>
     <v-main>
-      <v-tabs-window v-model="selectedTab">
-        <v-tabs-window-item value="Start">
+      <v-tabs-window class="h-100" v-model="selectedTab">
+        <v-tabs-window-item class="h-100" value="Start">
           <StartTab :_lastTransformations="this.lastTransformations" :_status="this.status" @openTrans="openTrans" @removeTrans="removeTrans"></StartTab>
         </v-tabs-window-item>
         <v-tabs-window-item v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">

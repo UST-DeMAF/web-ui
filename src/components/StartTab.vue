@@ -1,6 +1,6 @@
 <template>
-  <v-row no-gutters>
-    <v-col class="fit-content-container" align-self="center">
+  <v-row class="h-100" no-gutters>
+    <v-col class="fit-content-container mb-auto" align-self="center">
       <v-container>
         <v-card class="border-md border-primary rounded-lg" title="Last transformations" density="compact" flat>
           <v-list class="pa-0 py-2 border-t-md" color="primary">
