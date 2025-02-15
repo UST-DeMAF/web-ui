@@ -25,6 +25,7 @@
       <v-btn class="ma-2" rounded="LG" @click="startTransformation" variant="outlined">Transform</v-btn>
       <v-spacer></v-spacer>
       <div class="mr-3 ml-2" style="min-width: 168px; max-width: 168px; text-align: end;">
+        <v-btn icon="fas fa-book" @click="openDocumentation"></v-btn>
         <v-btn v-if="theme.global.current.dark" icon="fas fa-moon" @click="toggleTheme"></v-btn>
         <v-btn v-if="!theme.global.current.dark" icon="fas fa-sun" @click="toggleTheme"></v-btn>
       </div>
@@ -34,15 +35,16 @@
             <v-icon class="mr-2" icon="fas fa-house"></v-icon>
             Start
           </v-tab>
+          <v-tab :style="{'display': docDisplayStyle}" value="Documentation">
+            <v-icon class="mr-2" icon="fas fa-book"></v-icon>
+            Documentation
+            <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="closeDocumentation"></v-btn>
+          </v-tab>
           <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
             {{ tab.name }}
             <template v-slot:append>
               <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="closeTab(tab.id)"></v-btn>
             </template>
-          </v-tab>
-          <v-tab value="Documentation">
-            <v-icon class="mr-2" icon="fas fa-book"></v-icon>
-            Documentation
           </v-tab>
         </v-tabs>
       </template>
@@ -88,6 +90,7 @@ export default {
     return {
       error: false,
       commands: "",
+      docDisplayStyle: "none",
       lastTransformations: [
         {name: "test1", id: "1234"},
         {name: "test2", id: "5678"},
@@ -118,6 +121,10 @@ export default {
     ViewTab,
   },
   methods: {
+    closeDocumentation() {
+      this.selectedTab = "Start";
+      this.docDisplayStyle = "none";
+    },
     closeTab(value) {
       console.log("Close tab: " + value);
       for (let i = 0; i < this.viewTabs.length; i++) {
@@ -129,6 +136,10 @@ export default {
       if (this.selectedTab === value) {
         this.selectedTab = "Start";
       }
+    },
+    openDocumentation() {
+      this.docDisplayStyle = "block";
+      this.selectedTab = "Documentation";
     },
     openTrans(value) {
       console.log("Open transformation: " + value);
@@ -174,6 +185,8 @@ export default {
         this.session = generateSessionId();
         localStorage.setItem("session", this.session);
       } else {
+        // Load theme
+        this.theme.global.name = JSON.parse(localStorage.getItem("theme"));
         // Load last transformations
         this.lastTransformations = JSON.parse(localStorage.getItem("lastTransformations"));
       }
@@ -302,7 +315,9 @@ export default {
       }
     },
     toggleTheme() {
-      this.theme.global.name = this.theme.global.current.dark ? 'catppuccinLatteTheme' : 'catppuccinFrappeTheme';
+      var themeName = this.theme.global.current.dark ? 'catppuccinLatteTheme' : 'catppuccinFrappeTheme';
+      this.theme.global.name = themeName;
+      localStorage.setItem("theme", JSON.stringify(themeName));
     },
   },
 };
