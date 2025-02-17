@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar color="primary" height="100">
+    <v-app-bar color="primary" height="100" v-if="selectedTab === 'Start'">
       <v-app-bar-nav-icon class="ml-3" icon="fas fa-diagram-project"></v-app-bar-nav-icon>
       <v-app-bar-title class="mx-0 small-caps text-h4" style="min-width: 120px; max-width: 120px;">DeMAF</v-app-bar-title>
       <v-spacer></v-spacer>
@@ -37,6 +37,35 @@
           </v-tab>
           <v-tab :style="{'display': docDisplayStyle}" value="Documentation">
             <v-icon class="mr-2" icon="fas fa-book"></v-icon>
+            Documentation
+            <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="closeDocumentation"></v-btn>
+          </v-tab>
+          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
+            {{ tab.name }}
+            <template v-slot:append>
+              <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="closeTab(tab.id)"></v-btn>
+            </template>
+          </v-tab>
+        </v-tabs>
+      </template>
+    </v-app-bar>
+    <v-app-bar color="primary" height="55" v-else>
+      <v-app-bar-nav-icon class="ml-3" icon="fas fa-diagram-project" size="small"></v-app-bar-nav-icon>
+      <v-app-bar-title class="mx-0 small-caps text-h5" style="min-width: 120px; max-width: 120px;">DeMAF</v-app-bar-title>
+      <v-spacer></v-spacer>
+      <div class="mr-3 ml-2" style="min-width: 168px; max-width: 168px; text-align: end;">
+        <v-btn icon="fas fa-book" size="small" @click="openDocumentation"></v-btn>
+        <v-btn v-if="theme.global.current.dark" icon="fas fa-moon" size="small" @click="toggleTheme"></v-btn>
+        <v-btn v-if="!theme.global.current.dark" icon="fas fa-sun" size="small" @click="toggleTheme"></v-btn>
+      </div>
+      <template v-slot:extension>
+        <v-tabs align-with-title v-model="selectedTab">
+          <v-tab value="Start">
+            <v-icon class="mr-2" icon="fas fa-house" size="small"></v-icon>
+            Start
+          </v-tab>
+          <v-tab :style="{'display': docDisplayStyle}" value="Documentation">
+            <v-icon class="mr-2" icon="fas fa-book" size="small"></v-icon>
             Documentation
             <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="closeDocumentation"></v-btn>
           </v-tab>
@@ -98,7 +127,7 @@ export default {
       ],
       status: {
         icon: "fas fa-cloud-arrow-up",
-        message: "To start drag and drop or upload a file.",
+        message: "To start upload a file or folder.",
         color: "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))",
       },
       selectedTechnology: null,
@@ -310,7 +339,7 @@ export default {
         this.status.color = "rgba(var(--v-theme-error), var(--v-high-emphasis-opacity))";
       } else {
         this.status.icon = "fas fa-cloud-arrow-up";
-        this.status.message = "To start drag and drop or upload a file.";
+        this.status.message = "To start upload a file or folder.";
         this.status.color = "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))";
       }
     },
