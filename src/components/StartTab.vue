@@ -87,7 +87,6 @@ export default {
       selectedOptions: [],
       optionsInput: "",
       selectedTechnology: null,
-      selectedTab: this._selectedTab,
       session: this._session,
       showFileInput: false,
       showStartFileInput: false,
@@ -242,7 +241,7 @@ export default {
             name: transformationProcessName,
             id: transformationProcessId,
           });
-          this.selectedTab = transformationProcessId; // Automatically select the new tab
+          this.openTrans(transformationProcessId); // Automatically select the new tab
 
           // Reset the flatten option
           this.flatten = "false";
@@ -274,16 +273,12 @@ export default {
   },
   props: {
     _lastTransformations: Array, // Prop to store the last transformations
-    _selectedTab: String,
     _session: String, // Prop to store the session ID
     _viewTabs: Array,
   },
   watch: {
     _lastTransformations: function (value) {
       this.lastTransformations = value;
-    },
-    _selectedTab: function (value) {
-      this.selectedTab = value;
     },
     _session: function (value) {
       this.session = value;
