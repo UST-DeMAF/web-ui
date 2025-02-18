@@ -86,6 +86,7 @@ export default {
       lastTransformations: this._lastTransformations, // Data to store the last transformations
       options: "",
       selectedTechnology: null,
+      session: this._session,
       showFileInput: false,
       showStartFileInput: false,
       startFilePath: "", // Changed from startFileName to startFilePath
@@ -160,13 +161,17 @@ export default {
       console.log("Session ID:", this.session);
 
       this.transform = true;
-      this.updateStatus();
+      this.updateStatus();     
 
       console.log("Selected options: " + this.selectedOptions);
 
       try {
         var transformationProcessName;
         var tsdm;
+
+        var options = this.selectedOptions
+        options.push("flatten=" + this.flatten);
+
         if (this.uploadedFiles.length === 1) {
           // await saveUploadedFileForTransformation(this.uploadedFiles[0], this.session);
           // transformationProcessName = this.uploadedFiles[0].name;
@@ -181,7 +186,7 @@ export default {
             this.session,
             this.selectedTechnology,
             this.commands,
-            this.selectedOptions
+            this.options
           ));
         } else if (this.uploadedFiles.length > 1) {
           // const folderName = this.uploadedFiles[0].webkitRelativePath.split('/')[0];
@@ -265,11 +270,15 @@ export default {
   },
   props: {
     _lastTransformations: Array, // Prop to store the last transformations
+    _session: String, // Prop to store the session ID
   },
   watch: {
     _lastTransformations: function (value) {
       this.lastTransformations = value;
-    }
+    },
+    _session: function (value) {
+      this.session = value;
+    },
   },
 };
 </script>

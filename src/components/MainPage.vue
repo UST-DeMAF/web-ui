@@ -32,7 +32,7 @@
     <v-main>
       <v-tabs-window class="h-100" v-model="selectedTab">
         <v-tabs-window-item class="h-100" value="Start">
-          <StartTab :_lastTransformations="this.lastTransformations" :_status="this.status" @openTrans="openTrans" @removeTrans="removeTrans"></StartTab>
+          <StartTab :_lastTransformations="this.lastTransformations" :_session="this.session" @openTrans="openTrans" @removeTrans="removeTrans"></StartTab>
         </v-tabs-window-item>
         <v-tabs-window-item v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
           <ViewTab :_showTADM="false" :_transformationProcessId="tab.id"></ViewTab>
