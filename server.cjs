@@ -37,8 +37,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
   res.send('File uploaded successfully.');
 });
 
-// POST endpoint for multiple file uploads, max 200 files
-app.post('/upload-multiple', upload.array('files', 200), (req, res) => {
+// POST endpoint for multiple file uploads, max 1000 files
+app.post('/upload-multiple', upload.array('files', 1000), (req, res) => {
   const sessionId = req.query.sessionId; // Get session ID from query parameter
   if (!sessionId) {
     return res.status(400).send('Session ID is required.');

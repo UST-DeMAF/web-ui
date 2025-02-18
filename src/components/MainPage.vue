@@ -100,14 +100,14 @@
 import { useTheme } from 'vuetify';
 import StartTab from "./StartTab.vue";
 import ViewTab from "./ViewTab.vue";
-import { generateSessionId } from "@/services/transformationService";
-
 import {
   getRegisteredPlugins,
   saveUploadedFileForTransformation,
   saveUploadedFilesForTransformation,
   callAnalysisManagerTransformation,
   pollTransformationProcessStatusForResult,
+  generateSessionId,
+  checkTotalSize
 } from "@/services/transformationService";
 
 export default {
@@ -231,11 +231,21 @@ export default {
       this.showStartFileInput = true;
     },
     handleFileUpload(event) {
-      this.uploadedFiles = Array.from(event.target.files);
+      const files = Array.from(event.target.files);
+      if (!checkTotalSize(files)) {
+        alert("Total file size exceeds 50 MB. Please upload a smaller file.");
+        return;
+      }
+      this.uploadedFiles = files;
       console.log("Uploaded file:", this.uploadedFiles[0]);
     },
     handleFolderUpload(event) {
-      this.uploadedFiles = Array.from(event.target.files);
+      const files = Array.from(event.target.files);
+      if (!checkTotalSize(files)) {
+        alert("Total file size exceeds 50 MB. Please upload smaller files.");
+        return;
+      }
+      this.uploadedFiles = files;
       console.log("Uploaded folder:", this.uploadedFiles);
       if (this.uploadedFiles.length > 0) {
         const folderName = this.uploadedFiles[0].webkitRelativePath.split('/')[0];

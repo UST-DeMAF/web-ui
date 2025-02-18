@@ -23,6 +23,13 @@ export function generateSessionId(): string {
   return uuidv4();
 }
 
+// Function to check total size of uploaded files
+export function checkTotalSize(files: File[]): boolean {
+  const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+  const maxSize = 50 * 1024 * 1024; // 50 MB in bytes
+  return totalSize <= maxSize;
+}
+
 //BUG: Fails if the transformation is called a second time with out selecting a new file
 export async function saveUploadedFileForTransformation(uploadedFile: File, sessionId: string) {
   const formData = new FormData();
