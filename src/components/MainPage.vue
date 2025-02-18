@@ -18,8 +18,9 @@
         <v-text-field class="ma-2 flex-grow-0" v-if="showStartFileInput" v-model="startFilePath" :prefix="folderPrefix" label="Start file" placeholder="Relative path" min-width="200px" variant="outlined" hide-details></v-text-field>
         <v-select class="ma-2 flex-grow-0" v-model="selectedTechnology" label="Technology" min-width="148px" :items="technologies"
           variant="outlined" hide-details></v-select>
-        <v-select class="ma-2 flex-grow-0" v-model="selectedOptions" clearable label="Options" min-width="120px" :items="['flat', 'partial']"
-          multiple chips variant="outlined" hide-details></v-select>
+        <v-select class="ma-2 flex-grow-0" v-model="selectedOptions" label="Options" min-width="120px" :items="['flatten=true', 'flatten=partial', 'flatten=false']"
+          chips variant="outlined" hide-details></v-select>
+        <!-- Add "multiple" again when there are more options -->
         <v-text-field class="ma-2 flex-grow-0" v-model="commands" label="Commands" min-width="120px" variant="outlined" hide-details></v-text-field>
       </v-row>
       <v-btn class="ma-2" rounded="LG" @click="startTransformation" variant="outlined">Transform</v-btn>
@@ -131,7 +132,7 @@ export default {
         color: "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))",
       },
       selectedTechnology: null,
-      selectedOptions: [],
+      selectedOptions: "flatten=false",
       selectedTab: "Start",
       session: null,
       viewTabs: [],
@@ -267,6 +268,8 @@ export default {
       this.transform = true;
       this.updateStatus();
 
+      console.log("Selected options: " + this.selectedOptions);
+
       try {
         var transformationProcessName;
         var tsdm;
@@ -277,11 +280,11 @@ export default {
             technology: this.selectedTechnology.toLowerCase(),
             locationURL: "file:/usr/share/uploads/" + this.session + "/" + transformationProcessName,
             commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
-            options: this.selectedOptions,
+            options: [this.selectedOptions],
           };
         } else if (this.uploadedFiles.length > 1) {
           const folderName = this.uploadedFiles[0].webkitRelativePath.split('/')[0];
-          const startFile = this.uploadedFiles.find(file => file.webkitRelativePath === `${folderName}${'/' + this.startFilePath}`);
+          const startFile = this.uploadedFiles.find(file => file.webkitRelativePath === `${folderName}/${this.startFilePath}`);
           if (!startFile) {
             alert("Start file not found in the uploaded folder.");
             this.transform = false;
@@ -295,7 +298,7 @@ export default {
             technology: this.selectedTechnology.toLowerCase(),
             locationURL: "file:/usr/share/uploads/" + this.session + "/" + startFile.webkitRelativePath,
             commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
-            options: this.selectedOptions,
+            options: [this.selectedOptions],
           };
         } else {
           alert("Uploaded folder is empty.");
@@ -303,6 +306,7 @@ export default {
           return;
         }
 
+        // Start transformation and then reset the selected options
         const transformationProcessId = await callAnalysisManagerTransformation(tsdm);
         this.transformationProcesses.push(transformationProcessId);
         const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, 10);
@@ -320,6 +324,9 @@ export default {
             id: transformationProcessId,
           });
           this.selectedTab = transformationProcessId; // Automatically select the new tab
+
+          // Reset the flatten option
+          this.selectedOptions = "flatten=false";
         } else {
           this.error = true;
           this.updateStatus();
