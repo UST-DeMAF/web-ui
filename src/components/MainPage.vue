@@ -214,6 +214,7 @@ export default {
       if (!this.session) {
         this.session = generateSessionId();
         localStorage.setItem("session", this.session);
+        localStorage.setItem("theme", JSON.stringify('catppuccinLatteTheme'));
       } else {
         // Load theme
         this.theme.global.name = JSON.parse(localStorage.getItem("theme"));
