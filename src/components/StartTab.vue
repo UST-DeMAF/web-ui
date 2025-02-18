@@ -100,12 +100,8 @@ export default {
       transform: false,
       transformationProcesses: [],
       uploadedFiles: [],
+      viewTabs: this._viewTabs
     };
-  },
-  watch: {
-    optionsInput: function (value) {
-      this.selectedOptions = value.split(",").map((opt) => opt.trim());
-    },
   },
   methods: {
     handleFileUpload(event) {
@@ -279,6 +275,7 @@ export default {
   props: {
     _lastTransformations: Array, // Prop to store the last transformations
     _session: String, // Prop to store the session ID
+    _viewTabs: Array,
   },
   watch: {
     _lastTransformations: function (value) {
@@ -286,6 +283,12 @@ export default {
     },
     _session: function (value) {
       this.session = value;
+    },
+    _viewTabs: function (value) {
+      this.viewTabs = value;
+    },
+    optionsInput: function (value) {
+      this.selectedOptions = value.split(",").map((opt) => opt.trim());
     },
   },
 };
