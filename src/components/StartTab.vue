@@ -50,7 +50,7 @@
         <v-select class="ma-2 flex-grow-0" v-model="flatten" label="Flatten" min-width="120px" :items="['true', 'partial', 'false']"
             chips variant="outlined" hide-details></v-select>
 
-        <v-text-field class="ma-2 flex-grow-0" v-model="options" label="Options" min-width="120px" variant="outlined" hide-details></v-text-field>
+        <v-text-field class="ma-2 flex-grow-0" v-model="optionsInput" label="Options" min-width="120px" variant="outlined" hide-details></v-text-field>
         
         <v-text-field class="ma-2 flex-grow-0" v-model="commands" label="Commands" min-width="120px" variant="outlined" hide-details></v-text-field>
         <v-btn class="ma-2" color="primary" rounded="LG" @click="startTransformation">Transform</v-btn>
@@ -84,7 +84,8 @@ export default {
       fileName: null,
       folderPrefix: "",
       lastTransformations: this._lastTransformations, // Data to store the last transformations
-      options: "",
+      selectedOptions: [],
+      optionsInput: "",
       selectedTechnology: null,
       session: this._session,
       showFileInput: false,
@@ -100,6 +101,11 @@ export default {
       transformationProcesses: [],
       uploadedFiles: [],
     };
+  },
+  watch: {
+    optionsInput: function (value) {
+      this.selectedOptions = value.split(",").map((opt) => opt.trim());
+    },
   },
   methods: {
     handleFileUpload(event) {
@@ -163,14 +169,16 @@ export default {
       this.transform = true;
       this.updateStatus();     
 
-      console.log("Selected options: " + this.selectedOptions);
 
       try {
         var transformationProcessName;
         var tsdm;
 
-        var options = this.selectedOptions
+        var options = this.selectedOptions; // Create a copy of selectedOptions
         options.push("flatten=" + this.flatten);
+
+        console.log("Selected options: " + options);
+
 
         if (this.uploadedFiles.length === 1) {
           // await saveUploadedFileForTransformation(this.uploadedFiles[0], this.session);
@@ -186,7 +194,7 @@ export default {
             this.session,
             this.selectedTechnology,
             this.commands,
-            this.options
+            options
           ));
         } else if (this.uploadedFiles.length > 1) {
           // const folderName = this.uploadedFiles[0].webkitRelativePath.split('/')[0];
@@ -211,7 +219,7 @@ export default {
             this.session,
             this.selectedTechnology,
             this.commands,
-            this.selectedOptions,
+            options,
             this.startFilePath
           ));
         } else {
@@ -241,7 +249,7 @@ export default {
           this.selectedTab = transformationProcessId; // Automatically select the new tab
 
           // Reset the flatten option
-          this.selectedOptions = "flatten=false";
+          this.flatten = "false";
         } else {
           this.error = true;
           this.updateStatus();

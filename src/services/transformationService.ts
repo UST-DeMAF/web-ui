@@ -170,7 +170,7 @@ export async function pollTransformationProcessStatusForResult(transformationPro
  * @param {string} session - The session ID.
  * @param {string} selectedTechnology - The selected technology.
  * @param {string} commands - The commands to execute.
- * @param {string} selectedOptions - The selected options.
+ * @param {string[]} selectedOptions - The selected options.
  * @returns {Promise<{transformationProcessName: string, tsdm: any}>} A promise that resolves to the transformation process name and data model.
  */
 export async function handleSingleFileTransformation(uploadedFile: File, session: string, selectedTechnology: string, commands: string, selectedOptions: string) {
@@ -180,7 +180,7 @@ export async function handleSingleFileTransformation(uploadedFile: File, session
     technology: selectedTechnology.toLowerCase(),
     locationURL: `file:/usr/share/uploads/${session}/${transformationProcessName}`,
     commands: commands ? commands.split(",").map((cmd) => cmd.trim()) : [""],
-    options: [selectedOptions],
+    options: selectedOptions,
   };
   return { transformationProcessName, tsdm };
 }
@@ -191,7 +191,7 @@ export async function handleSingleFileTransformation(uploadedFile: File, session
  * @param {string} session - The session ID.
  * @param {string} selectedTechnology - The selected technology.
  * @param {string} commands - The commands to execute.
- * @param {string} selectedOptions - The selected options.
+ * @param {string[]} selectedOptions - The selected options.
  * @param {string} startFilePath - The path to the start file.
  * @returns {Promise<{transformationProcessName: string, tsdm: any}>} A promise that resolves to the transformation process name and data model.
  */
@@ -207,7 +207,7 @@ export async function handleMultipleFilesTransformation(uploadedFiles: File[], s
     technology: selectedTechnology.toLowerCase(),
     locationURL: `file:/usr/share/uploads/${session}/${startFile.webkitRelativePath}`,
     commands: commands ? commands.split(",").map((cmd) => cmd.trim()) : [""],
-    options: [selectedOptions],
+    options: selectedOptions,
   };
   return { transformationProcessName, tsdm };
 }
