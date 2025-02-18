@@ -1,6 +1,6 @@
 <template>
   <v-row class="h-100" no-gutters>
-    <v-col class="fit-content-container mb-auto" align-self="center">
+    <v-col class="fit-content-container ma-2 mb-auto" align-self="center">
       <v-container>
         <v-card class="border-md border-primary rounded-lg" title="Last transformations" density="compact" flat>
           <v-list class="pa-0 py-2 border-t-md" color="primary">
@@ -10,51 +10,69 @@
               </template>
               <v-list-item-title>{{ transformation.name }}</v-list-item-title>
               <template v-slot:append>
-                <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="removeTrans(transformation.id)"></v-btn>
+                <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="removeTrans(transformation.id)"/>
                 </template>
             </v-list-item>
           </v-list>
         </v-card>
       </v-container>
     </v-col>
-    <v-col class="flex-grow-1" align-self="center">
-      <v-container>
+    <v-col class="my-4 px-6 flex-grow-1" style="margin-top: 10vh !important;">
+      <v-container class="mb-8">
         <v-row>
-          <v-spacer></v-spacer>
-          <v-icon :style="{ color: status.color }" size="64px">{{ status.icon }}</v-icon>
-          <v-spacer></v-spacer>
+          <v-spacer/>
+          <v-icon :style="{ color: status.color }" size="64px">
+            {{ status.icon }}
+          </v-icon>
+          <v-spacer/>
         </v-row>
-        <v-row class="text-h6" :style="{ color: status.color }">
-          <v-spacer></v-spacer>
-          {{ status.message }}
-          <v-spacer></v-spacer>
+
+        <v-row class="text-sm-h7 text-md-h6" :style="{ color: status.color }">
+          <v-spacer/>
+          <p>
+            {{ status.message }}
+          </p>
+          <v-spacer/>
         </v-row>
       </v-container>
-      <v-container class="border-md border-primary rounded-lg w-50">
 
-        <v-text-field class="ma-2 flex-grow-0" label="File" min-width="200px" placeholder="None" readonly variant="outlined" hide-details
-        v-model="fileName" v-if="showFileInput"></v-text-field>
-        <v-text-field class="ma-2 flex-grow-0" label="Start file" min-width="200px" placeholder="Relative path" :prefix="folderPrefix" variant="outlined" hide-details
-        v-model="startFilePath" v-if="showStartFileInput" ></v-text-field>
+      <v-container class="mx-auto pa-0 pt-3 pb-4 border-md border-primary rounded-lg w-100 w-md-75 w-lg-50">
+        <h4 class="mb-4 pb-2 text-h6 text-center border-b-md">
+          TSDM Transformation
+        </h4>
 
-        <input class="ma-2" type="file" name="file" @change="handleFileUpload" style="display: none;" ref="fileInput">
-        <input class="ma-2" type="file" name="files" webkitdirectory multiple @change="handleFolderUpload"
-          style="display: none;" ref="folderInput">
+        <v-text-field class="mx-2 my-4 px-4" color="primary" label="File" placeholder="No file selected" readonly variant="outlined" hide-details prepend-icon="fas fa-file" v-model="fileName" v-if="showFileInput"/>
 
-        <v-btn class="ma-2" rounded="LG" @click="selectFile">Select File</v-btn>
-        <v-btn class="ma-2" rounded="LG" @click="selectFolder">Select Folder</v-btn>
+        <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" label="Start file" placeholder="Relative path to main file" :prefix="folderPrefix" variant="outlined" hide-details prepend-icon="fas fa-folder" v-model="startFilePath" v-if="showStartFileInput"/>
+
+        <input class="d-none mx-2 my-4 px-4" type="file" name="file" @change="handleFileUpload" ref="fileInput">
+        <input class="d-none mx-2 my-4 px-4" type="file" name="files" webkitdirectory multiple @change="handleFolderUpload" ref="folderInput">
+
+        <v-row class="ma-n2 px-4" align="center" justify="center">
+          <v-btn class="mx-4 my-2 ml-lg-auto" rounded="LG" @click="selectFile" color="primary" variant="tonal" prepend-icon="fas fa-file">
+            Select File
+          </v-btn>
+          <v-btn class="mx-4 my-2 mr-lg-auto" rounded="LG" @click="selectFolder" color="primary" variant="tonal" prepend-icon="fas fa-folder">
+            Select Folder
+          </v-btn>
+        </v-row>
         
-        <v-select class="ma-2 flex-grow-0" v-model="selectedTechnology" label="Technology" min-width="148px" :items="technologies"
-            variant="outlined" hide-details></v-select>
-        
-        <v-select class="ma-2 flex-grow-0" v-model="flatten" label="Flatten" min-width="120px" :items="['true', 'partial', 'false']"
-            chips variant="outlined" hide-details></v-select>
+        <v-select class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="selectedTechnology" label="Technology" min-width="148px" :items="technologies" variant="outlined" hide-details/>
 
-        <v-text-field class="ma-2 flex-grow-0" v-model="optionsInput" label="Options" min-width="120px" variant="outlined" hide-details></v-text-field>
+        <v-row class="ma-n2 px-4" align="center" justify="center">
+          <v-text-field class="mx-4 my-2 flex-grow-0 mr-lg-auto w-100 w-lg-60" color="primary" v-model="optionsInput" label="Options" variant="outlined" hide-details/>
+          <v-select class="mx-4 my-2 flex-grow-0 ml-lg-auto w-100 w-lg-25" color="primary" v-model="flatten" label="Flatten" :items="['false', 'true', 'partial']" chips variant="outlined" hide-details/>
+        </v-row>
         
-        <v-text-field class="ma-2 flex-grow-0" v-model="commands" label="Commands" min-width="120px" variant="outlined" hide-details></v-text-field>
-        <v-btn class="ma-2" color="primary" rounded="LG" @click="startTransformation">Transform</v-btn>
-        <v-checkbox v-model="storeSettings" label="Store settings"></v-checkbox>
+        <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="commands" label="Commands" min-width="120px" variant="outlined" hide-details/>
+
+        <v-row class="ma-n2 px-4" align="center" justify="center">
+          <v-btn class="mx-4 my-2 ml-lg-auto" color="primary" rounded="LG" @click="startTransformation" flat>
+            Transform
+          </v-btn>
+
+          <v-checkbox class="mr-lg-auto" v-model="storeSettings" label="Store settings" color="primary" hide-details/>
+        </v-row>
       </v-container>
     </v-col>
   </v-row>
@@ -315,5 +333,13 @@ export default {
 }
 :deep(.v-card-title) {
   margin: 8px 8px 0 8px;
+}
+@media (min-width: 1280px) {
+  :deep(.w-lg-60) {
+    width: 60% !important;
+  }
+}
+:deep(.v-chip) {
+  color: rgb(var(--v-theme-primary)) !important;
 }
 </style>
