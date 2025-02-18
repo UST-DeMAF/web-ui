@@ -4,7 +4,11 @@
  * Configures SASS variables and Vuetify overwrites
  */
 
- .small-caps {
+html {
+  overflow-y: auto;
+}
+
+.small-caps {
   font-variant: small-caps;
 }
 
