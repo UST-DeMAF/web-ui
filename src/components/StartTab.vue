@@ -54,6 +54,7 @@
         
         <v-text-field class="ma-2 flex-grow-0" v-model="commands" label="Commands" min-width="120px" variant="outlined" hide-details></v-text-field>
         <v-btn class="ma-2" color="primary" rounded="LG" @click="startTransformation">Transform</v-btn>
+        <v-checkbox v-model="storeSettings" label="Store settings"></v-checkbox>
       </v-container>
     </v-col>
   </v-row>
@@ -81,7 +82,7 @@ export default {
       commands: "",
       error: false,
       flatten: "false",
-      fileName: null,
+      fileName: "",
       folderPrefix: "",
       lastTransformations: this._lastTransformations, // Data to store the last transformations
       selectedOptions: [],
@@ -96,6 +97,7 @@ export default {
         message: "To start upload a file or folder.",
         color: "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))",
       },
+      storeSettings: false,
       technologies: ["helm", "kubernetes", "terraform"],
       transform: false,
       transformationProcesses: [],
@@ -111,6 +113,7 @@ export default {
         return;
       }
       this.uploadedFiles = files;
+      this.fileName = this.uploadedFiles[0].name;
       console.log("Uploaded file:", this.uploadedFiles[0]);
     },
     handleFolderUpload(event) {
@@ -143,11 +146,13 @@ export default {
     selectFile() {
       // Trigger the file input element
       this.$refs.fileInput.click();
+      this.showFileInput = true;
       this.showStartFileInput = false;
     },
     selectFolder() {
       // Trigger the folder input element
       this.$refs.folderInput.click();
+      this.showFileInput = false;
       this.showStartFileInput = true;
     },
     async startTransformation() {
@@ -243,8 +248,19 @@ export default {
           });
           this.openTrans(transformationProcessId); // Automatically select the new tab
 
-          // Reset the flatten option
-          this.flatten = "false";
+          if (!this.storeSettings) {
+            // Reset variables
+            this.fileName = "";
+            this.folderPrefix = "";
+            this.flatten = "false";
+            this.selectedTechnology = null;
+            this.selectedOptions = [];
+            this.optionsInput = "";
+            this.commands = "";
+            this.uploadedFiles = [];
+            this.showFileInput = false;
+            this.showStartFileInput = false;
+          }
         } else {
           this.error = true;
           this.updateStatus();
