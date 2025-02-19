@@ -6,9 +6,19 @@
         style="min-width: 120px; max-width: 120px;">DeMAF</v-app-bar-title>
       <v-spacer />
       <div class="mr-3 ml-2" style="min-width: 168px; max-width: 168px; text-align: end;">
-        <v-btn icon="fas fa-book" size="small" @click="openDocumentation" />
-        <v-btn v-if="theme.global.current.dark" icon="fas fa-moon" size="small" @click="toggleTheme" />
-        <v-btn v-if="!theme.global.current.dark" icon="fas fa-sun" size="small" @click="toggleTheme" />
+        <v-tooltip text="Documentation" content-class="bg-surface-bright">
+          <template v-slot:activator="{ props }">
+            <v-btn icon="fas fa-book" size="small" v-bind="props" @click="openDocumentation" />
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Swap Theme" content-class="bg-surface-bright">
+          <template v-slot:activator="{ props }">
+            <v-btn v-if="theme.global.current.dark" icon="fas fa-moon" size="small" v-bind="props"
+              @click="toggleTheme" />
+            <v-btn v-if="!theme.global.current.dark" icon="fas fa-sun" size="small" v-bind="props"
+              @click="toggleTheme" />
+          </template>
+        </v-tooltip>
       </div>
       <template v-slot:extension>
         <v-tabs align-with-title v-model="selectedTab">

@@ -20,7 +20,7 @@
       </v-container>
     </v-col>
     <v-col class="my-4 px-6 flex-grow-1" style="margin-top: 10vh !important;">
-      <v-container class="mb-8">
+      <v-container class="mb-8 d-none">
         <v-row>
           <v-spacer />
           <v-icon :style="{ color: status.color }" size="64px">
@@ -40,15 +40,20 @@
 
       <v-container class="mx-auto pa-0 pt-3 pb-4 border-md border-primary rounded-lg w-100 w-md-75 w-lg-50">
         <h4 class="mb-4 pb-2 text-h6 text-center border-b-md">
-          TSDM Transformation
+          Deployment Model Transformation
         </h4>
 
         <v-text-field class="mx-2 my-4 px-4" color="primary" label="File" placeholder="No file selected" readonly
           variant="outlined" hide-details prepend-icon="fas fa-file" v-model="fileName" v-if="showFileInput" />
 
-        <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" label="Start file"
-          placeholder="Relative path to main file" :prefix="folderPrefix" variant="outlined" hide-details
-          prepend-icon="fas fa-folder" v-model="startFilePath" v-if="showStartFileInput" />
+        <v-tooltip content-class="bg-surface-bright">
+          Hello World!
+          <template v-slot:activator="{ props }">
+            <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" label="Start file"
+              placeholder="Relative path to main file" :prefix="folderPrefix" variant="outlined" hide-details
+              prepend-icon="fas fa-folder" v-bind="props" v-model="startFilePath" v-if="showStartFileInput" />
+          </template>
+        </v-tooltip>
 
         <input class="d-none mx-2 my-4 px-4" type="file" name="file" @change="handleFileUpload" ref="fileInput">
         <input class="d-none mx-2 my-4 px-4" type="file" name="files" webkitdirectory multiple
@@ -65,18 +70,40 @@
           </v-btn>
         </v-row>
 
-        <v-select class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="selectedTechnology" label="Technology"
-          min-width="148px" :items="technologies" variant="outlined" hide-details />
+        <v-tooltip content-class="bg-surface-bright" offset="-5">
+          Hello World!
+          <template v-slot:activator="{ props }">
+            <v-select class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="selectedTechnology" label="Technology"
+              v-bind="props" min-width="148px" :items="technologies" variant="outlined" hide-details />
+          </template>
+        </v-tooltip>
+
+        <v-tooltip content-class="bg-surface-bright">
+          Hello World!
+          <template v-slot:activator="{ props }">
+            <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="commands" v-bind="props"
+              label="Deployment Command(s)" min-width="120px" variant="outlined" hide-details />
+          </template>
+        </v-tooltip>
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-text-field class="mx-4 my-2 flex-grow-0 mr-lg-auto w-100 w-lg-60" color="primary" v-model="optionsInput"
-            label="Options" variant="outlined" hide-details />
-          <v-select class="mx-4 my-2 flex-grow-0 ml-lg-auto w-100 w-lg-25" color="primary" v-model="flatten"
-            label="Flatten" :items="['false', 'true', 'partial']" chips variant="outlined" hide-details />
-        </v-row>
+          <v-tooltip content-class="bg-surface-bright">
+            Hello World!
+            <template v-slot:activator="{ props }">
+              <v-text-field class="mx-4 my-2 flex-grow-0 mr-lg-auto w-100 w-lg-60" color="primary"
+                v-model="optionsInput" v-bind="props" label="Options" variant="outlined" hide-details />
+            </template>
+          </v-tooltip>
 
-        <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="commands" label="Commands"
-          min-width="120px" variant="outlined" hide-details />
+          <v-tooltip content-class="bg-surface-bright">
+            Hello World!
+            <template v-slot:activator="{ props }">
+              <v-select class="mx-4 my-2 flex-grow-0 ml-lg-auto w-100 w-lg-25" color="primary" v-model="flatten"
+                v-bind="props" label="Flatten" :items="['false', 'true', 'partial']" chips variant="outlined"
+                hide-details />
+            </template>
+          </v-tooltip>
+        </v-row>
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
           <v-btn class="mx-4 my-2 ml-lg-auto" color="primary" rounded="LG" @click="startTransformation" flat>
