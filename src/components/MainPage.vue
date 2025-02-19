@@ -158,7 +158,8 @@ export default {
         // Load theme
         this.theme.global.name = JSON.parse(localStorage.getItem("theme"));
         // Load last transformations
-        this.lastTransformations = JSON.parse(localStorage.getItem("lastTransformations"));
+        const storedTransformations = localStorage.getItem("lastTransformations");
+        this.lastTransformations = storedTransformations ? JSON.parse(storedTransformations) : [];
       }
     },
     toggleTheme() {
