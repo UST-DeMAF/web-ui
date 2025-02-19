@@ -4,14 +4,16 @@
       <v-container>
         <v-card class="border-md border-primary rounded-lg" title="Last transformations" density="compact" flat>
           <v-list class="pa-0 py-2 border-t-md" color="primary">
-            <v-list-item class="ma-2 border-md rounded-pill" v-for="(transformation, t) in lastTransformations" :key="t" :value="transformation.id" @click="openTrans(transformation.id)">
+            <v-list-item class="ma-2 border-md rounded-pill" v-for="(transformation, t) in lastTransformations" :key="t"
+              :value="transformation.id" @click="openTrans(transformation.id)">
               <template v-slot:prepend>
                 <v-icon>far fa-file</v-icon>
               </template>
               <v-list-item-title>{{ transformation.name }}</v-list-item-title>
               <template v-slot:append>
-                <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="removeTrans(transformation.id)"/>
-                </template>
+                <v-btn icon="fas fa-xmark" size="x-small" variant="plain"
+                  @click.stop="removeTrans(transformation.id)" />
+              </template>
             </v-list-item>
           </v-list>
         </v-card>
@@ -20,19 +22,19 @@
     <v-col class="my-4 px-6 flex-grow-1" style="margin-top: 10vh !important;">
       <v-container class="mb-8">
         <v-row>
-          <v-spacer/>
+          <v-spacer />
           <v-icon :style="{ color: status.color }" size="64px">
             {{ status.icon }}
           </v-icon>
-          <v-spacer/>
+          <v-spacer />
         </v-row>
 
         <v-row class="text-sm-h7 text-md-h6" :style="{ color: status.color }">
-          <v-spacer/>
+          <v-spacer />
           <p>
             {{ status.message }}
           </p>
-          <v-spacer/>
+          <v-spacer />
         </v-row>
       </v-container>
 
@@ -41,37 +43,47 @@
           TSDM Transformation
         </h4>
 
-        <v-text-field class="mx-2 my-4 px-4" color="primary" label="File" placeholder="No file selected" readonly variant="outlined" hide-details prepend-icon="fas fa-file" v-model="fileName" v-if="showFileInput"/>
+        <v-text-field class="mx-2 my-4 px-4" color="primary" label="File" placeholder="No file selected" readonly
+          variant="outlined" hide-details prepend-icon="fas fa-file" v-model="fileName" v-if="showFileInput" />
 
-        <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" label="Start file" placeholder="Relative path to main file" :prefix="folderPrefix" variant="outlined" hide-details prepend-icon="fas fa-folder" v-model="startFilePath" v-if="showStartFileInput"/>
+        <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" label="Start file"
+          placeholder="Relative path to main file" :prefix="folderPrefix" variant="outlined" hide-details
+          prepend-icon="fas fa-folder" v-model="startFilePath" v-if="showStartFileInput" />
 
         <input class="d-none mx-2 my-4 px-4" type="file" name="file" @change="handleFileUpload" ref="fileInput">
-        <input class="d-none mx-2 my-4 px-4" type="file" name="files" webkitdirectory multiple @change="handleFolderUpload" ref="folderInput">
+        <input class="d-none mx-2 my-4 px-4" type="file" name="files" webkitdirectory multiple
+          @change="handleFolderUpload" ref="folderInput">
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-btn class="mx-4 my-2 ml-lg-auto" rounded="LG" @click="selectFile" color="primary" variant="tonal" prepend-icon="fas fa-file">
+          <v-btn class="mx-4 my-2 ml-lg-auto" rounded="LG" @click="selectFile" color="primary" variant="tonal"
+            prepend-icon="fas fa-file">
             Select File
           </v-btn>
-          <v-btn class="mx-4 my-2 mr-lg-auto" rounded="LG" @click="selectFolder" color="primary" variant="tonal" prepend-icon="fas fa-folder">
+          <v-btn class="mx-4 my-2 mr-lg-auto" rounded="LG" @click="selectFolder" color="primary" variant="tonal"
+            prepend-icon="fas fa-folder">
             Select Folder
           </v-btn>
         </v-row>
-        
-        <v-select class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="selectedTechnology" label="Technology" min-width="148px" :items="technologies" variant="outlined" hide-details/>
+
+        <v-select class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="selectedTechnology" label="Technology"
+          min-width="148px" :items="technologies" variant="outlined" hide-details />
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-text-field class="mx-4 my-2 flex-grow-0 mr-lg-auto w-100 w-lg-60" color="primary" v-model="optionsInput" label="Options" variant="outlined" hide-details/>
-          <v-select class="mx-4 my-2 flex-grow-0 ml-lg-auto w-100 w-lg-25" color="primary" v-model="flatten" label="Flatten" :items="['false', 'true', 'partial']" chips variant="outlined" hide-details/>
+          <v-text-field class="mx-4 my-2 flex-grow-0 mr-lg-auto w-100 w-lg-60" color="primary" v-model="optionsInput"
+            label="Options" variant="outlined" hide-details />
+          <v-select class="mx-4 my-2 flex-grow-0 ml-lg-auto w-100 w-lg-25" color="primary" v-model="flatten"
+            label="Flatten" :items="['false', 'true', 'partial']" chips variant="outlined" hide-details />
         </v-row>
-        
-        <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="commands" label="Commands" min-width="120px" variant="outlined" hide-details/>
+
+        <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="commands" label="Commands"
+          min-width="120px" variant="outlined" hide-details />
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
           <v-btn class="mx-4 my-2 ml-lg-auto" color="primary" rounded="LG" @click="startTransformation" flat>
             Transform
           </v-btn>
 
-          <v-checkbox class="mr-lg-auto" v-model="storeSettings" label="Store settings" color="primary" hide-details/>
+          <v-checkbox class="mr-lg-auto" v-model="storeSettings" label="Store settings" color="primary" hide-details />
         </v-row>
       </v-container>
     </v-col>
@@ -81,10 +93,6 @@
 <script>
 import {
   getRegisteredPlugins,
-  // saveUploadedFileForTransformation,
-  // saveUploadedFilesForTransformation,
-  // callAnalysisManagerTransformation,
-  // pollTransformationProcessStatusForResult,
   handleSingleFileTransformation,
   handleMultipleFilesTransformation,
   startTransformationProcess,
@@ -199,14 +207,6 @@ export default {
 
 
         if (this.uploadedFiles.length === 1) {
-          // await saveUploadedFileForTransformation(this.uploadedFiles[0], this.session);
-          // transformationProcessName = this.uploadedFiles[0].name;
-          // tsdm = {
-          //   technology: this.selectedTechnology.toLowerCase(),
-          //   locationURL: "file:/usr/share/uploads/" + this.session + "/" + transformationProcessName,
-          //   commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
-          //   options: [this.selectedOptions],
-          // };
           ({ transformationProcessName, tsdm } = await handleSingleFileTransformation(
             this.uploadedFiles[0],
             this.session,
@@ -215,23 +215,6 @@ export default {
             options
           ));
         } else if (this.uploadedFiles.length > 1) {
-          // const folderName = this.uploadedFiles[0].webkitRelativePath.split('/')[0];
-          // const startFile = this.uploadedFiles.find(file => file.webkitRelativePath === `${folderName}/${this.startFilePath}`);
-          // if (!startFile) {
-          //   alert("Start file not found in the uploaded folder.");
-          //   this.transform = false;
-          //   this.updateStatus();
-          //   return;
-          // }
-          // await saveUploadedFilesForTransformation(this.uploadedFiles, this.session);
-          // console.log("Start file path:", startFile.webkitRelativePath);
-          // transformationProcessName = startFile.webkitRelativePath.split('/').at(-1);
-          // tsdm = {
-          //   technology: this.selectedTechnology.toLowerCase(),
-          //   locationURL: "file:/usr/share/uploads/" + this.session + "/" + startFile.webkitRelativePath,
-          //   commands: this.commands ? this.commands.split(",").map((cmd) => cmd.trim()) : [""],
-          //   options: [this.selectedOptions],
-          // };
           ({ transformationProcessName, tsdm } = await handleMultipleFilesTransformation(
             this.uploadedFiles,
             this.session,
@@ -246,9 +229,6 @@ export default {
           return;
         }
 
-        // Start transformation and then reset the selected options
-        // const transformationProcessId = await callAnalysisManagerTransformation(tsdm);
-        // const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, 10);
         const { transformationProcessId, statusMessage } = await startTransformationProcess(tsdm);
         this.transformationProcesses.push(transformationProcessId);
 
@@ -278,6 +258,7 @@ export default {
             this.uploadedFiles = [];
             this.showFileInput = false;
             this.showStartFileInput = false;
+            this.startFilePath = "";
           }
         } else {
           this.error = true;
@@ -331,14 +312,17 @@ export default {
 :deep(.fit-content-container) {
   max-width: fit-content;
 }
+
 :deep(.v-card-title) {
   margin: 8px 8px 0 8px;
 }
+
 @media (min-width: 1280px) {
   :deep(.w-lg-60) {
     width: 60% !important;
   }
 }
+
 :deep(.v-chip) {
   color: rgb(var(--v-theme-primary)) !important;
 }
