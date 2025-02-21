@@ -106,7 +106,7 @@
         </v-row>
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-btn class="mx-4 my-2 ml-lg-auto" color="primary" rounded="LG" @click="startTransformation" flat>
+          <v-btn class="mx-4 my-2 ml-lg-auto" color="primary" :disabled="transform" rounded="LG" @click="startTransformation" flat>
             Transform
           </v-btn>
 
