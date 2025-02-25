@@ -171,7 +171,19 @@
             </span>
           </v-tooltip>
 
-          <v-checkbox class="mr-lg-auto" v-model="storeSettings" label="Store settings" color="primary" hide-details />
+          <v-tooltip content-class="tooltip-info text-center" offset="0" max-width="300px" location="bottom">
+            <template v-slot:activator="{ props }">
+              <div class="mr-lg-auto" v-bind="props">
+                <v-checkbox v-model="storeSettings" label="Store Settings" color="primary" hide-details />
+              </div>
+            </template>
+
+            <span>
+              Whether to store the current settings after the transformation.<br />
+              This includes the <i>selected file/folder</i>, <i>start file</i>, <i>technology</i>, <i>options</i>, and <i>commands</i>.<br /><br />
+              <strong class="text-error text-decoration-underline">Careful:</strong> This will overwrite the currently saved settings!
+            </span>
+          </v-tooltip>
         </v-row>
       </v-container>
 
