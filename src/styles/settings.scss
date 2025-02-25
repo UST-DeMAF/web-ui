@@ -18,19 +18,28 @@ html {
   color: rgb(var(--v-theme-on-info-tooltip)) !important;
 }
 
+.tooltip-error {
+  --v-theme-overlay-multiplier: var(--v-theme-error-overlay-multiplier);
+  background-color: color-mix(in srgb, rgb(var(--v-theme-error)) 60%, rgb(var(--v-theme-surface)) 40%) !important;
+  color: rgb(var(--v-theme-on-error-tooltip)) !important;
+}
+
 .tooltip-table {
   border-collapse: collapse;
   border-style: hidden;
 }
+
 .tooltip-table th,
 .tooltip-table td {
   border: 1px solid rgb(var(--v-theme-on-info-tooltip));
   padding: 4px 6px;
 }
+
 .tooltip-table tr th:first-child,
 .tooltip-table tr td:first-child {
   text-align: end;
 }
+
 .tooltip-table tr th:last-child,
 .tooltip-table tr td:last-child {
   text-align: start;

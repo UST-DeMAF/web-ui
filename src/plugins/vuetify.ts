@@ -30,14 +30,16 @@ const catppuccinLatteTheme = {
     'on-surface-variant': latte.overlay0.hex,
     primary: latte.teal.hex,
     secondary: latte.rosewater.hex,
-    error: latte.red.hex,
+    error: latte.maroon.hex,
     info: latte.sky.hex,
     success: latte.green.hex,
     warning: latte.yellow.hex,
 
     // Custom colors
     extension: "#40ADB4",
+    // 'info-tooltip': '#86C8E7',
     'on-info-tooltip': latte.text.hex,
+    'on-error-tooltip': latte.base.hex,
 
     // Text colors
     'on-primary': latte.base.hex,
@@ -82,14 +84,16 @@ const catppuccinFrappeTheme = {
     'on-surface-variant': frappe.overlay0.hex,
     primary: frappe.teal.hex,
     secondary: frappe.rosewater.hex,
-    error: frappe.red.hex,
-    info: frappe.sky.hex,
+    error: frappe.maroon.hex,
+    info: frappe.blue.hex,
     success: frappe.green.hex,
     warning: frappe.yellow.hex,
 
     // Custom colors
     extension: '#66ADA3',
+    // 'info-tooltip': '#6275A4',
     'on-info-tooltip': frappe.text.hex,
+    'on-error-tooltip': frappe.base.hex,
 
     // Text colors
     'on-primary': frappe.base.hex,

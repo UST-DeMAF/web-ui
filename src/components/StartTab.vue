@@ -28,13 +28,20 @@
         <v-text-field class="mx-2 my-4 px-4" color="primary" label="File" placeholder="No file selected" readonly
           variant="outlined" hide-details prepend-icon="fas fa-file" v-model="fileName" v-if="showFileInput" />
 
-        <v-tooltip content-class="bg-surface-bright">
-          Hello World!
+        <v-tooltip content-class="tooltip-info text-center" offset="-4" location="start">
           <template v-slot:activator="{ props }">
-            <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" label="Start file"
-              placeholder="Relative path to main file" :prefix="folderPrefix" variant="outlined" hide-details
-              prepend-icon="fas fa-folder" v-bind="props" v-model="startFilePath" v-if="showStartFileInput" />
+            <div class="mx-2 my-4 px-4 flex-grow-0" v-bind="props">
+              <v-text-field color="primary" label="Start file" placeholder="Relative path to main file"
+                :prefix="folderPrefix" variant="outlined" hide-details prepend-icon="fas fa-folder"
+                v-model="startFilePath" v-if="showStartFileInput" />
+            </div>
           </template>
+
+          <span>
+            Specify the <i>main entrypoint</i>, relative to the uploaded folder.<br />
+            This is the file which is used to start the deployment model.<br />
+            For example, <i>Terraform</i> usually has a main file called <code>main.tf</code>.
+          </span>
         </v-tooltip>
 
         <input class="d-none mx-2 my-4 px-4" type="file" name="file" @change="handleFileUpload" ref="fileInput">
@@ -146,7 +153,7 @@
         </v-row>
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-tooltip content-class="bg-error text-center" location="bottom"
+          <v-tooltip content-class="tooltip-error text-center" location="bottom"
             :disabled="uploadedFiles.length && selectedTechnology">
             <template v-slot:activator="{ props }">
               <div class="d-inline-block mx-4 my-2 ml-lg-auto" v-bind="props">
@@ -180,8 +187,11 @@
 
             <span>
               Whether to store the current settings after the transformation.<br />
-              This includes the <i>selected file/folder</i>, <i>start file</i>, <i>technology</i>, <i>options</i>, and <i>commands</i>.<br /><br />
-              <strong class="text-error text-decoration-underline">Careful:</strong> This will overwrite the currently saved settings!
+              This includes the <i>selected file/folder</i>, <i>start file</i>, <i>technology</i>, <i>options</i>, and
+              <i>commands</i>.<br /><br />
+              <strong class="text-error text-decoration-underline">Careful:</strong> This will overwrite the currently
+              saved
+              settings!
             </span>
           </v-tooltip>
         </v-row>
