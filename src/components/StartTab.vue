@@ -33,7 +33,7 @@
             <div class="mx-2 my-4 px-4 flex-grow-0" v-bind="props">
               <v-text-field color="primary" label="Start file" placeholder="Relative path to main file"
                 :prefix="folderPrefix" variant="outlined" hide-details prepend-icon="fas fa-folder"
-                v-model="startFilePath" v-if="showStartFileInput" />
+                v-model="startFilePath" v-if="showFolderInput" />
             </div>
           </template>
 
@@ -154,10 +154,10 @@
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
           <v-tooltip content-class="tooltip-error text-center" location="bottom"
-            :disabled="uploadedFiles.length && selectedTechnology">
+            :disabled="uploadedFiles.length && selectedTechnology && (showFileInput || (showFolderInput && startFilePath != ''))">
             <template v-slot:activator="{ props }">
               <div class="d-inline-block mx-4 my-2 ml-lg-auto" v-bind="props">
-                <v-btn class="" color="primary" :disabled="(!uploadedFiles.length || !selectedTechnology) || transform"
+                <v-btn color="primary" :disabled="(!uploadedFiles.length || !selectedTechnology || (showFolderInput && !startFilePath)) || transform"
                   rounded="LG" @click="startTransformation" v-bind="props" flat>
                   Transform
                 </v-btn>
@@ -165,16 +165,15 @@
             </template>
 
             <span>
-              <div v-if="!uploadedFiles.length && !selectedTechnology">
-                Please <i>upload a file or folder</i><br />
-                and <i>select a technology</i>.
-              </div>
-              <div v-if="!uploadedFiles.length && selectedTechnology">
+              <p v-if="!uploadedFiles.length">
                 Please <i>upload a file or folder</i>.
-              </div>
-              <div v-if="uploadedFiles.length && !selectedTechnology">
+              </p>
+              <p v-if="showFolderInput && !startFilePath">
+                Please <i>specify a start file</i>.
+              </p>
+              <p v-if="!selectedTechnology">
                 Please <i>select a technology</i>.
-              </div>
+              </p>
             </span>
           </v-tooltip>
 
@@ -244,7 +243,7 @@ export default {
       selectedTechnology: null,
       session: this._session,
       showFileInput: false,
-      showStartFileInput: false,
+      showFolderInput: false,
       startFilePath: "", // Changed from startFileName to startFilePath
       status: {
         icon: "fas fa-cloud-arrow-up",
@@ -301,13 +300,13 @@ export default {
       // Trigger the file input element
       this.$refs.fileInput.click();
       this.showFileInput = true;
-      this.showStartFileInput = false;
+      this.showFolderInput = false;
     },
     selectFolder() {
       // Trigger the folder input element
       this.$refs.folderInput.click();
       this.showFileInput = false;
-      this.showStartFileInput = true;
+      this.showFolderInput = true;
     },
     async startTransformation() {
       if (!this.uploadedFiles.length) {
@@ -316,6 +315,10 @@ export default {
       }
       if (!this.selectedTechnology) {
         alert("Please select a technology first.");
+        return;
+      }
+      if (this.showFolderInput && !this.startFilePath) {
+        alert("Please specify the start file.");
         return;
       }
 
@@ -385,7 +388,7 @@ export default {
             this.commands = "";
             this.uploadedFiles = [];
             this.showFileInput = false;
-            this.showStartFileInput = false;
+            this.showFolderInput = false;
             this.startFilePath = "";
           }
         } else {
