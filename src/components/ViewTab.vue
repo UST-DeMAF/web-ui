@@ -9,8 +9,8 @@
     <v-row class="w-100">
       <v-switch class="mx-7" v-model="showTADM" color="primary" @change="loadTADM" label="Show TADM" hide-details flat/>
       <v-spacer/>
-      <v-btn class="mx-2 my-auto" disabled color="primary" @click="downloadCSAR">Download CSAR</v-btn>
-      <v-btn class="mx-2 my-auto" color="primary" @click="downloadTADM">Download TADM</v-btn>
+      <v-btn class="mx-2 my-auto" disabled color="primary" @click="downloadCSAR" flat>Download CSAR</v-btn>
+      <v-btn class="mx-2 my-auto" color="primary" @click="downloadTADM" flat>Download TADM</v-btn>
     </v-row>
   </v-container>
 </template>
