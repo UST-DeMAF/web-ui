@@ -9,7 +9,7 @@ DeMAF is still in development, some features may not work as intended and the be
 ## Getting Started
 
 <p style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
-    <img src="figures/initial_ui.png" alt="The initial web UI" width=80% />
+    <img src="https://raw.githubusercontent.com/UST-DeMAF/web-ui/refs/heads/dev/docs/figures/initial_ui.png" alt="The initial web UI" width=80% />
 </p>
 
 ### Summary
@@ -37,7 +37,7 @@ You can either choose to upload a single file or a folder that includes all mult
    A new text field will appear that shows your uploaded file name.
 
 <p style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
-    <img src="figures/file_select.png" alt="File was uploaded" width=80% />
+    <img src="https://raw.githubusercontent.com/UST-DeMAF/web-ui/refs/heads/dev/docs/figures/file_select.png" alt="File was uploaded" width=80% />
 </p>
 
 #### Uploading a folder with multiple files
@@ -60,7 +60,7 @@ As of writing this documentation, the following technologies are available:
 - Terraform
 
 <p style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
-    <img src="figures/technology.png" alt="Technology selection" width=80% />
+    <img src="https://raw.githubusercontent.com/UST-DeMAF/web-ui/refs/heads/dev/docs/figures/technology.png" alt="Technology selection" width=80% />
 </p>
 
 ### Step 3: Additional Commands (Optional)
@@ -69,7 +69,7 @@ You may specify how the deployment model is executed (e.g., for Terraform, you c
 For example: `start.sh,provision.sh`
 
 <p style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
-    <img src="figures/deploy_commands.png" alt="Deployment command(s)" width=80% />
+    <img src="https://raw.githubusercontent.com/UST-DeMAF/web-ui/refs/heads/dev/docs/figures/deploy_commands.png" alt="Deployment command(s)" width=80% />
 </p>
 
 ### Step 4: Selecting Options (Optional)
@@ -86,7 +86,7 @@ The options are optional and not mandatory for the transformation process.
 **Don't** use spaces between multiple options flags.
 
 <p style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
-    <img src="figures/options.png" alt="Options" width=80% />
+    <img src="https://raw.githubusercontent.com/UST-DeMAF/web-ui/refs/heads/dev/docs/figures/options.png" alt="Options" width=80% />
 </p>
 
 ### Step 5: Select a flatten Option (Optional)
@@ -96,7 +96,7 @@ You may select the visualization flattening options `false`, `true` and `partial
 The default is `false`.
 
 <p style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
-    <img src="figures/flatten.png" alt="Flatten options" width=80% />
+    <img src="https://raw.githubusercontent.com/UST-DeMAF/web-ui/refs/heads/dev/docs/figures/flatten.png" alt="Flatten options" width=80% />
 </p>
 
 ### Step 6: Start Transformation
@@ -105,13 +105,13 @@ After you provided the input file(s) and the technology you can start the transf
 A spinning gear icon shows that the transformation is in progress, additionally the transform button is disabled.
 
 <p style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
-    <img src="figures/progress.png" alt="Transformation in progress" width=80% />
+    <img src="https://raw.githubusercontent.com/UST-DeMAF/web-ui/refs/heads/dev/docs/figures/progress.png" alt="Transformation in progress" width=80% />
 </p>
 
 If you want to save your settings click the "Store settings" check box before the transformation.
 
 <p style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
-    <img src="figures/store_settings.png" alt="Store Settings option" width=80% />
+    <img src="https://raw.githubusercontent.com/UST-DeMAF/web-ui/refs/heads/dev/docs/figures/store_settings.png" alt="Store Settings option" width=80% />
 </p>
 
 When the transformation has finished a new tab will open up, containing the visualization.
@@ -120,7 +120,7 @@ The loading of the visualization may takes some time.
 If, at any point, an error should occur, the following error will be shown:
 
 <p style="display: flex; justify-content: space-around; align-items: center; width: 100%;">
-    <img src="figures/error.png" alt="Error during transformation" width=80% />
+    <img src="https://raw.githubusercontent.com/UST-DeMAF/web-ui/refs/heads/dev/docs/figures/error.png" alt="Error during transformation" width=80% />
 </p>
 
 ## Visualization / TADM Usage
