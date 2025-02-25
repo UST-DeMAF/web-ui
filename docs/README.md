@@ -31,7 +31,7 @@ You can either choose to upload a single file or a folder that includes all mult
 
 1. Click on "Select File" and your system's file explorer pops up.
 2. Select your file and click on "Open".
-3. Now your file is uploaded! 
+3. Now your file is uploaded!
    A new text field will appear that shows your uploaded file name.
 
 ![File was uploaded](figures/file_select.png)
@@ -40,7 +40,7 @@ You can either choose to upload a single file or a folder that includes all mult
 
 1. Click on "Select Folder" and your system's file explorer pops up.
 2. Click on the folder and press on "Upload".
-3. Now your folder is uploaded!  
+3. Now your folder is uploaded!
    A new input field will appear where you need to specify the relative path from the uploaded folder to the main entry file of your TSDM.
    E.g., for *Terraform* this is usually a file called `main.tf`.
 
@@ -72,7 +72,7 @@ Currently, the following flags can be provided in the "Options" input field:
 - `width=pixel` (default: `1920`)
 - `height=pixel` (default: `1080`)
 - `dpi=dots` per inch of your monitor (default: `96`; use `144` for high-dpi monitors)
-- Example: `width=1920,height=1080,dpi=96`  
+- Example: `width=1920,height=1080,dpi=96`
 
 The options are optional and not mandatory for the transformation process.
 **Don't** use spaces between multiple options flags.
@@ -81,7 +81,7 @@ The options are optional and not mandatory for the transformation process.
 
 ### Step 5: Select a flatten Option (Optional)
 
-You may select the visualization flattening options `false`, `true` and `partial` which flattens some levels of the visualization. 
+You may select the visualization flattening options `false`, `true` and `partial` which flattens some levels of the visualization.
 `false` means no flattening, `true` means maximal flattening and `partial` means some levels are flattened.
 The default is `false`.
 
@@ -107,10 +107,15 @@ If, at any point, an error should occur, the following error will be shown:
 
 ## Visualization / TADM Usage
 
+This tool integrates *Eclipse Winery* to visualize TADMs in the form of graphs.
+This makes it possible to represent the relations and properties of the model in an easy-to-understand and interactive way.
+For further information about *Eclipse Winery* [click here](https://winery.readthedocs.io/en/latest/).
+
+![Visualization](figures/view_tab.png)
+
 ### Navigation in the Visualization
 
-Left-click once, within an empty space of the visualization.
-Now, you have the following options for the navigation:
+After you initially click once with the left mouse button in an empty area of the visualization, the following navigation options are available to you:
 
 - Arrow-buttons
 - Scroll-wheel (up/down and left/right if your mouse supports it)
@@ -120,10 +125,28 @@ Now, you have the following options for the navigation:
 
 ### Options in the Visualization
 
-In the upper row of the visualization you can click on the following buttons:
+In the top bar within the visualization, you will find a number of Eclipse Winery buttons.
 
-- **Types**: Shows the types of each component
-- **Properties**: Shows the properties of each component
-- **Artifacts**: Shows the artifacts of each component
+![Winery Buttons](figures/winery_buttons.png)
 
-Additionally, you can drag components by holding left-click on them.
+The buttons relevant to the tool are as follows:
+
+- **Types**: Displays the types of the individual components
+- **Properties**: Displays the properties of each component
+- **Artifacts**: Displays the artifacts of the individual components.
+
+On the left side of the visualization you will find the palette which contains all component types of the visualization.
+The palette can be hidden by clicking on the upper button with the label *Hide Palette* and the button *Open Palette* can be shown again.
+
+If you click on a component with the left mouse button, it is colored orange and the list with the properties of the component is displayed on the right-hand side.
+
+![Properties](figures/properties.png)
+
+The same works with the connection lines, except that these are highlighted by an increased thickness.
+
+You can also drag or move components by clicking on them with the left mouse button and holding it down.
+
+At the bottom you will find the Show TADM switch which allows you to view the model in its text form.
+The Download TADM button allows you to download the model as a YAML file.
+
+![TADM](figures/tadm.png)
