@@ -1,18 +1,16 @@
 <template>
-  <v-container v-if="showTADM">
-    <v-textarea :value="tadm" variant="outlined"/>
+  <v-container class="my-2" height="calc(100vh - 225px)" v-if="showTADM">
+    <v-textarea class="rounded-lg w-100 h-100 border-none" color="primary" :value="tadm" variant="outlined" readonly no-resize/>
   </v-container>
-  <v-container v-else>
-    <div class="iframe-container">
-      <iframe :src="wineryUrl" class="dynamic-iframe"/>
-    </div>
+  <v-container class="my-2" height="calc(100vh - 225px)" v-else>
+    <iframe class="rounded-lg w-100 h-100 border-none" :src="wineryUrl"/>
   </v-container>
-  <v-container class="controls-container">
-    <v-row>
-      <v-switch v-model="showTADM" color="primary" @change="loadTADM" label="Show TADM"/>
+  <v-container>
+    <v-row class="w-100">
+      <v-switch class="mx-7" v-model="showTADM" color="primary" @change="loadTADM" label="Show TADM" hide-details flat/>
       <v-spacer/>
-      <v-btn class="mx-2" disabled color="primary" @click="downloadCSAR">Download CSAR</v-btn>
-      <v-btn class="mx-2" color="primary" @click="downloadTADM">Download TADM</v-btn>
+      <v-btn class="mx-2 my-auto" disabled color="primary" @click="downloadCSAR">Download CSAR</v-btn>
+      <v-btn class="mx-2 my-auto" color="primary" @click="downloadTADM">Download TADM</v-btn>
     </v-row>
   </v-container>
 </template>
