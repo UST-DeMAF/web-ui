@@ -20,24 +20,6 @@
       </v-container>
     </v-col>
     <v-col class="my-4 px-6 flex-grow-1" style="margin-top: 10vh !important;">
-      <v-container class="mb-8 d-none">
-        <v-row>
-          <v-spacer />
-          <v-icon :style="{ color: status.color }" size="64px">
-            {{ status.icon }}
-          </v-icon>
-          <v-spacer />
-        </v-row>
-
-        <v-row class="text-sm-h7 text-md-h6" :style="{ color: status.color }">
-          <v-spacer />
-          <p>
-            {{ status.message }}
-          </p>
-          <v-spacer />
-        </v-row>
-      </v-container>
-
       <v-container class="mx-auto pa-0 pt-3 pb-4 border-md border-primary rounded-lg w-100 w-md-75 w-lg-50">
         <h4 class="mb-4 pb-2 text-h6 text-center border-b-md">
           Deployment Model Transformation
@@ -106,11 +88,47 @@
         </v-row>
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-btn class="mx-4 my-2 ml-lg-auto" color="primary" :disabled="transform" rounded="LG" @click="startTransformation" flat>
-            Transform
-          </v-btn>
+          <v-tooltip content-class="bg-error text-center" location="bottom"
+            :disabled="uploadedFiles.length && selectedTechnology">
+            <span v-if="!uploadedFiles.length && !selectedTechnology">
+              Please <i>upload a file or folder</i><br />
+              and <i>select a technology</i>.
+            </span>
+            <p v-if="!uploadedFiles.length && selectedTechnology">
+              Please <i>upload a file or folder</i>.
+            </p>
+            <p v-if="uploadedFiles.length && !selectedTechnology">
+              Please <i>select a technology</i>.
+            </p>
+            <template v-slot:activator="{ props }">
+              <div class="d-inline-block mx-4 my-2 ml-lg-auto" v-bind="props">
+                <v-btn class="" color="primary" :disabled="(!uploadedFiles.length || !selectedTechnology) || transform"
+                  rounded="LG" @click="startTransformation" v-bind="props" flat>
+                  Transform
+                </v-btn>
+              </div>
+            </template>
+          </v-tooltip>
 
           <v-checkbox class="mr-lg-auto" v-model="storeSettings" label="Store settings" color="primary" hide-details />
+        </v-row>
+      </v-container>
+
+      <v-container class="mt-8" v-if="transform || error">
+        <v-row>
+          <v-spacer />
+          <v-icon :style="{ color: status.color }" size="64px">
+            {{ status.icon }}
+          </v-icon>
+          <v-spacer />
+        </v-row>
+
+        <v-row class="text-sm-h7 text-md-h6" :style="{ color: status.color }">
+          <v-spacer />
+          <p>
+            {{ status.message }}
+          </p>
+          <v-spacer />
         </v-row>
       </v-container>
     </v-col>
