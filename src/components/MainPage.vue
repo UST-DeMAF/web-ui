@@ -11,7 +11,7 @@
             <v-btn icon="fas fa-book" size="small" v-bind="props" @click="openDocumentation" />
           </template>
         </v-tooltip>
-        <v-tooltip text="Swap Theme" content-class="bg-surface-bright">
+        <v-tooltip text="Toggle Theme" content-class="bg-surface-bright">
           <template v-slot:activator="{ props }">
             <v-btn v-if="theme.global.current.dark" icon="fas fa-moon" size="small" v-bind="props"
               @click="toggleTheme" />
