@@ -157,7 +157,8 @@
             :disabled="uploadedFiles.length && selectedTechnology && (showFileInput || (showFolderInput && startFilePath != ''))">
             <template v-slot:activator="{ props }">
               <div class="d-inline-block mx-4 my-2 ml-lg-auto" v-bind="props">
-                <v-btn color="primary" :disabled="(!uploadedFiles.length || !selectedTechnology || (showFolderInput && !startFilePath)) || transform"
+                <v-btn color="primary"
+                  :disabled="(!uploadedFiles.length || !selectedTechnology || (showFolderInput && !startFilePath)) || transform"
                   rounded="LG" @click="startTransformation" v-bind="props" flat>
                   Transform
                 </v-btn>
@@ -376,21 +377,6 @@ export default {
             id: transformationProcessId,
           });
           this.openTrans(transformationProcessId); // Automatically select the new tab
-
-          if (!this.storeSettings) {
-            // Reset variables
-            this.fileName = "";
-            this.folderPrefix = "";
-            this.flatten = "false";
-            this.selectedTechnology = null;
-            this.selectedOptions = [];
-            this.optionsInput = "";
-            this.commands = "";
-            this.uploadedFiles = [];
-            this.showFileInput = false;
-            this.showFolderInput = false;
-            this.startFilePath = "";
-          }
         } else {
           this.error = true;
           this.updateStatus();
@@ -399,6 +385,23 @@ export default {
         console.log(error);
         this.error = true;
         this.updateStatus();
+      } finally {
+        this.transform = false;
+
+        if (!this.storeSettings) {
+          // Reset variables
+          this.fileName = "";
+          this.folderPrefix = "";
+          this.flatten = "false";
+          this.selectedTechnology = null;
+          this.selectedOptions = [];
+          this.optionsInput = "";
+          this.commands = "";
+          this.uploadedFiles = [];
+          this.showFileInput = false;
+          this.showFolderInput = false;
+          this.startFilePath = "";
+        }
       }
     },
     updateStatus() {
