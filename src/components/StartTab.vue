@@ -52,37 +52,81 @@
           </v-btn>
         </v-row>
 
-        <v-tooltip content-class="bg-surface-bright" offset="-5">
-          Hello World!
+        <v-tooltip content-class="tooltip-info text-center" offset="-4" location="start">
+          Select which Deployment Model <i>Technology</i> you're using.<br />
+          This lists all available plugins.
           <template v-slot:activator="{ props }">
-            <v-select class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="selectedTechnology" label="Technology"
-              v-bind="props" min-width="148px" :items="technologies" variant="outlined" hide-details />
+            <div class="mx-2 my-4 px-4 flex-grow-0" v-bind="props">
+              <v-select color="primary" v-model="selectedTechnology" label="Technology" min-width="148px"
+                :items="technologies" variant="outlined" hide-details />
+            </div>
           </template>
         </v-tooltip>
 
-        <v-tooltip content-class="bg-surface-bright">
-          Hello World!
+        <v-tooltip content-class="tooltip-info text-center" offset="-4" location="start">
+          <i>Optional:</i>
+          Specify the command which is used to deploy the model.<br />
+          (e.g., for Terraform, you can pass parameters for the execution plan)
           <template v-slot:activator="{ props }">
-            <v-text-field class="mx-2 my-4 px-4 flex-grow-0" color="primary" v-model="commands" v-bind="props"
-              label="Deployment Command(s)" min-width="120px" variant="outlined" hide-details />
+            <div class="mx-2 my-4 px-4 flex-grow-0" v-bind="props">
+              <v-text-field color="primary" v-model="commands" label="Deployment Command(s)" min-width="120px"
+                variant="outlined" hide-details />
+            </div>
           </template>
         </v-tooltip>
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-tooltip content-class="bg-surface-bright">
-            Hello World!
+          <v-tooltip content-class="tooltip-info text-center" location="start" max-width="450px">
+            <i>Optional:</i>
+            Specify additional options for the transformation as a comma-separated list.<br />
+            The following are the current available options:<br />
+            <table class="mx-auto my-2 tooltip-table">
+              <tbody>
+                <tr>
+                  <td style="width: 35%;"><code>width=&lt;pixels&gt;</code></td>
+                  <td>The width of the visualization<br />(default: <code>1080</code>)</td>
+                </tr>
+                <tr>
+                  <td><code>height=&lt;pixels&gt;</code></td>
+                  <td>The height of the visualization<br />(default: <code>1920</code>)</td>
+                </tr>
+                <tr>
+                  <td><code>dpi=&lt;dots&gt;</code></td>
+                  <td>The DPI of the visualization; choose <code>144</code> for high DPI monitors<br />(default: <code>96</code>)</td>
+                </tr>
+              </tbody>
+            </table>
+            An example would be: <code>width=3840,height=2160,dpi=144</code>
             <template v-slot:activator="{ props }">
-              <v-text-field class="mx-4 my-2 flex-grow-0 mr-lg-auto w-100 w-lg-60" color="primary"
-                v-model="optionsInput" v-bind="props" label="Options" variant="outlined" hide-details />
+              <div class="mx-4 my-2 flex-grow-0 mr-lg-auto w-100 w-lg-60" v-bind="props">
+                <v-text-field color="primary" v-model="optionsInput" label="Options" variant="outlined" hide-details />
+              </div>
             </template>
           </v-tooltip>
 
-          <v-tooltip content-class="bg-surface-bright">
-            Hello World!
+          <v-tooltip content-class="tooltip-info text-center" max-width="400px" location="end">
+            There are three options for flattening the resulting visualization available:<br />
+            <table class="mx-auto mt-2 tooltip-table">
+              <tbody>
+                <tr>
+                  <td><code>false</code></td>
+                  <td>Not flattening at all</td>
+                </tr>
+                <tr>
+                  <td><code>true</code></td>
+                  <td>Maximal amount of flattening</td>
+                </tr>
+                <tr>
+                  <td><code>partial</code></td>
+                  <td>Some levels will be flattened</td>
+                </tr>
+              </tbody>
+            </table>
             <template v-slot:activator="{ props }">
-              <v-select class="mx-4 my-2 flex-grow-0 ml-lg-auto w-100 w-lg-25" color="primary" v-model="flatten"
-                v-bind="props" label="Flatten" :items="['false', 'true', 'partial']" chips variant="outlined"
-                hide-details />
+              <div class="mx-4 my-2 flex-grow-0 ml-lg-auto w-100 w-lg-25" v-bind="props">
+                <v-select color="primary" v-model="flatten" label="Flatten" :items="['false', 'true', 'partial']" chips
+                  variant="outlined" hide-details />
+              </div>
             </template>
           </v-tooltip>
         </v-row>

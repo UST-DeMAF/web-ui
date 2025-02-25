@@ -29,9 +29,7 @@ const catppuccinLatteTheme = {
     'surface-variant': latte.surface2.hex,
     'on-surface-variant': latte.overlay0.hex,
     primary: latte.teal.hex,
-    'primary-darken-1': latte.teal.hex,
     secondary: latte.rosewater.hex,
-    'secondary-darken-1': latte.rosewater.hex,
     error: latte.red.hex,
     info: latte.sky.hex,
     success: latte.green.hex,
@@ -39,6 +37,7 @@ const catppuccinLatteTheme = {
 
     // Custom colors
     extension: "#40ADB4",
+    'on-info-tooltip': latte.text.hex,
 
     // Text colors
     'on-primary': latte.base.hex,
@@ -46,9 +45,7 @@ const catppuccinLatteTheme = {
     'on-surface': latte.text.hex,
     'on-surface-bright': latte.text.hex,
     'on-surface-light': latte.text.hex,
-    'on-primary-darken-1': latte.base.hex,
     'on-secondary': latte.base.hex,
-    'on-secondary-darken-1': latte.base.hex,
     'on-error': latte.base.hex,
     'on-info': latte.base.hex,
     'on-success': latte.base.hex,
@@ -84,9 +81,7 @@ const catppuccinFrappeTheme = {
     'surface-variant': frappe.surface2.hex,
     'on-surface-variant': frappe.overlay0.hex,
     primary: frappe.teal.hex,
-    'primary-darken-1': frappe.teal.hex,
     secondary: frappe.rosewater.hex,
-    'secondary-darken-1': frappe.rosewater.hex,
     error: frappe.red.hex,
     info: frappe.sky.hex,
     success: frappe.green.hex,
@@ -94,6 +89,7 @@ const catppuccinFrappeTheme = {
 
     // Custom colors
     extension: '#66ADA3',
+    'on-info-tooltip': frappe.text.hex,
 
     // Text colors
     'on-primary': frappe.base.hex,
@@ -101,9 +97,7 @@ const catppuccinFrappeTheme = {
     'on-surface': frappe.text.hex,
     'on-surface-bright': frappe.text.hex,
     'on-surface-light': frappe.text.hex,
-    'on-primary-darken-1': frappe.base.hex,
     'on-secondary': frappe.base.hex,
-    'on-secondary-darken-1': frappe.base.hex,
     'on-error': frappe.base.hex,
     'on-info': frappe.base.hex,
     'on-success': frappe.base.hex,
