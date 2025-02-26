@@ -14,8 +14,8 @@ DeMAF is still in development, some features may not work as intended and the be
 
 To transform a TSDM, its corresponding file(s) must be *uploaded*, and its deployment *technology* must be specified.
 A *flattening option* can be set as well.
-Optionally, additional options relating the visualizations and the command which is used to start the deployment (i.e. a bash script) can be provided too.
-The transformation is started by clicking on the "Transform" button and a spinning gear icon indicates that the transformation is in progress.
+Optionally, additional *options* relating the visualizations and the *command* which is used to start the deployment (i.e. a bash script) can be provided too.
+The transformation is started by clicking on the *"Transform"* button and a spinning gear icon indicates that the transformation is in progress.
 This may take some time on the first start, as the plugins have to prepare for the initial transformation.
 After a successful transformation, a new tab is opened with the loading visualization tool.
 This may take some time as well, depending on the amount of prior transformations.
@@ -29,8 +29,8 @@ You can either choose to upload a single file or a folder that includes all mult
 
 #### Uploading a single file
 
-1. Click on "Select File" and your system's file explorer pops up.
-2. Select your file and click on "Open".
+1. Click on *"Select File"* and your system's file explorer pops up.
+2. Select your file and click on *"Open"*.
 3. Now your file is uploaded!
    A new text field will appear that shows your uploaded file name.
 
@@ -38,17 +38,18 @@ You can either choose to upload a single file or a folder that includes all mult
 
 #### Uploading a folder with multiple files
 
-1. Click on "Select Folder" and your system's file explorer pops up.
-2. Click on the folder and press on "Upload".
+1. Click on *"Select Folder"* and your system's file explorer pops up.
+2. Click on the folder and press on *"Upload"*.
 3. Now your folder is uploaded!
    A new input field will appear where you need to specify the relative path from the uploaded folder to the main entry file of your TSDM.
    E.g., for *Terraform* this is usually a file called `main.tf`.
 
 ### Step 2: Selecting the Technology
 
-Next click on "Technology" to choose the technology of your TSDP.
+Next click on *"Technology"* to choose the technology of your TSDP.
 All registered plugins will be listed.
 As of writing this documentation, the following technologies are available:
+
 - Ansible
 - Bash
 - Helm
@@ -59,7 +60,7 @@ As of writing this documentation, the following technologies are available:
 
 ### Step 3: Additional Commands (Optional)
 
-You may specify how the deployment model is executed (e.g., for Terraform, you can pass parameters for the execution plan) in the "Deployment Command(s)" input field, separated with a comma.
+You may specify how the deployment model is executed (e.g., for Terraform, you can pass parameters for the execution plan) in the *"Deployment Command(s)"* input field, separated with a comma.
 For example: `start.sh,provision.sh`
 
 ![Deployment command(s)](figures/deploy_commands.png)
@@ -67,7 +68,7 @@ For example: `start.sh,provision.sh`
 ### Step 4: Selecting Options (Optional)
 
 You may provide a list of visualization flags, separated by comma.
-Currently, the following flags can be provided in the "Options" input field:
+Currently, the following flags can be provided in the *"Options"* input field:
 
 - `width=pixel` (default: `1920`)
 - `height=pixel` (default: `1080`)
@@ -89,12 +90,12 @@ The default is `false`.
 
 ### Step 6: Start Transformation
 
-After you provided the input file(s) and the technology you can start the transformation by pressing the "Transform" button.
+After you provided the input file(s) and the technology you can start the transformation by pressing the *"Transform"* button.
 A spinning gear icon shows that the transformation is in progress, additionally the transform button is disabled.
 
 ![Transformation in progress](figures/progress.png)
 
-If you want to save your settings click the "Store settings" check box before the transformation.
+If you want to save your settings click the *"Store settings"* check box before the transformation.
 
 ![Store Settings option](figures/store_settings.png)
 
@@ -104,6 +105,8 @@ The loading of the visualization may takes some time.
 If, at any point, an error should occur, the following error will be shown:
 
 ![Error during transformation](figures/error.png)
+
+Then, you can try again.
 
 ## Visualization / TADM Usage
 
@@ -115,7 +118,7 @@ For further information about *Eclipse Winery* [click here](https://winery.readt
 
 ### Navigation in the Visualization
 
-After you initially click once with the left mouse button in an empty area of the visualization, the following navigation options are available to you:
+After initially clicking once in an empty area of the visualization with the left mouse button, the following navigation options are available to you:
 
 - Arrow-buttons
 - Scroll-wheel (up/down and left/right if your mouse supports it)
@@ -136,7 +139,7 @@ The buttons relevant to the tool are as follows:
 - **Artifacts**: Displays the artifacts of the individual components.
 
 On the left side of the visualization you will find the palette which contains all component types of the visualization.
-The palette can be hidden by clicking on the upper button with the label *Hide Palette* and the button *Open Palette* can be shown again.
+The palette can be hidden by clicking on the upper button with the label *"Hide Palette"* and the button *"Open Palette"* can be shown again.
 
 If you click on a component with the left mouse button, it is colored orange and the list with the properties of the component is displayed on the right-hand side.
 
@@ -150,3 +153,8 @@ At the bottom you will find the Show TADM switch which allows you to view the mo
 The Download TADM button allows you to download the model as a YAML file.
 
 ![TADM](figures/tadm.png)
+
+## Further reading
+
+- The [DeMAF documentation](https://github.com/UST-DeMAF/DeMAF-Documentation) for more details on available options and how to use the CLI.
+- The [Eclipse Winery documentation](https://winery.readthedocs.io/en/latest/) for an in-depth guide on how to use Winery for more than just the visualization.
