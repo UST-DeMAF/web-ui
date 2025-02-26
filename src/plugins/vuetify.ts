@@ -39,6 +39,8 @@ const catppuccinLatteTheme = {
     extension: "#40ADB4",
     // 'info-tooltip': '#86C8E7',
     'on-info-tooltip': latte.text.hex,
+    'on-success-tooltip': latte.text.hex,
+    'on-warning-tooltip': latte.text.hex,
     'on-error-tooltip': latte.base.hex,
 
     // Text colors
@@ -93,6 +95,8 @@ const catppuccinFrappeTheme = {
     extension: '#66ADA3',
     // 'info-tooltip': '#6275A4',
     'on-info-tooltip': frappe.text.hex,
+    'on-success-tooltip': frappe.text.hex,
+    'on-warning-tooltip': frappe.text.hex,
     'on-error-tooltip': frappe.base.hex,
 
     // Text colors

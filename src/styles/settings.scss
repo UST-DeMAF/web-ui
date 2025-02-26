@@ -12,10 +12,28 @@ html {
   font-variant: small-caps;
 }
 
+.tooltip {
+  --v-theme-overlay-multiplier: var(--v-theme-surface-bright-overlay-multiplier);
+  background-color: rgb(var(--v-theme-surface-bright)) !important;
+  color: rgb(var(--v-theme-on-surface-bright)) !important;
+}
+
 .tooltip-info {
   --v-theme-overlay-multiplier: var(--v-theme-info-overlay-multiplier);
   background-color: color-mix(in srgb, rgb(var(--v-theme-info)) 40%, rgb(var(--v-theme-surface)) 60%) !important;
   color: rgb(var(--v-theme-on-info-tooltip)) !important;
+}
+
+.tooltip-success {
+  --v-theme-overlay-multiplier: var(--v-theme-success-overlay-multiplier);
+  background-color: color-mix(in srgb, rgb(var(--v-theme-success)) 40%, rgb(var(--v-theme-surface)) 60%) !important;
+  color: rgb(var(--v-theme-on-success-tooltip)) !important;
+}
+
+.tooltip-warning {
+  --v-theme-overlay-multiplier: var(--v-theme-warning-overlay-multiplier);
+  background-color: color-mix(in srgb, rgb(var(--v-theme-warning)) 40%, rgb(var(--v-theme-surface)) 60%) !important;
+  color: rgb(var(--v-theme-on-warning-tooltip)) !important;
 }
 
 .tooltip-error {

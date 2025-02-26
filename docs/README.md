@@ -41,8 +41,11 @@ You can either choose to upload a single file or a folder that includes all mult
 1. Click on *"Select Folder"* and your system's file explorer pops up.
 2. Click on the folder and press on *"Upload"*.
 3. Now your folder is uploaded!
-   A new input field will appear where you need to specify the relative path from the uploaded folder to the main entry file of your TSDM.
+   A new input field will appear.
+   You can either leave the field empty or use an asterisk (`*`) to transform *all* uploaded files or specify the relative path from the uploaded folder to the main entry file of your TSDM.
    E.g., for *Terraform* this is usually a file called `main.tf`.
+
+![Folder was uploaded](figures/folder_select.png)
 
 ### Step 2: Selecting the Technology
 

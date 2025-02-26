@@ -6,12 +6,12 @@
         style="min-width: 120px; max-width: 120px;">DeMAF</v-app-bar-title>
       <v-spacer />
       <div class="mr-3 ml-2" style="min-width: 168px; max-width: 168px; text-align: end;">
-        <v-tooltip text="Documentation" content-class="bg-surface-bright">
+        <v-tooltip text="Documentation" content-class="tooltip text-center">
           <template v-slot:activator="{ props }">
             <v-btn icon="fas fa-book" size="small" v-bind="props" @click="openDocumentation" />
           </template>
         </v-tooltip>
-        <v-tooltip text="Toggle Theme" content-class="bg-surface-bright">
+        <v-tooltip text="Toggle Theme" content-class="tooltip text-center">
           <template v-slot:activator="{ props }">
             <v-btn v-if="theme.global.current.dark" icon="fas fa-moon" size="small" v-bind="props"
               @click="toggleTheme" />

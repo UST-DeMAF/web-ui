@@ -1,6 +1,6 @@
 {
-  "name": "demaf",
-  "version": "0.0.0",
+  "name": "demaf-web-ui",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {

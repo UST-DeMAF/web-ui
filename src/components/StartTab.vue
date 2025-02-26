@@ -38,7 +38,8 @@
           </template>
 
           <span>
-            Specify the <i>main entrypoint</i>, relative to the uploaded folder.<br />
+            Leave this blank or use <code>*</code> to use all uploaded files,<br />
+            or specify the <i>main entrypoint</i>, relative to the uploaded folder.<br />
             This is the file which is used to start the deployment model.<br />
             For example, <i>Terraform</i> usually has a main file called <code>main.tf</code>.
           </span>
@@ -168,9 +169,6 @@
               <p v-if="!uploadedFiles.length">
                 Please <i>upload a file or folder</i>.
               </p>
-              <!-- <p v-if="showFolderInput && !startFilePath">
-                Please <i>specify a start file</i>.
-              </p> -->
               <p v-if="!selectedTechnology">
                 Please <i>select a technology</i>.
               </p>
