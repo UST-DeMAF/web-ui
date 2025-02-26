@@ -197,18 +197,31 @@ export async function handleSingleFileTransformation(uploadedFile: File, session
  */
 export async function handleMultipleFilesTransformation(uploadedFiles: File[], session: string, selectedTechnology: string, commands: string, selectedOptions: string, startFilePath: string) {
   const folderName = uploadedFiles[0].webkitRelativePath.split('/')[0];
-  const startFile = uploadedFiles.find(file => file.webkitRelativePath === `${folderName}/${startFilePath}`);
-  if (!startFile) {
-    throw new Error("Start file not found in the uploaded folder.");
+  var transformationProcessName, tsdm;
+
+  if (startFilePath == "" || startFilePath == "*") {
+    transformationProcessName = folderName;
+    tsdm = {
+      technology: selectedTechnology.toLowerCase(),
+      locationURL: `file:/usr/share/uploads/${session}/${folderName}`,
+      commands: commands ? commands.split(",").map((cmd) => cmd.trim()) : [""],
+      options: selectedOptions,
+    };
+  }
+  else {
+    const startFile = uploadedFiles.find(file => file.webkitRelativePath === `${folderName}/${startFilePath}`);
+    if (!startFile) {
+      throw new Error("Start file not found in the uploaded folder.");
+    }
+    transformationProcessName = startFile.webkitRelativePath.split('/').at(-1);
+    tsdm = {
+      technology: selectedTechnology.toLowerCase(),
+      locationURL: `file:/usr/share/uploads/${session}/${startFile.webkitRelativePath}`,
+      commands: commands ? commands.split(",").map((cmd) => cmd.trim()) : [""],
+      options: selectedOptions,
+    };
   }
   await saveUploadedFilesForTransformation(uploadedFiles, session);
-  const transformationProcessName = startFile.webkitRelativePath.split('/').at(-1);
-  const tsdm = {
-    technology: selectedTechnology.toLowerCase(),
-    locationURL: `file:/usr/share/uploads/${session}/${startFile.webkitRelativePath}`,
-    commands: commands ? commands.split(",").map((cmd) => cmd.trim()) : [""],
-    options: selectedOptions,
-  };
   return { transformationProcessName, tsdm };
 }
 

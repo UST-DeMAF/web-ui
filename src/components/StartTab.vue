@@ -154,11 +154,10 @@
 
         <v-row class="ma-n2 px-4" align="center" justify="center">
           <v-tooltip content-class="tooltip-error text-center" location="bottom"
-            :disabled="uploadedFiles.length && selectedTechnology && (showFileInput || (showFolderInput && startFilePath != ''))">
+            :disabled="uploadedFiles.length && selectedTechnology && (showFileInput || showFolderInput)">
             <template v-slot:activator="{ props }">
               <div class="d-inline-block mx-4 my-2 ml-lg-auto" v-bind="props">
-                <v-btn color="primary"
-                  :disabled="(!uploadedFiles.length || !selectedTechnology || (showFolderInput && !startFilePath)) || transform"
+                <v-btn color="primary" :disabled="(!uploadedFiles.length || !selectedTechnology) || transform"
                   rounded="LG" @click="startTransformation" v-bind="props" flat>
                   Transform
                 </v-btn>
@@ -169,9 +168,9 @@
               <p v-if="!uploadedFiles.length">
                 Please <i>upload a file or folder</i>.
               </p>
-              <p v-if="showFolderInput && !startFilePath">
+              <!-- <p v-if="showFolderInput && !startFilePath">
                 Please <i>specify a start file</i>.
-              </p>
+              </p> -->
               <p v-if="!selectedTechnology">
                 Please <i>select a technology</i>.
               </p>
@@ -318,10 +317,10 @@ export default {
         alert("Please select a technology first.");
         return;
       }
-      if (this.showFolderInput && !this.startFilePath) {
-        alert("Please specify the start file.");
-        return;
-      }
+      // if (this.showFolderInput && !this.startFilePath) {
+      //   alert("Please specify the start file.");
+      //   return;
+      // } --> Removed to allow whole folder transformation
 
       console.log("Session ID:", this.session);
 
