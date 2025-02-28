@@ -1,6 +1,23 @@
 import { v4 as uuidv4 } from 'uuid';
 
 /**
+ * Creates a technology-specific deployment model object.
+ * @param {string} technology - The selected technology.
+ * @param {string} location - The location of the file(s) to transform.
+ * @param {string} commands - The commands to execute.
+ * @param {string[]} options - The selected options.
+ * @returns {any} The technology-specific deployment model object.
+*/
+function createTSDM(technology: string, location: string, commands: string, options: string[]) {
+  return {
+    technology: technology.toLowerCase(),
+    locationURL: encodeURI(location),
+    commands: commands ? commands.split(",").map((cmd) => cmd.trim()) : [""],
+    options: options,
+  };
+}
+
+/**
  * Fetches the list of registered plugins from the server.
  * @returns {Promise<string[]>} A promise that resolves to an array of plugin names.
  */
@@ -170,18 +187,13 @@ export async function pollTransformationProcessStatusForResult(transformationPro
  * @param {string} session - The session ID.
  * @param {string} selectedTechnology - The selected technology.
  * @param {string} commands - The commands to execute.
- * @param {string[]} selectedOptions - The selected options.
+ * @param {string[]} options - The selected options.
  * @returns {Promise<{transformationProcessName: string, tsdm: any}>} A promise that resolves to the transformation process name and data model.
  */
-export async function handleSingleFileTransformation(uploadedFile: File, session: string, selectedTechnology: string, commands: string, selectedOptions: string) {
+export async function handleSingleFileTransformation(uploadedFile: File, session: string, selectedTechnology: string, commands: string, options: string[]) {
   await saveUploadedFileForTransformation(uploadedFile, session);
   const transformationProcessName = uploadedFile.name;
-  const tsdm = {
-    technology: selectedTechnology.toLowerCase(),
-    locationURL: `file:/usr/share/uploads/${session}/${transformationProcessName}`,
-    commands: commands ? commands.split(",").map((cmd) => cmd.trim()) : [""],
-    options: selectedOptions,
-  };
+  const tsdm = createTSDM(selectedTechnology, `file:/usr/share/uploads/${session}/${transformationProcessName}`, commands, options);
   return { transformationProcessName, tsdm };
 }
 
@@ -191,22 +203,17 @@ export async function handleSingleFileTransformation(uploadedFile: File, session
  * @param {string} session - The session ID.
  * @param {string} selectedTechnology - The selected technology.
  * @param {string} commands - The commands to execute.
- * @param {string[]} selectedOptions - The selected options.
+ * @param {string[]} options - The selected options.
  * @param {string} startFilePath - The path to the start file.
  * @returns {Promise<{transformationProcessName: string, tsdm: any}>} A promise that resolves to the transformation process name and data model.
  */
-export async function handleMultipleFilesTransformation(uploadedFiles: File[], session: string, selectedTechnology: string, commands: string, selectedOptions: string, startFilePath: string) {
+export async function handleMultipleFilesTransformation(uploadedFiles: File[], session: string, selectedTechnology: string, commands: string, options: string[], startFilePath: string) {
   const folderName = uploadedFiles[0].webkitRelativePath.split('/')[0];
   var transformationProcessName, tsdm;
 
   if (startFilePath == "" || startFilePath == "*") {
     transformationProcessName = folderName;
-    tsdm = {
-      technology: selectedTechnology.toLowerCase(),
-      locationURL: `file:/usr/share/uploads/${session}/${folderName}`,
-      commands: commands ? commands.split(",").map((cmd) => cmd.trim()) : [""],
-      options: selectedOptions,
-    };
+    tsdm = createTSDM(selectedTechnology, `file:/usr/share/uploads/${session}/${folderName}`, commands, options);
   }
   else {
     const startFile = uploadedFiles.find(file => file.webkitRelativePath === `${folderName}/${startFilePath}`);
@@ -214,12 +221,7 @@ export async function handleMultipleFilesTransformation(uploadedFiles: File[], s
       throw new Error("Start file not found in the uploaded folder.");
     }
     transformationProcessName = startFile.webkitRelativePath.split('/').at(-1);
-    tsdm = {
-      technology: selectedTechnology.toLowerCase(),
-      locationURL: `file:/usr/share/uploads/${session}/${startFile.webkitRelativePath}`,
-      commands: commands ? commands.split(",").map((cmd) => cmd.trim()) : [""],
-      options: selectedOptions,
-    };
+    tsdm = createTSDM(selectedTechnology, `file:/usr/share/uploads/${session}/${startFile.webkitRelativePath}`, commands, options);
   }
   await saveUploadedFilesForTransformation(uploadedFiles, session);
   return { transformationProcessName, tsdm };
