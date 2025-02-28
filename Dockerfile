@@ -16,7 +16,9 @@ RUN npm cache clean --force
 RUN npm ci && echo "npm install completed"
 
 # Copy rest of the files
-COPY . .
+COPY src ./src
+COPY public ./public
+COPY *.ts tsconfig* index.html vite.config.mts ./
 
 # Build the project
 RUN npm run build && echo "npm run build completed"
