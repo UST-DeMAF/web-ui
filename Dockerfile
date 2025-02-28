@@ -14,6 +14,9 @@ RUN npm run build
 
 FROM node:lts-alpine
 
+RUN apk upgrade --update-cache \
+    && apk add --no-cache curl
+
 WORKDIR /app
 
 ENV NODE_ENV=debug
