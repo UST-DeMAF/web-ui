@@ -34,8 +34,12 @@ export async function getRegisteredPlugins(): Promise<string[]> {
     const data = await response.json();
     // remove "docker" from the list of plugins
     data.pluginNames = data.pluginNames.filter((pluginName: string) => pluginName !== "docker");
+    // rename "visualization-service" to "TADM"
+    data.pluginNames = data.pluginNames.map((pluginName: string) => pluginName === "visualization-service" ? "tadm" : pluginName);
     // sort the list of plugins alphabetically
     data.pluginNames.sort();
+    // capitalize "tadm"
+    data.pluginNames = data.pluginNames.map((pluginName: string) => pluginName === "tadm" ? "TADM" : pluginName);
     return data.pluginNames;
   } catch (error) {
     console.error("Error getting registered plugins:", error);
