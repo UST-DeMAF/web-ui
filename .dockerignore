@@ -1,0 +1,34 @@
+# Node
+node_modules
+npm-debug.log
+dist
+
+# Version control
+.git
+.gitignore
+
+# IDE and Editor files
+.vscode
+.idea
+*.swp
+*.swo
+.editorconfig
+
+# Environment files
+.env
+.env.local
+.env.*
+
+# Testing
+coverage
+*.test.js
+
+# OS files
+.DS_Store
+
+# Documentation
+docs
+
+# Various
+run-dev.sh
+README.md
