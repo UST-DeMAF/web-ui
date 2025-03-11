@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar color="primary" height="55">
-      <v-app-bar-nav-icon class="ml-3" icon="fas fa-diagram-project" size="small" />
+      <v-app-bar-nav-icon class="ml-3" icon="fas fa-diagram-project" size="small" @click="test"/>
       <v-app-bar-title class="mx-0 small-caps text-h5"
         style="min-width: 120px; max-width: 120px;">DeMAF</v-app-bar-title>
       <v-spacer />
@@ -90,6 +90,9 @@ export default {
     ViewTab,
   },
   methods: {
+    test() {
+      console.log("Winery URL: ", this.$runtimeConfig?.DEMAF_WINERY_URL);
+    },
     closeDocumentation() {
       this.selectedTab = "Start";
       this.docDisplayStyle = "none";

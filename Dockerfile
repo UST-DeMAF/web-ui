@@ -31,5 +31,11 @@ RUN npm install -g http-server
 EXPOSE 8079
 EXPOSE 3000
 
-# Start both the frontend and the backend server
-CMD ["sh", "-c", "http-server dist -p 8079 & node server.cjs"]
+# Copy entrypoint.sh to the container
+COPY entrypoint.sh .
+
+# Make the entrypoint.sh executable
+RUN chmod +x entrypoint.sh
+
+# Run the entrypoint.sh
+CMD ["./entrypoint.sh"]

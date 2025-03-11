@@ -18,11 +18,12 @@
 <script>
 export default {
   data() {
+    const url = this.$runtimeConfig?.DEMAF_WINERY_URL.replace("http://", "").replace(":80", "");
     return {
       showTADM: this._showTADM,
       tadm: null,
       transformationProcessId: this._transformationProcessId,
-      wineryUrl: "http://localhost/winery-topologymodeler/?repositoryURL=http:%2F%2Flocalhost:%2Fwinery&uiURL=http:%2F%2Flocalhost%2F%23%2F&ns=ust.tad.servicetemplates&id=" + this._transformationProcessId + "&topologyProDecURL=http:%2F%2Flocalhost:9090",
+      wineryUrl: "http://" + url +"/winery-topologymodeler/?repositoryURL=http:%2F%2F" + url + ":%2Fwinery&uiURL=http:%2F%2F" + url + "%2F%23%2F&ns=ust.tad.servicetemplates&id=" + this._transformationProcessId + "&topologyProDecURL=http:%2F%2F" + url + ":9090",
     };
   },
   props: {
