@@ -19,11 +19,13 @@ function createTSDM(technology: string, location: string, commands: string, opti
 
 /**
  * Fetches the list of registered plugins from the server.
+ * @param {string} url - The URL of the analysis manager.
  * @returns {Promise<string[]>} A promise that resolves to an array of plugin names.
  */
-export async function getRegisteredPlugins(): Promise<string[]> {
+export async function getRegisteredPlugins(url: string): Promise<string[]> {
   try {
-    const response = await fetch("http://localhost:8080/demaf/plugins", {
+    console.log("Resulting url:", `${url}/demaf/plugins`);
+    const response = await fetch(`${url}/demaf/plugins`, {
       method: "GET",
     });
 
@@ -127,11 +129,12 @@ export async function saveUploadedFilesForTransformation(uploadedFiles: File[], 
 /**
  * Calls the analysis manager to start the transformation process.
  * @param {any} tsdm - The transformation service data model.
+ * @param {string} url - The URL of the analysis manager.
  * @returns {Promise<string>} A promise that resolves to the transformation process ID.
  */
-export async function callAnalysisManagerTransformation(tsdm: any): Promise<string> {
+export async function callAnalysisManagerTransformation(tsdm: any, url: string): Promise<string> {
   try {
-    const response = await fetch("http://localhost:8080/demaf/transform", {
+    const response = await fetch(`${url}/demaf/transform`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -157,12 +160,13 @@ export async function callAnalysisManagerTransformation(tsdm: any): Promise<stri
  * It polls the endpoint in an interval given by delayInMilliSeconds until the returned message
  * indicates a finished process.
  * @param {string} transformationProcessId - The ID of the transformation process.
+ * @param {string} url - The URL of the analysis manager.
  * @param {number} delayInMilliSeconds - The delay between polling attempts.
  * @returns {Promise<string>} A promise that resolves to the result of the transformation process.
  */
-export async function pollTransformationProcessStatusForResult(transformationProcessId: string, delayInMilliSeconds: number): Promise<string> {
+export async function pollTransformationProcessStatusForResult(transformationProcessId: string, url: string, delayInMilliSeconds: number): Promise<string> {
   try {
-    const response = await fetch(`http://localhost:8080/demaf/status/${transformationProcessId}`, {
+    const response = await fetch(`${url}/demaf/status/${transformationProcessId}`, {
       method: "GET",
       headers: {
         "Accept": "application/json",
@@ -181,7 +185,7 @@ export async function pollTransformationProcessStatusForResult(transformationPro
     } else {
       console.log("Polling...");
       await new Promise(resolve => setTimeout(resolve, delayInMilliSeconds));
-      return pollTransformationProcessStatusForResult(transformationProcessId, delayInMilliSeconds);
+      return pollTransformationProcessStatusForResult(transformationProcessId, url, delayInMilliSeconds);
     }
   } catch (error) {
     console.error("Error polling transformation process status:", error);
@@ -238,10 +242,11 @@ export async function handleMultipleFilesTransformation(uploadedFiles: File[], s
 /**
  * Starts the transformation process and polls for the result.
  * @param {any} tsdm - The transformation service data model.
+ * @param {string} url - The URL of the analysis manager.
  * @returns {Promise<{transformationProcessId: string, statusMessage: string}>} A promise that resolves to the transformation process ID and status message.
  */
-export async function startTransformationProcess(tsdm: any) {
-  const transformationProcessId = await callAnalysisManagerTransformation(tsdm);
-  const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, 10);
+export async function startTransformationProcess(tsdm: any, url: string) {
+  const transformationProcessId = await callAnalysisManagerTransformation(tsdm, url);
+  const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, url, 10);
   return { transformationProcessId, statusMessage };
 }
