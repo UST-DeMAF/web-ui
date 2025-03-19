@@ -1,13 +1,30 @@
 const express = require('express');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+
 const app = express();
-const port = 3000; // Port for the Express server
+const configPath = path.join(__dirname, 'dist/config.json'); // Path to the config file
+const port = 8079; // Port for the Express server
 
 // Enable CORS for all routes
 app.use(cors());
+
+// Serve the static files of the Vue.js frontend
+app.use(express.static('dist'));
+
+// Function to load the configuration from the config.json file
+function getConfig() {
+  try {
+      const data = fs.readFileSync(configPath, 'utf8');
+      return JSON.parse(data);
+  } catch (error) {
+      console.error('Error loading config.json:', error);
+      return { DEMAF_ANALYSIS_MANAGER_URL: 'http://analysismanager:8080' }; // Fallback
+  }
+}
 
 // Ensure the destination directory exists
 const ensureDirExists = (dir) => {
@@ -70,6 +87,16 @@ app.get('/tadms/:fileName', (req, res) => {
       res.status(500).send('Error downloading file.');
     }
   });
+});
+
+// Proxy middleware for the Analysis Manager
+app.use('/analysismanager', (req, res, next) => {
+  const config = getConfig();
+  const target = config.DEMAF_ANALYSIS_MANAGER_URL;
+  createProxyMiddleware({
+    target,
+    pathRewrite: { '^/analysismanager': '' } // Removes the prefix from the path
+  })(req, res, next);
 });
 
 // Error handling middleware

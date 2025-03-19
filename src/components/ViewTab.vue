@@ -18,12 +18,13 @@
 <script>
 export default {
   data() {
-    const url = this.$runtimeConfig?.DEMAF_WINERY_URL.replace("http://", "").replace(":80", "");
+    const port = this.$runtimeConfig?.DEMAF_WINERY_URL.split(":")[2];
+    const url = this.$runtimeConfig?.DEMAF_WINERY_URL.replace("http://", "").replace(`:${port}`, "");
     return {
       showTADM: this._showTADM,
       tadm: null,
       transformationProcessId: this._transformationProcessId,
-      wineryUrl: "http://" + url +"/winery-topologymodeler/?repositoryURL=http:%2F%2F" + url + ":%2Fwinery&uiURL=http:%2F%2F" + url + "%2F%23%2F&ns=ust.tad.servicetemplates&id=" + this._transformationProcessId + "&topologyProDecURL=http:%2F%2F" + url + ":9090",
+      wineryUrl: `http://${url}:${port}/winery-topologymodeler/?repositoryURL=http:%2F%2F${url}:%2Fwinery&uiURL=http:%2F%2F${url}%2F%23%2F&ns=ust.tad.servicetemplates&id=${this._transformationProcessId}&topologyProDecURL=http:%2F%2F${url}:9090`,
     };
   },
   props: {
@@ -50,7 +51,7 @@ export default {
   methods: {
     async loadTADM() {
       if (this.tadm === null) {
-        const url = "http://localhost:3000/tadms/" + this.transformationProcessId + ".yaml";
+        const url = "/tadms/" + this.transformationProcessId + ".yaml";
         try {
           const response = await fetch(url);
           this.tadm = await response.text();

@@ -26,10 +26,7 @@ COPY --from=build /app/dist dist
 COPY --from=build /app/server.cjs .
 COPY --from=build /app/node_modules node_modules
 
-RUN npm install -g http-server
-
 EXPOSE 8079
-EXPOSE 3000
 
 # Copy entrypoint.sh to the container
 COPY entrypoint.sh .

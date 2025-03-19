@@ -282,7 +282,7 @@ export default {
     },
     async loadRegisteredPlugins() {
       try {
-        this.technologies = await getRegisteredPlugins(this.$runtimeConfig?.DEMAF_ANALYSIS_MANAGER_URL);
+        this.technologies = await getRegisteredPlugins();
         console.log("Registered extensions successfully received.");
       } catch (error) {
         console.log("Error while receiving registered extensions.");
@@ -358,7 +358,7 @@ export default {
           return;
         }
 
-        const { transformationProcessId, statusMessage } = await startTransformationProcess(tsdm, this.$runtimeConfig?.DEMAF_ANALYSIS_MANAGER_URL);
+        const { transformationProcessId, statusMessage } = await startTransformationProcess(tsdm);
         this.transformationProcesses.push(transformationProcessId);
 
         if (statusMessage) {

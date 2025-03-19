@@ -7,4 +7,4 @@ sed -i '$ s/,$//' /app/dist/config.json
 
 echo "}" >> /app/dist/config.json
 
-exec http-server dist -p 8079 & node server.cjs
+exec node server.cjs
