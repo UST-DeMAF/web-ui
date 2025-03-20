@@ -7,7 +7,7 @@ const fs = require('fs');
 
 const app = express();
 const configPath = path.join(__dirname, 'dist/config.json'); // Path to the config file
-const port = 8079; // Port for the Express server
+const port = 80; // Port for the Express server
 
 // Enable CORS for all routes
 app.use(cors());

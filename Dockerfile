@@ -23,10 +23,10 @@ ENV NODE_ENV=debug
 
 # Copy server.cjs to the container
 COPY --from=build /app/dist dist
-COPY --from=build /app/server.cjs .
+COPY --from=build /app/server.js .
 COPY --from=build /app/node_modules node_modules
 
-EXPOSE 8079
+EXPOSE 80
 
 # Copy entrypoint.sh to the container
 COPY entrypoint.sh .
