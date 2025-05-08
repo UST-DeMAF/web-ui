@@ -1,4 +1,3 @@
 {
-    "DEMAF_ANALYSIS_MANAGER_URL": "http://localhost:8080",
-    "DEMAF_WINERY_URL": "http://localhost:80"
+    "DEMAF_DOMAIN": "localhost"
 }

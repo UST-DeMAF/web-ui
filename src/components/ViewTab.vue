@@ -3,7 +3,7 @@
     <v-textarea class="rounded-lg w-100 h-100 border-none" color="primary" :value="tadm" variant="outlined" readonly no-resize/>
   </v-container>
   <v-container class="my-2" height="calc(100vh - 225px)" v-else>
-    <iframe class="rounded-lg w-100 h-100 border-none" :src="wineryUrl"/>
+    <iframe class="rounded-lg w-100 h-100 border-none" :src="url"/>
   </v-container>
   <v-container>
     <v-row class="w-100">
@@ -18,13 +18,12 @@
 <script>
 export default {
   data() {
-    const port = this.$runtimeConfig?.DEMAF_WINERY_URL.split(":")[2];
-    const url = this.$runtimeConfig?.DEMAF_WINERY_URL.replace("http://", "").replace(`:${port}`, "");
+    const domain = this.$runtimeConfig?.DEMAF_DOMAIN;
     return {
       showTADM: this._showTADM,
       tadm: null,
       transformationProcessId: this._transformationProcessId,
-      wineryUrl: `http://${url}:${port}/winery-topologymodeler/?repositoryURL=http:%2F%2F${url}:${port}%2Fwinery&uiURL=http:%2F%2F${url}:${port}%2F%23%2F&ns=ust.tad.servicetemplates&id=${this._transformationProcessId}&topologyProDecURL=http:%2F%2F${url}:9090`,
+      url: `http://${domain}/winery/winery-topologymodeler/?repositoryURL=http:%2F%2F${domain}:%2Fwinery%2Fwinery&uiURL=http:%2F%2F${domain}%2Fwinery%2F%23%2F&ns=ust.tad.servicetemplates&id=${this._transformationProcessId}&topologyProDecURL=http:%2F%2F${domain}:9090`
     };
   },
   props: {
