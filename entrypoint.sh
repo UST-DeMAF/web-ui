@@ -11,9 +11,6 @@ env | grep '^DEMAF_' | awk -F= '{print "  \""$1"\": \""$2"\","}' >> /app/dist/co
 sed -i '$ s/,$//' /app/dist/config.json
 echo "}" >> /app/dist/config.json
 
-if envsubst "$(env | grep '^DEMAF_' | cut -d= -f1 | sed 's/^/${/;s/$/}/' | tr '\n' ' ')" \
-    < /etc/nginx/nginx.template.conf > /etc/nginx/nginx.conf; then
-    rm /etc/nginx/nginx.template.conf
-fi
+envsubst "$(env | grep '^DEMAF_' | cut -d= -f1 | sed 's/^/${/;s/$/}/' | tr '\n' ' ')" < /etc/nginx/nginx.template.conf > /etc/nginx/nginx.conf
 
 node server.js & nginx -g "daemon off;"
