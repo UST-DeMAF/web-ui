@@ -15,6 +15,11 @@ import { createApp } from 'vue'
 
 const app = createApp(App)
 
+fetch('/config.json')
+    .then(response => response.json())
+    .then(config => { app.config.globalProperties.$runtimeConfig = config })
+    .catch(errror => console.error('Failed to load configuration file: ', errror))
+
 registerPlugins(app)
 
 app.mount('#app')
