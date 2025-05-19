@@ -74,11 +74,7 @@ export default {
   data() {
     return {
       docDisplayStyle: "none",
-      lastTransformations: [
-        { name: "test1", id: "1234" },
-        { name: "test2", id: "5678" },
-        { name: "test3", id: "9012" },
-      ],
+      lastTransformations: [],
       selectedTab: "Start",
       session: null,
       viewTabs: [],

@@ -249,7 +249,7 @@ export default {
         color: "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))",
       },
       storeSettings: false,
-      technologies: ["helm", "kubernetes", "terraform"],
+      technologies: [],
       transform: false,
       transformationProcesses: [],
       uploadedFiles: [],
@@ -315,10 +315,6 @@ export default {
         alert("Please select a technology first.");
         return;
       }
-      // if (this.showFolderInput && !this.startFilePath) {
-      //   alert("Please specify the start file.");
-      //   return;
-      // } --> Removed to allow whole folder transformation
 
       console.log("Session ID:", this.session);
 
