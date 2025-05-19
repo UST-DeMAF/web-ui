@@ -23,7 +23,7 @@ function createTSDM(technology: string, location: string, commands: string, opti
  */
 export async function getRegisteredPlugins(): Promise<string[]> {
   try {
-    const response = await fetch("http://localhost:8080/demaf/plugins", {
+    const response = await fetch(`/analysismanager/demaf/plugins`, {
       method: "GET",
     });
 
@@ -76,7 +76,7 @@ export async function saveUploadedFileForTransformation(uploadedFile: File, sess
   formData.append("file", uploadedFile);
 
   try {
-    const response = await fetch(`http://localhost:3000/upload?sessionId=${sessionId}`, {
+    const response = await fetch(`/upload?sessionId=${sessionId}`, {
       method: "POST",
       body: formData,
     });
@@ -107,7 +107,7 @@ export async function saveUploadedFilesForTransformation(uploadedFiles: File[], 
   });
 
   try {
-    const endpoint = uploadedFiles.length === 1 ? `http://localhost:3000/upload?sessionId=${sessionId}` : `http://localhost:3000/upload-multiple?sessionId=${sessionId}`;
+    const endpoint = uploadedFiles.length === 1 ? `/upload?sessionId=${sessionId}` : `/upload-multiple?sessionId=${sessionId}`;
     const response = await fetch(endpoint, {
       method: 'POST',
       body: formData,
@@ -131,7 +131,7 @@ export async function saveUploadedFilesForTransformation(uploadedFiles: File[], 
  */
 export async function callAnalysisManagerTransformation(tsdm: any): Promise<string> {
   try {
-    const response = await fetch("http://localhost:8080/demaf/transform", {
+    const response = await fetch(`/analysismanager/demaf/transform`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -162,7 +162,7 @@ export async function callAnalysisManagerTransformation(tsdm: any): Promise<stri
  */
 export async function pollTransformationProcessStatusForResult(transformationProcessId: string, delayInMilliSeconds: number): Promise<string> {
   try {
-    const response = await fetch(`http://localhost:8080/demaf/status/${transformationProcessId}`, {
+    const response = await fetch(`/analysismanager/demaf/status/${transformationProcessId}`, {
       method: "GET",
       headers: {
         "Accept": "application/json",
