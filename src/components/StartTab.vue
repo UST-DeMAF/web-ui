@@ -334,12 +334,13 @@ export default {
 
         console.log("Selected options: " + options);
 
+        var technology = this.selectedTechnology === "TADM" ? "visualization-service" : this.selectedTechnology;
 
         if (this.uploadedFiles.length === 1) {
           ({ transformationProcessName, tsdm } = await handleSingleFileTransformation(
             this.uploadedFiles[0],
             this.session,
-            this.selectedTechnology,
+            technology,
             this.commands,
             options
           ));
@@ -347,7 +348,7 @@ export default {
           ({ transformationProcessName, tsdm } = await handleMultipleFilesTransformation(
             this.uploadedFiles,
             this.session,
-            this.selectedTechnology,
+            technology,
             this.commands,
             options,
             this.startFilePath

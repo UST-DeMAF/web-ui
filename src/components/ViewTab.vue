@@ -18,12 +18,13 @@
 <script>
 export default {
   data() {
+    const protocol = this.$runtimeConfig?.DEMAF_HTTPS === true ? "https" : "http";
     const domain = this.$runtimeConfig?.DEMAF_DOMAIN;
     return {
       showTADM: this._showTADM,
       tadm: null,
       transformationProcessId: this._transformationProcessId,
-      url: `http://${domain}/winery/winery-topologymodeler/?repositoryURL=http:%2F%2F${domain}:%2Fwinery%2Fwinery&uiURL=http:%2F%2F${domain}%2Fwinery%2F%23%2F&ns=ust.tad.servicetemplates&id=${this._transformationProcessId}&topologyProDecURL=http:%2F%2F${domain}:9090`
+      url: `${protocol}://${domain}/winery/winery-topologymodeler/?repositoryURL=${protocol}:%2F%2F${domain}:%2Fwinery%2Fwinery&uiURL=${protocol}:%2F%2F${domain}%2Fwinery%2F%23%2F&ns=ust.tad.servicetemplates&id=${this._transformationProcessId}&topologyProDecURL=${protocol}:%2F%2F${domain}:9090`
     };
   },
   props: {
