@@ -1,4 +1,4 @@
 {
     "DEMAF_DOMAIN": "localhost",
-    "DEMAF_HTTPS": false
+    "DEMAF_HTTPS": "false"
 }

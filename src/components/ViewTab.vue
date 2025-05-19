@@ -18,7 +18,7 @@
 <script>
 export default {
   data() {
-    const protocol = this.$runtimeConfig?.DEMAF_HTTPS === true ? "https" : "http";
+    const protocol = this.$runtimeConfig?.DEMAF_HTTPS === "true" ? "https" : "http";
     const domain = this.$runtimeConfig?.DEMAF_DOMAIN;
     return {
       showTADM: this._showTADM,
