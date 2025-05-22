@@ -5,7 +5,7 @@ on:
     branches:
       - 'main'
       - 'dev'
-      - 'proxy'
+      - 'docu'
   pull_request:
     branches:
       - 'main'

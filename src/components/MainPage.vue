@@ -1,57 +1,146 @@
 <template>
   <v-app>
-    <v-app-bar color="primary" height="55">
-      <v-app-bar-nav-icon class="ml-3" icon="fas fa-diagram-project" size="small" @click="test"/>
-      <v-app-bar-title class="mx-0 small-caps text-h5"
-        style="min-width: 120px; max-width: 120px;">DeMAF</v-app-bar-title>
+    <v-app-bar
+      color="primary"
+      height="55"
+    >
+      <v-app-bar-nav-icon
+        class="ml-3"
+        icon="fas fa-diagram-project"
+        size="small"
+        @click="test"
+      />
+      <v-app-bar-title
+        class="mx-0 small-caps text-h5"
+        style="min-width: 120px; max-width: 120px;"
+      >
+        DeMAF
+      </v-app-bar-title>
       <v-spacer />
-      <div class="mr-3 ml-2" style="min-width: 168px; max-width: 168px; text-align: end;">
-        <v-tooltip text="Documentation" content-class="tooltip text-center">
-          <template v-slot:activator="{ props }">
-            <v-btn icon="fas fa-book" size="small" v-bind="props" @click="openDocumentation" />
+      <div
+        class="mr-3 ml-2"
+        style="min-width: 168px; max-width: 168px; text-align: end;"
+      >
+        <v-tooltip
+          text="Documentation"
+          content-class="tooltip text-center"
+        >
+          <template #activator="{ props }">
+            <v-btn
+              icon="fas fa-book"
+              size="small"
+              v-bind="props"
+              @click="openDocumentation"
+            />
           </template>
         </v-tooltip>
-        <v-tooltip text="Toggle Theme" content-class="tooltip text-center">
-          <template v-slot:activator="{ props }">
-            <v-btn v-if="theme.global.current.dark" icon="fas fa-moon" size="small" v-bind="props"
-              @click="toggleTheme" />
-            <v-btn v-if="!theme.global.current.dark" icon="fas fa-sun" size="small" v-bind="props"
-              @click="toggleTheme" />
+        <v-tooltip
+          text="Toggle Theme"
+          content-class="tooltip text-center"
+        >
+          <template #activator="{ props }">
+            <v-btn
+              v-if="theme.global.current.dark"
+              icon="fas fa-moon"
+              size="small"
+              v-bind="props"
+              @click="toggleTheme"
+            />
+            <v-btn
+              v-if="!theme.global.current.dark"
+              icon="fas fa-sun"
+              size="small"
+              v-bind="props"
+              @click="toggleTheme"
+            />
           </template>
         </v-tooltip>
       </div>
-      <template v-slot:extension>
-        <v-tabs align-with-title v-model="selectedTab">
+      <template #extension>
+        <v-tabs
+          v-model="selectedTab"
+          align-with-title
+        >
           <v-tab value="Start">
-            <v-icon class="mr-2" icon="fas fa-house" size="small" />
+            <v-icon
+              class="mr-2"
+              icon="fas fa-house"
+              size="small"
+            />
             Start
           </v-tab>
-          <v-tab :style="{ 'display': docDisplayStyle }" value="Documentation">
-            <v-icon class="mr-2" icon="fas fa-book" size="small" />
+          <v-tab
+            :style="{ 'display': docDisplayStyle }"
+            value="Documentation"
+          >
+            <v-icon
+              class="mr-2"
+              icon="fas fa-book"
+              size="small"
+            />
             Documentation
-            <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="closeDocumentation" />
+            <v-btn
+              icon="fas fa-xmark"
+              size="x-small"
+              variant="plain"
+              @click.stop="closeDocumentation"
+            />
           </v-tab>
-          <v-tab v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
+          <v-tab
+            v-for="(tab, t) in viewTabs"
+            :key="t"
+            :value="tab.id"
+          >
             {{ tab.name }}
-            <template v-slot:append>
-              <v-btn icon="fas fa-xmark" size="x-small" variant="plain" @click.stop="closeTab(tab.id)" />
+            <template #append>
+              <v-btn
+                icon="fas fa-xmark"
+                size="x-small"
+                variant="plain"
+                @click.stop="closeTab(tab.id)"
+              />
             </template>
           </v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
     <v-main>
-      <v-tabs-window class="h-100" v-model="selectedTab">
-        <v-tabs-window-item class="h-100" value="Start">
-          <StartTab :_lastTransformations="this.lastTransformations" :_selectedTab="this.selectedTab"
-            :_session="this.session" :_viewTabs="this.viewTabs" @openTrans="openTrans" @removeTrans="removeTrans" />
+      <v-tabs-window
+        v-model="selectedTab"
+        class="h-100"
+      >
+        <v-tabs-window-item
+          class="h-100"
+          value="Start"
+        >
+          <StartTab
+            :_lastTransformations="lastTransformations"
+            :_selectedTab="selectedTab"
+            :_session="session"
+            :_viewTabs="viewTabs"
+            @open-trans="openTrans"
+            @remove-trans="removeTrans"
+          />
         </v-tabs-window-item>
-        <v-tabs-window-item v-for="(tab, t) in viewTabs" :key="t" :value="tab.id">
-          <ViewTab :_showTADM="false" :_transformationProcessId="tab.id" />
+        <v-tabs-window-item
+          v-for="(tab, t) in viewTabs"
+          :key="t"
+          :value="tab.id"
+        >
+          <ViewTab
+            :_showTADM="false"
+            :_transformationProcessId="tab.id"
+          />
         </v-tabs-window-item>
         <v-tabs-window-item value="Documentation">
-          <v-container class="my-2" height="calc(100vh - 103px - 16px)">
-            <iframe class="rounded-lg w-100 h-100 border-none" src="https://ust-demaf.github.io/web-ui/" />
+          <v-container
+            class="my-2"
+            height="calc(100vh - 103px - 16px)"
+          >
+            <iframe
+              class="rounded-lg w-100 h-100 border-none"
+              src="https://ust-demaf.github.io/web-ui/"
+            />
           </v-container>
         </v-tabs-window-item>
       </v-tabs-window>
@@ -68,8 +157,9 @@ import {
 } from "@/services/transformationService";
 
 export default {
-  created() {
-    this.initializeSession();
+  components: {
+    StartTab,
+    ViewTab,
   },
   data() {
     return {
@@ -81,9 +171,8 @@ export default {
       theme: useTheme(),
     };
   },
-  components: {
-    StartTab,
-    ViewTab,
+  created() {
+    this.initializeSession();
   },
   methods: {
     test() {
@@ -111,7 +200,7 @@ export default {
     },
     openTrans(value) {
       console.log("Open transformation: " + value);
-      var hasTab = false;
+      let hasTab = false;
       for (let i = 0; i < this.viewTabs.length; i++) {
         if (this.viewTabs[i].id === value) {
           hasTab = true;
@@ -162,7 +251,7 @@ export default {
       }
     },
     toggleTheme() {
-      var themeName = this.theme.global.current.dark ? 'catppuccinLatteTheme' : 'catppuccinFrappeTheme';
+      const themeName = this.theme.global.current.dark ? 'catppuccinLatteTheme' : 'catppuccinFrappeTheme';
       this.theme.global.name = themeName;
       localStorage.setItem("theme", JSON.stringify(themeName));
     },
