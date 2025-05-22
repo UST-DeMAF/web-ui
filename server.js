@@ -1,8 +1,8 @@
-const express = require('express');
-const multer = require('multer');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
+import  express from 'express';
+import  multer from 'multer';
+import  cors from 'cors';
+import  path from 'path';
+import  fs from 'fs';
 
 const app = express();
 const port = 3000; // Port for the Express server
@@ -74,7 +74,7 @@ app.get('/tadms/:fileName', (req, res) => {
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });

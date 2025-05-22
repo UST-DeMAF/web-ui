@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import type { TechnologySpecificDeploymentModel } from '@/types/models';
 
 /**
  * Creates a technology-specific deployment model object.
@@ -6,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
  * @param {string} location - The location of the file(s) to transform.
  * @param {string} commands - The commands to execute.
  * @param {string[]} options - The selected options.
- * @returns {any} The technology-specific deployment model object.
+ * @returns {TechnologySpecificDeploymentModel} The technology-specific deployment model object.
 */
 function createTSDM(technology: string, location: string, commands: string, options: string[]) {
   return {
@@ -126,10 +127,10 @@ export async function saveUploadedFilesForTransformation(uploadedFiles: File[], 
 
 /**
  * Calls the analysis manager to start the transformation process.
- * @param {any} tsdm - The transformation service data model.
+ * @param {TechnologySpecificDeploymentModel} tsdm - The transformation service data model.
  * @returns {Promise<string>} A promise that resolves to the transformation process ID.
  */
-export async function callAnalysisManagerTransformation(tsdm: any): Promise<string> {
+export async function callAnalysisManagerTransformation(tsdm: TechnologySpecificDeploymentModel): Promise<string> {
   try {
     const response = await fetch(`/analysismanager/demaf/transform`, {
       method: "POST",
@@ -196,7 +197,7 @@ export async function pollTransformationProcessStatusForResult(transformationPro
  * @param {string} selectedTechnology - The selected technology.
  * @param {string} commands - The commands to execute.
  * @param {string[]} options - The selected options.
- * @returns {Promise<{transformationProcessName: string, tsdm: any}>} A promise that resolves to the transformation process name and data model.
+ * @returns {Promise<{transformationProcessName: string, tsdm: TechnologySpecificDeploymentModel}>} A promise that resolves to the transformation process name and data model.
  */
 export async function handleSingleFileTransformation(uploadedFile: File, session: string, selectedTechnology: string, commands: string, options: string[]) {
   await saveUploadedFileForTransformation(uploadedFile, session);
@@ -213,11 +214,11 @@ export async function handleSingleFileTransformation(uploadedFile: File, session
  * @param {string} commands - The commands to execute.
  * @param {string[]} options - The selected options.
  * @param {string} startFilePath - The path to the start file.
- * @returns {Promise<{transformationProcessName: string, tsdm: any}>} A promise that resolves to the transformation process name and data model.
+ * @returns {Promise<{transformationProcessName: string, tsdm: TechnologySpecificDeploymentModel}>} A promise that resolves to the transformation process name and data model.
  */
 export async function handleMultipleFilesTransformation(uploadedFiles: File[], session: string, selectedTechnology: string, commands: string, options: string[], startFilePath: string) {
   const folderName = uploadedFiles[0].webkitRelativePath.split('/')[0];
-  var transformationProcessName, tsdm;
+  let transformationProcessName, tsdm;
 
   if (startFilePath == "" || startFilePath == "*") {
     transformationProcessName = folderName;
@@ -237,10 +238,10 @@ export async function handleMultipleFilesTransformation(uploadedFiles: File[], s
 
 /**
  * Starts the transformation process and polls for the result.
- * @param {any} tsdm - The transformation service data model.
+ * @param {TechnologySpecificDeploymentModel} tsdm - The transformation service data model.
  * @returns {Promise<{transformationProcessId: string, statusMessage: string}>} A promise that resolves to the transformation process ID and status message.
  */
-export async function startTransformationProcess(tsdm: any) {
+export async function startTransformationProcess(tsdm: TechnologySpecificDeploymentModel) {
   const transformationProcessId = await callAnalysisManagerTransformation(tsdm);
   const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, 10);
   return { transformationProcessId, statusMessage };
