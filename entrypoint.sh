@@ -13,10 +13,9 @@ echo "}" >> /app/dist/config.json
 
 envsubst "$(env | grep '^DEMAF_' | cut -d= -f1 | sed 's/^/${/;s/$/}/' | tr '\n' ' ')" < /etc/nginx/nginx.template.conf > /etc/nginx/nginx.conf
 
-echo "*/5 * * * * node /app/cleanup.js >> /var/log/cleanup.log 2>&1" > /etc/cron.d/cleanup
-crontab /etc/cron.d/cleanup
-crond
+envsubst '${CRON_SCHEDULE}' < /app/cronjob.template > /app/cronjob
+crontab /app/cronjob
+crond -f &
 
-tail -F /var/log/cleanup.log &
 node server.js &
 nginx -g "daemon off;"

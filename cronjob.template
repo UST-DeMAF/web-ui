@@ -1,0 +1,1 @@
+${CRON_SCHEDULE} node /app/cleanup.js
