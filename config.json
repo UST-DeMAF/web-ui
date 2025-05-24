@@ -1,4 +1,5 @@
 {
     "DEMAF_DOMAIN": "localhost",
-    "DEMAF_HTTPS": "false"
+    "DEMAF_HTTPS": "false",
+    "DEMAF_FILE_RETENTION" : "1440"
 }

@@ -13,4 +13,9 @@ echo "}" >> /app/dist/config.json
 
 envsubst "$(env | grep '^DEMAF_' | cut -d= -f1 | sed 's/^/${/;s/$/}/' | tr '\n' ' ')" < /etc/nginx/nginx.template.conf > /etc/nginx/nginx.conf
 
-node server.js & nginx -g "daemon off;"
+envsubst '${CRON_SCHEDULE}' < /app/cronjob.template > /app/cronjob
+crontab /app/cronjob
+crond -f &
+
+node server.js &
+nginx -g "daemon off;"
