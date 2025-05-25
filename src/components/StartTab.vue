@@ -414,9 +414,11 @@ export default {
       fileName: "",
       folderPrefix: "",
       lastTransformations: this._lastTransformations, // Data to store the last transformations
+      longInterval: false,
       selectedOptions: [],
       optionsInput: "",
       pluginsInterval: null,
+      pluginsTimer: null,
       selectedTechnology: null,
       session: this._session,
       showFileInput: false,
@@ -457,7 +459,8 @@ export default {
   },
   created() {
     this.loadRegisteredPlugins();
-    this.pluginsInterval = setInterval(this.loadRegisteredPlugins, 30000);
+    this.pluginsInterval = setInterval(this.loadRegisteredPlugins, 10000);
+    this.pluginsTimer = setTimeout(this.increasePluginsInterval, 180000);
   },
   methods: {
     handleFileUpload(event) {
@@ -483,9 +486,24 @@ export default {
         this.folderPrefix = folderName + '/';
       }
     },
+    increasePluginsInterval(){
+      console.log("Increasing plugins interval.");
+      this.longInterval = true;
+      clearInterval(this.pluginsInterval);
+      this.pluginsInterval = setInterval(this.loadRegisteredPlugins, 60000);
+    },
     async loadRegisteredPlugins() {
       try {
-        this.technologies = await getRegisteredPlugins();
+        let plugins = await getRegisteredPlugins();
+
+        // Reset timer as long as the list of plugins changes and the short interval is still active
+        if (!this.longInterval && plugins.length !== this.technologies.length) {
+          console.log("Reset timer for plugins interval.");
+          clearTimeout(this.pluginsTimer);
+          this.pluginsTimer = setTimeout(this.increasePluginsInterval, 180000);
+        }
+
+        this.technologies = plugins;
         console.log("Registered extensions successfully received.");
       } catch (error) {
         console.log("Error while receiving registered extensions.");
