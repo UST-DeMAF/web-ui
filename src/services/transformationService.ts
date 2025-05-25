@@ -24,20 +24,23 @@ function createTSDM(technology: string, location: string, commands: string, opti
  * @returns {Promise<boolean>} A promise that resolves to true if the TADM exists, false otherwise.
  */
 export async function existsTADM(tadm: string): Promise<boolean> {
-  let exists = false;
-
   try {
-    const response = await fetch(`/tadms/exists?fileName=${tadm}.yaml`);
+    const response = await fetch(`tadms/exists`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ fileName: `${tadm}.yaml` }),
+    });
+
     if (!response.ok) {
       throw new Error("Failed to check if TADM exists");
     }
     const data = await response.json();
-    exists = data.exists;
+    return data.exists;
   } catch (error) {
     console.error("Error while checking if TADM exists:", error);
     throw error;
-  } finally {
-    return exists;
   }
 }
 

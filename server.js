@@ -1,8 +1,8 @@
-import  express from 'express';
-import  multer from 'multer';
-import  cors from 'cors';
-import  path from 'path';
-import  fs from 'fs';
+import express from 'express';
+import multer from 'multer';
+import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
 
 const app = express();
 const port = 3000; // Port for the Express server
@@ -61,20 +61,17 @@ app.post('/upload-multiple', upload.array('files', 1000), (req, res) => {
   res.send('Files uploaded successfully.');
 });
 
-app.get('/tadms/exists', (req, res) => {
-  const fileName = req.query.fileName; // Get file name from query parameter
+// POST endpoint to check whether a tadm file is available
+app.post('/tadms/exists', express.json(), (req, res) => {
+  const fileName = req.body.fileName; // Get file name from request body
 
-  if (!fileName) {
-    return res.status(400).send('File name is required.');
+  if (!fileName || typeof fileName !== 'string') {
+    return res.status(400).json({ error: 'Invalid or missing file name.' });
   }
 
   const filePath = path.join('/usr/share/tadms/', fileName);
 
-  if (fs.existsSync(filePath)) {
-    return res.json({fileName: fileName, exists: true});
-  } else {
-    return res.json({fileName: fileName, exists: false});
-  }
+  return res.json({ fileName: fileName, exists: fs.existsSync(filePath) });
 });
 
 // GET endpoint to return a tadm with a given ID
