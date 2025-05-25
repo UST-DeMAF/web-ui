@@ -52,9 +52,9 @@
         </h4>
 
         <v-text-field
+          v-if="showFileInput"
           v-model="fileName"
           class="mx-2 my-4 px-4"
-          v-if="showFileInput"
           color="primary"
           label="File"
           placeholder="No file selected"
@@ -75,9 +75,9 @@
               v-bind="props"
             >
               <v-text-field
+                v-if="showFolderInput"
                 v-model="startFilePath"
                 color="primary"
-                v-if="showFolderInput"
                 label="Start file"
                 placeholder="Relative path to main file"
                 :prefix="folderPrefix"
@@ -414,8 +414,11 @@ export default {
       fileName: "",
       folderPrefix: "",
       lastTransformations: this._lastTransformations, // Data to store the last transformations
+      longInterval: false,
       selectedOptions: [],
       optionsInput: "",
+      pluginsInterval: null,
+      pluginsTimer: null,
       selectedTechnology: null,
       session: this._session,
       showFileInput: false,
@@ -448,8 +451,16 @@ export default {
       this.selectedOptions = value.split(",").map((opt) => opt.trim());
     },
   },
+  beforeUnmount() {
+    // Clear the plugins interval
+    if (this.pluginsInterval) {
+      clearInterval(this.pluginsInterval);
+    }
+  },
   created() {
     this.loadRegisteredPlugins();
+    this.pluginsInterval = setInterval(this.loadRegisteredPlugins, 10000);
+    this.pluginsTimer = setTimeout(this.increasePluginsInterval, 180000);
   },
   methods: {
     handleFileUpload(event) {
@@ -475,9 +486,24 @@ export default {
         this.folderPrefix = folderName + '/';
       }
     },
+    increasePluginsInterval(){
+      console.log("Increasing plugins interval.");
+      this.longInterval = true;
+      clearInterval(this.pluginsInterval);
+      this.pluginsInterval = setInterval(this.loadRegisteredPlugins, 60000);
+    },
     async loadRegisteredPlugins() {
       try {
-        this.technologies = await getRegisteredPlugins();
+        let plugins = await getRegisteredPlugins();
+
+        // Reset timer as long as the list of plugins changes and the short interval is still active
+        if (!this.longInterval && plugins.length !== this.technologies.length) {
+          console.log("Reset timer for plugins interval.");
+          clearTimeout(this.pluginsTimer);
+          this.pluginsTimer = setTimeout(this.increasePluginsInterval, 180000);
+        }
+
+        this.technologies = plugins;
         console.log("Registered extensions successfully received.");
       } catch (error) {
         console.log("Error while receiving registered extensions.");
