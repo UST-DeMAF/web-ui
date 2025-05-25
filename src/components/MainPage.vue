@@ -200,6 +200,7 @@ export default {
           break;
         }
       }
+      // Jump back to start tab when current tab is closed
       if (this.selectedTab === value) {
         this.selectedTab = "Start";
       }
@@ -245,6 +246,7 @@ export default {
           break;
         }
       }
+      // Jump back to start tab when current transformation is closed
       if (this.selectedTab === value) {
         this.selectedTab = "Start";
       }
