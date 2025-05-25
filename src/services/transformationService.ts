@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import type { TechnologySpecificDeploymentModel } from '@/types/models';
 
 /**
  * Creates a technology-specific deployment model object.
@@ -6,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
  * @param {string} location - The location of the file(s) to transform.
  * @param {string} commands - The commands to execute.
  * @param {string[]} options - The selected options.
- * @returns {any} The technology-specific deployment model object.
+ * @returns {TechnologySpecificDeploymentModel} The technology-specific deployment model object.
 */
 function createTSDM(technology: string, location: string, commands: string, options: string[]) {
   return {
@@ -18,12 +19,38 @@ function createTSDM(technology: string, location: string, commands: string, opti
 }
 
 /**
+ * Checks if the specified TADM exists on the server.
+ * @param tadm - The technology-agnostic deployment model (TADM) name to check.
+ * @returns {Promise<boolean>} A promise that resolves to true if the TADM exists, false otherwise.
+ */
+export async function existsTADM(tadm: string): Promise<boolean> {
+  try {
+    const response = await fetch(`tadms/exists`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ fileName: `${tadm}.yaml` }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to check if TADM exists");
+    }
+    const data = await response.json();
+    return data.exists;
+  } catch (error) {
+    console.error("Error while checking if TADM exists:", error);
+    throw error;
+  }
+}
+
+/**
  * Fetches the list of registered plugins from the server.
  * @returns {Promise<string[]>} A promise that resolves to an array of plugin names.
  */
 export async function getRegisteredPlugins(): Promise<string[]> {
   try {
-    const response = await fetch("http://localhost:8080/demaf/plugins", {
+    const response = await fetch(`/analysismanager/demaf/plugins`, {
       method: "GET",
     });
 
@@ -56,6 +83,39 @@ export function generateSessionId(): string {
 }
 
 /**
+ * Moves a uploaded file to the TADMS directory.
+ * @param {string} fileName - The name of the file to move.
+ * @param {string} sessionId - The session ID associated with the file.
+ * @param {string} taskId - The task ID associated with the file.
+ */
+export async function moveToTADMS(fileName: string, sessionId: string, taskId: string) {
+  if (!fileName || !taskId) {
+    throw new Error("File name and task ID are required to move file to TADMS");
+  }
+
+  try {
+    const response = await fetch(`/move-to-tadms`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ fileName, sessionId, taskId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to move file to TADMS`);
+    }
+
+    const data = await response.json();
+
+    console.log(data.message);
+  } catch (error) {
+    console.error("Error moving file to TADMS:", error);
+    throw error;
+  }
+}
+
+/**
  * Checks if the total size of the uploaded files exceeds the maximum allowed size.
  * @param {File[]} files - The array of files to check.
  * @returns {boolean} True if the total size is within the limit, false otherwise.
@@ -76,7 +136,7 @@ export async function saveUploadedFileForTransformation(uploadedFile: File, sess
   formData.append("file", uploadedFile);
 
   try {
-    const response = await fetch(`http://localhost:3000/upload?sessionId=${sessionId}`, {
+    const response = await fetch(`/upload?sessionId=${sessionId}`, {
       method: "POST",
       body: formData,
     });
@@ -107,7 +167,7 @@ export async function saveUploadedFilesForTransformation(uploadedFiles: File[], 
   });
 
   try {
-    const endpoint = uploadedFiles.length === 1 ? `http://localhost:3000/upload?sessionId=${sessionId}` : `http://localhost:3000/upload-multiple?sessionId=${sessionId}`;
+    const endpoint = uploadedFiles.length === 1 ? `/upload?sessionId=${sessionId}` : `/upload-multiple?sessionId=${sessionId}`;
     const response = await fetch(endpoint, {
       method: 'POST',
       body: formData,
@@ -126,12 +186,12 @@ export async function saveUploadedFilesForTransformation(uploadedFiles: File[], 
 
 /**
  * Calls the analysis manager to start the transformation process.
- * @param {any} tsdm - The transformation service data model.
+ * @param {TechnologySpecificDeploymentModel} tsdm - The transformation service data model.
  * @returns {Promise<string>} A promise that resolves to the transformation process ID.
  */
-export async function callAnalysisManagerTransformation(tsdm: any): Promise<string> {
+export async function callAnalysisManagerTransformation(tsdm: TechnologySpecificDeploymentModel): Promise<string> {
   try {
-    const response = await fetch("http://localhost:8080/demaf/transform", {
+    const response = await fetch(`/analysismanager/demaf/transform`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -162,7 +222,7 @@ export async function callAnalysisManagerTransformation(tsdm: any): Promise<stri
  */
 export async function pollTransformationProcessStatusForResult(transformationProcessId: string, delayInMilliSeconds: number): Promise<string> {
   try {
-    const response = await fetch(`http://localhost:8080/demaf/status/${transformationProcessId}`, {
+    const response = await fetch(`/analysismanager/demaf/status/${transformationProcessId}`, {
       method: "GET",
       headers: {
         "Accept": "application/json",
@@ -196,7 +256,7 @@ export async function pollTransformationProcessStatusForResult(transformationPro
  * @param {string} selectedTechnology - The selected technology.
  * @param {string} commands - The commands to execute.
  * @param {string[]} options - The selected options.
- * @returns {Promise<{transformationProcessName: string, tsdm: any}>} A promise that resolves to the transformation process name and data model.
+ * @returns {Promise<{transformationProcessName: string, tsdm: TechnologySpecificDeploymentModel}>} A promise that resolves to the transformation process name and data model.
  */
 export async function handleSingleFileTransformation(uploadedFile: File, session: string, selectedTechnology: string, commands: string, options: string[]) {
   await saveUploadedFileForTransformation(uploadedFile, session);
@@ -213,11 +273,11 @@ export async function handleSingleFileTransformation(uploadedFile: File, session
  * @param {string} commands - The commands to execute.
  * @param {string[]} options - The selected options.
  * @param {string} startFilePath - The path to the start file.
- * @returns {Promise<{transformationProcessName: string, tsdm: any}>} A promise that resolves to the transformation process name and data model.
+ * @returns {Promise<{transformationProcessName: string, tsdm: TechnologySpecificDeploymentModel}>} A promise that resolves to the transformation process name and data model.
  */
 export async function handleMultipleFilesTransformation(uploadedFiles: File[], session: string, selectedTechnology: string, commands: string, options: string[], startFilePath: string) {
   const folderName = uploadedFiles[0].webkitRelativePath.split('/')[0];
-  var transformationProcessName, tsdm;
+  let transformationProcessName, tsdm;
 
   if (startFilePath == "" || startFilePath == "*") {
     transformationProcessName = folderName;
@@ -237,10 +297,10 @@ export async function handleMultipleFilesTransformation(uploadedFiles: File[], s
 
 /**
  * Starts the transformation process and polls for the result.
- * @param {any} tsdm - The transformation service data model.
+ * @param {TechnologySpecificDeploymentModel} tsdm - The transformation service data model.
  * @returns {Promise<{transformationProcessId: string, statusMessage: string}>} A promise that resolves to the transformation process ID and status message.
  */
-export async function startTransformationProcess(tsdm: any) {
+export async function startTransformationProcess(tsdm: TechnologySpecificDeploymentModel) {
   const transformationProcessId = await callAnalysisManagerTransformation(tsdm);
   const statusMessage = await pollTransformationProcessStatusForResult(transformationProcessId, 10);
   return { transformationProcessId, statusMessage };

@@ -1,30 +1,63 @@
 <template>
-  <v-container class="my-2" height="calc(100vh - 225px)" v-if="showTADM">
-    <v-textarea class="rounded-lg w-100 h-100 border-none" color="primary" :value="tadm" variant="outlined" readonly no-resize/>
+  <v-container
+    v-if="showTADM"
+    class="my-2"
+    height="calc(100vh - 225px)"
+  >
+    <v-textarea
+      class="rounded-lg w-100 h-100 border-none"
+      color="primary"
+      :value="tadm"
+      variant="outlined"
+      readonly
+      no-resize
+    />
   </v-container>
-  <v-container class="my-2" height="calc(100vh - 225px)" v-else>
-    <iframe class="rounded-lg w-100 h-100 border-none" :src="wineryUrl"/>
+  <v-container
+    v-else
+    class="my-2"
+    height="calc(100vh - 225px)"
+  >
+    <iframe
+      class="rounded-lg w-100 h-100 border-none"
+      :src="url"
+    />
   </v-container>
   <v-container>
     <v-row class="w-100">
-      <v-switch class="mx-7" v-model="showTADM" color="primary" @change="loadTADM" label="Show TADM" hide-details flat/>
-      <v-spacer/>
-      <v-btn class="mx-2 my-auto" disabled color="primary" @click="downloadCSAR" flat>Download CSAR</v-btn>
-      <v-btn class="mx-2 my-auto" color="primary" @click="downloadTADM" flat>Download TADM</v-btn>
+      <v-switch
+        v-model="showTADM"
+        class="mx-7"
+        color="primary"
+        label="Show TADM"
+        hide-details
+        flat
+        @change="loadTADM"
+      />
+      <v-spacer />
+      <v-btn
+        class="mx-2 my-auto"
+        disabled
+        color="primary"
+        flat
+        @click="downloadCSAR"
+      >
+        Download CSAR
+      </v-btn>
+      <v-btn
+        class="mx-2 my-auto"
+        color="primary"
+        flat
+        @click="downloadTADM"
+      >
+        Download TADM
+      </v-btn>
     </v-row>
   </v-container>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      showTADM: this._showTADM,
-      tadm: null,
-      transformationProcessId: this._transformationProcessId,
-      wineryUrl: "http://localhost/winery-topologymodeler/?repositoryURL=http:%2F%2Flocalhost:%2Fwinery&uiURL=http:%2F%2Flocalhost%2F%23%2F&ns=ust.tad.servicetemplates&id=" + this._transformationProcessId + "&topologyProDecURL=http:%2F%2Flocalhost:9090",
-    };
-  },
   props: {
     _showTADM: {
       type: Boolean,
@@ -34,6 +67,16 @@ export default {
       type: String,
       required: true,
     },
+  },
+  data() {
+    const protocol = this.$runtimeConfig?.DEMAF_HTTPS === "true" ? "https" : "http";
+    const domain = this.$runtimeConfig?.DEMAF_DOMAIN;
+    return {
+      showTADM: this._showTADM,
+      tadm: null,
+      transformationProcessId: this._transformationProcessId,
+      url: `${protocol}://${domain}/winery/winery-topologymodeler/?repositoryURL=${protocol}:%2F%2F${domain}:%2Fwinery%2Fwinery&uiURL=${protocol}:%2F%2F${domain}%2Fwinery%2F%23%2F&ns=ust.tad.servicetemplates&id=${this._transformationProcessId}&topologyProDecURL=${protocol}:%2F%2F${domain}:9090`
+    };
   },
   watch: {
     _showTADM: function (value) {
@@ -49,7 +92,7 @@ export default {
   methods: {
     async loadTADM() {
       if (this.tadm === null) {
-        const url = "http://localhost:3000/tadms/" + this.transformationProcessId + ".yaml";
+        const url = "/tadms/" + this.transformationProcessId + ".yaml";
         try {
           const response = await fetch(url);
           this.tadm = await response.text();

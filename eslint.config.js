@@ -5,12 +5,22 @@
  */
 
 import pluginVue from 'eslint-plugin-vue'
+import tsParser from '@typescript-eslint/parser'
+import vueParser from 'vue-eslint-parser'
 import vueTsEslintConfig from '@vue/eslint-config-typescript'
 
 export default [
   {
     name: 'app/files-to-lint',
     files: ['**/*.{ts,mts,tsx,vue}'],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tsParser,
+        ecmaVersion: 2024,
+        sourceType: 'module',
+      },
+    },
   },
 
   {
@@ -31,6 +41,7 @@ export default [
         },
       ],
       'vue/multi-word-component-names': 'off',
+      'vue/block-lang': 'off',
     }
   }
 ]

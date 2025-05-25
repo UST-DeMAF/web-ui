@@ -1,119 +1,243 @@
 <template>
-  <v-row class="h-100" no-gutters>
-    <v-col class="fit-content-container ma-2 mb-auto" align-self="center">
+  <v-row
+    class="h-100"
+    no-gutters
+  >
+    <v-col
+      class="fit-content-container ma-2 mb-auto"
+      align-self="center"
+    >
       <v-container>
-        <v-card class="border-md border-primary rounded-lg" title="Last transformations" density="compact" flat>
-          <v-list class="pa-0 py-2 border-t-md" color="primary">
-            <v-list-item class="ma-2 border-md rounded-pill" v-for="(transformation, t) in lastTransformations" :key="t"
-              :value="transformation.id" @click="openTrans(transformation.id)">
-              <template v-slot:prepend>
+        <v-card
+          class="border-md border-primary rounded-lg"
+          title="Last transformations"
+          density="compact"
+          flat
+        >
+          <v-list
+            class="pa-0 py-2 border-t-md"
+            color="primary"
+          >
+            <v-list-item
+              v-for="(transformation, t) in lastTransformations"
+              :key="t"
+              class="ma-2 border-md rounded-pill"
+              :value="transformation.id"
+              @click="openTrans(transformation.id)"
+            >
+              <template #prepend>
                 <v-icon>far fa-file</v-icon>
               </template>
               <v-list-item-title>{{ transformation.name }}</v-list-item-title>
-              <template v-slot:append>
-                <v-btn icon="fas fa-xmark" size="x-small" variant="plain"
-                  @click.stop="removeTrans(transformation.id)" />
+              <template #append>
+                <v-btn
+                  icon="fas fa-xmark"
+                  size="x-small"
+                  variant="plain"
+                  @click.stop="removeTrans(transformation.id)"
+                />
               </template>
             </v-list-item>
           </v-list>
         </v-card>
       </v-container>
     </v-col>
-    <v-col class="my-4 px-6 flex-grow-1" style="margin-top: 10vh !important;">
+    <v-col
+      class="my-4 px-6 flex-grow-1"
+      style="margin-top: 10vh !important;"
+    >
       <v-container class="mx-auto pa-0 pt-3 pb-4 border-md border-primary rounded-lg w-100 w-md-75 w-lg-50">
         <h4 class="mb-4 pb-2 text-h6 text-center border-b-md">
           Deployment Model Transformation
         </h4>
 
-        <v-text-field class="mx-2 my-4 px-4" color="primary" label="File" placeholder="No file selected" readonly
-          variant="outlined" hide-details prepend-icon="fas fa-file" v-model="fileName" v-if="showFileInput" />
+        <v-text-field
+          v-if="showFileInput"
+          v-model="fileName"
+          class="mx-2 my-4 px-4"
+          color="primary"
+          label="File"
+          placeholder="No file selected"
+          readonly
+          variant="outlined"
+          hide-details
+          prepend-icon="fas fa-file"
+        />
 
-        <v-tooltip content-class="tooltip-info text-center" offset="-4" location="start">
-          <template v-slot:activator="{ props }">
-            <div class="mx-2 my-4 px-4 flex-grow-0" v-bind="props">
-              <v-text-field color="primary" label="Start file" placeholder="Relative path to main file"
-                :prefix="folderPrefix" variant="outlined" hide-details prepend-icon="fas fa-folder"
-                v-model="startFilePath" v-if="showFolderInput" />
+        <v-tooltip
+          content-class="tooltip-info text-center"
+          offset="-4"
+          location="start"
+        >
+          <template #activator="{ props }">
+            <div
+              class="mx-2 my-4 px-4 flex-grow-0"
+              v-bind="props"
+            >
+              <v-text-field
+                v-if="showFolderInput"
+                v-model="startFilePath"
+                color="primary"
+                label="Start file"
+                placeholder="Relative path to main file"
+                :prefix="folderPrefix"
+                variant="outlined"
+                hide-details
+                prepend-icon="fas fa-folder"
+              />
             </div>
           </template>
 
           <span>
-            Leave this blank or use <code>*</code> to use all uploaded files,<br />
-            or specify the <i>main entrypoint</i>, relative to the uploaded folder.<br />
-            This is the file which is used to start the deployment model.<br />
+            Leave this blank or use <code>*</code> to use all uploaded files,<br>
+            or specify the <i>main entrypoint</i>, relative to the uploaded folder.<br>
+            This is the file which is used to start the deployment model.<br>
             For example, <i>Terraform</i> usually has a main file called <code>main.tf</code>.
           </span>
         </v-tooltip>
 
-        <input class="d-none mx-2 my-4 px-4" type="file" name="file" @change="handleFileUpload" ref="fileInput">
-        <input class="d-none mx-2 my-4 px-4" type="file" name="files" webkitdirectory multiple
-          @change="handleFolderUpload" ref="folderInput">
+        <input
+          ref="fileInput"
+          class="d-none mx-2 my-4 px-4"
+          type="file"
+          name="file"
+          @change="handleFileUpload"
+        >
+        <input
+          ref="folderInput"
+          class="d-none mx-2 my-4 px-4"
+          type="file"
+          name="files"
+          webkitdirectory
+          multiple
+          @change="handleFolderUpload"
+        >
 
-        <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-btn class="mx-4 my-2 ml-lg-auto" rounded="LG" @click="selectFile" color="primary" variant="tonal"
-            prepend-icon="fas fa-file">
+        <v-row
+          class="ma-n2 px-4"
+          align="center"
+          justify="center"
+        >
+          <v-btn
+            class="mx-4 my-2 ml-lg-auto"
+            rounded="LG"
+            color="primary"
+            variant="tonal"
+            prepend-icon="fas fa-file"
+            @click="selectFile"
+          >
             Select File
           </v-btn>
-          <v-btn class="mx-4 my-2 mr-lg-auto" rounded="LG" @click="selectFolder" color="primary" variant="tonal"
-            prepend-icon="fas fa-folder">
+          <v-btn
+            class="mx-4 my-2 mr-lg-auto"
+            rounded="LG"
+            color="primary"
+            variant="tonal"
+            prepend-icon="fas fa-folder"
+            @click="selectFolder"
+          >
             Select Folder
           </v-btn>
         </v-row>
 
-        <v-tooltip content-class="tooltip-info text-center" offset="-4" location="start">
-          <template v-slot:activator="{ props }">
-            <div class="mx-2 my-4 px-4 flex-grow-0" v-bind="props">
-              <v-select color="primary" v-model="selectedTechnology" label="Technology" min-width="148px"
-                :items="technologies" variant="outlined" hide-details />
+        <v-tooltip
+          content-class="tooltip-info text-center"
+          offset="-4"
+          location="start"
+        >
+          <template #activator="{ props }">
+            <div
+              class="mx-2 my-4 px-4 flex-grow-0"
+              v-bind="props"
+            >
+              <v-select
+                v-model="selectedTechnology"
+                color="primary"
+                label="Technology"
+                min-width="148px"
+                :items="technologies"
+                variant="outlined"
+                hide-details
+              />
             </div>
           </template>
 
           <span>
-            Select which Deployment Model <i>Technology</i> you're using.<br />
+            Select which Deployment Model <i>Technology</i> you're using.<br>
             This lists all available plugins.
           </span>
         </v-tooltip>
 
-        <v-tooltip content-class="tooltip-info text-center" offset="-4" location="start">
-          <template v-slot:activator="{ props }">
-            <div class="mx-2 my-4 px-4 flex-grow-0" v-bind="props">
-              <v-text-field color="primary" v-model="commands" label="Deployment Command(s)" min-width="120px"
-                variant="outlined" hide-details />
+        <v-tooltip
+          content-class="tooltip-info text-center"
+          offset="-4"
+          location="start"
+        >
+          <template #activator="{ props }">
+            <div
+              class="mx-2 my-4 px-4 flex-grow-0"
+              v-bind="props"
+            >
+              <v-text-field
+                v-model="commands"
+                color="primary"
+                label="Deployment Command(s)"
+                min-width="120px"
+                variant="outlined"
+                hide-details
+              />
             </div>
           </template>
 
           <span>
             <i>Optional:</i>
-            Specify the command which is used to deploy the model.<br />
+            Specify the command which is used to deploy the model.<br>
             (e.g., for Terraform, you can pass parameters for the execution plan)
           </span>
         </v-tooltip>
 
-        <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-tooltip content-class="tooltip-info text-center" location="start" max-width="450px">
-            <template v-slot:activator="{ props }">
-              <div class="mx-4 my-2 flex-grow-0 mr-lg-auto w-100 w-lg-60" v-bind="props">
-                <v-text-field color="primary" v-model="optionsInput" label="Options" variant="outlined" hide-details />
+        <v-row
+          class="ma-n2 px-4"
+          align="center"
+          justify="center"
+        >
+          <v-tooltip
+            content-class="tooltip-info text-center"
+            location="start"
+            max-width="450px"
+          >
+            <template #activator="{ props }">
+              <div
+                class="mx-4 my-2 flex-grow-0 mr-lg-auto w-100 w-lg-60"
+                v-bind="props"
+              >
+                <v-text-field
+                  v-model="optionsInput"
+                  color="primary"
+                  label="Options"
+                  variant="outlined"
+                  hide-details
+                />
               </div>
             </template>
 
             <span>
               <i>Optional:</i>
-              Specify additional options for the transformation as a comma-separated list.<br />
-              The following are the current available options:<br />
+              Specify additional options for the transformation as a comma-separated list.<br>
+              The following are the current available options:<br>
               <table class="mx-auto my-2 tooltip-table">
                 <tbody>
                   <tr>
                     <td style="width: 35%;"><code>width=&lt;pixels&gt;</code></td>
-                    <td>The width of the visualization<br />(default: <code>1080</code>)</td>
+                    <td>The width of the visualization<br>(default: <code>1080</code>)</td>
                   </tr>
                   <tr>
                     <td><code>height=&lt;pixels&gt;</code></td>
-                    <td>The height of the visualization<br />(default: <code>1920</code>)</td>
+                    <td>The height of the visualization<br>(default: <code>1920</code>)</td>
                   </tr>
                   <tr>
                     <td><code>dpi=&lt;dots&gt;</code></td>
-                    <td>The DPI of the visualization; choose <code>144</code> for high DPI monitors<br />(default:
+                    <td>The DPI of the visualization; choose <code>144</code> for high DPI monitors<br>(default:
                       <code>96</code>)
                     </td>
                   </tr>
@@ -123,16 +247,30 @@
             </span>
           </v-tooltip>
 
-          <v-tooltip content-class="tooltip-info text-center" max-width="400px" location="end">
-            <template v-slot:activator="{ props }">
-              <div class="mx-4 my-2 flex-grow-0 ml-lg-auto w-100 w-lg-25" v-bind="props">
-                <v-select color="primary" v-model="flatten" label="Flatten" :items="['false', 'true', 'partial']" chips
-                  variant="outlined" hide-details />
+          <v-tooltip
+            content-class="tooltip-info text-center"
+            max-width="400px"
+            location="end"
+          >
+            <template #activator="{ props }">
+              <div
+                class="mx-4 my-2 flex-grow-0 ml-lg-auto w-100 w-lg-25"
+                v-bind="props"
+              >
+                <v-select
+                  v-model="flatten"
+                  color="primary"
+                  label="Flatten"
+                  :items="['false', 'true', 'partial']"
+                  chips
+                  variant="outlined"
+                  hide-details
+                />
               </div>
             </template>
 
             <span>
-              There are three options for flattening the resulting visualization available:<br />
+              There are three options for flattening the resulting visualization available:<br>
               <table class="mx-auto mt-2 tooltip-table">
                 <tbody>
                   <tr>
@@ -153,13 +291,29 @@
           </v-tooltip>
         </v-row>
 
-        <v-row class="ma-n2 px-4" align="center" justify="center">
-          <v-tooltip content-class="tooltip-error text-center" location="bottom"
-            :disabled="uploadedFiles.length && selectedTechnology && (showFileInput || showFolderInput)">
-            <template v-slot:activator="{ props }">
-              <div class="d-inline-block mx-4 my-2 ml-lg-auto" v-bind="props">
-                <v-btn color="primary" :disabled="(!uploadedFiles.length || !selectedTechnology) || transform"
-                  rounded="LG" @click="startTransformation" v-bind="props" flat>
+        <v-row
+          class="ma-n2 px-4"
+          align="center"
+          justify="center"
+        >
+          <v-tooltip
+            content-class="tooltip-error text-center"
+            location="bottom"
+            :disabled="uploadedFiles.length && selectedTechnology && (showFileInput || showFolderInput)"
+          >
+            <template #activator="{ props }">
+              <div
+                class="d-inline-block mx-4 my-2 ml-lg-auto"
+                v-bind="props"
+              >
+                <v-btn
+                  color="primary"
+                  :disabled="(!uploadedFiles.length || !selectedTechnology) || transform"
+                  rounded="LG"
+                  v-bind="props"
+                  flat
+                  @click="startTransformation"
+                >
                   Transform
                 </v-btn>
               </div>
@@ -175,17 +329,30 @@
             </span>
           </v-tooltip>
 
-          <v-tooltip content-class="tooltip-info text-center" offset="0" max-width="300px" location="bottom">
-            <template v-slot:activator="{ props }">
-              <div class="mr-lg-auto" v-bind="props">
-                <v-checkbox v-model="storeSettings" label="Store Settings" color="primary" hide-details />
+          <v-tooltip
+            content-class="tooltip-info text-center"
+            offset="0"
+            max-width="300px"
+            location="bottom"
+          >
+            <template #activator="{ props }">
+              <div
+                class="mr-lg-auto"
+                v-bind="props"
+              >
+                <v-checkbox
+                  v-model="storeSettings"
+                  label="Store Settings"
+                  color="primary"
+                  hide-details
+                />
               </div>
             </template>
 
             <span>
-              Whether to store the current settings after the transformation.<br />
+              Whether to store the current settings after the transformation.<br>
               This includes the <i>selected file/folder</i>, <i>start file</i>, <i>technology</i>, <i>options</i>, and
-              <i>commands</i>.<br /><br />
+              <i>commands</i>.<br><br>
               <strong class="text-error text-decoration-underline">Careful:</strong> This will overwrite the currently
               saved
               settings!
@@ -194,16 +361,25 @@
         </v-row>
       </v-container>
 
-      <v-container class="mt-8" v-if="transform || error">
+      <v-container
+        v-if="transform || error"
+        class="mt-8"
+      >
         <v-row>
           <v-spacer />
-          <v-icon :style="{ color: status.color }" size="64px">
+          <v-icon
+            :style="{ color: status.color }"
+            size="64px"
+          >
             {{ status.icon }}
           </v-icon>
           <v-spacer />
         </v-row>
 
-        <v-row class="text-sm-h7 text-md-h6" :style="{ color: status.color }">
+        <v-row
+          class="text-sm-h7 text-md-h6"
+          :style="{ color: status.color }"
+        >
           <v-spacer />
           <p>
             {{ status.message }}
@@ -217,16 +393,19 @@
 
 <script>
 import {
+  checkTotalSize,
   getRegisteredPlugins,
   handleSingleFileTransformation,
   handleMultipleFilesTransformation,
-  startTransformationProcess,
-  checkTotalSize
+  moveToTADMS,
+  startTransformationProcess
 } from "@/services/transformationService";
 
 export default {
-  created() {
-    this.loadRegisteredPlugins();
+  props: {
+    _lastTransformations: Array, // Prop to store the last transformations
+    _session: String, // Prop to store the session ID
+    _viewTabs: Array,
   },
   data() {
     return {
@@ -236,8 +415,11 @@ export default {
       fileName: "",
       folderPrefix: "",
       lastTransformations: this._lastTransformations, // Data to store the last transformations
+      longInterval: false,
       selectedOptions: [],
       optionsInput: "",
+      pluginsInterval: null,
+      pluginsTimer: null,
       selectedTechnology: null,
       session: this._session,
       showFileInput: false,
@@ -249,12 +431,37 @@ export default {
         color: "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))",
       },
       storeSettings: false,
-      technologies: ["helm", "kubernetes", "terraform"],
+      technologies: [],
       transform: false,
       transformationProcesses: [],
       uploadedFiles: [],
       viewTabs: this._viewTabs
     };
+  },
+  watch: {
+    _lastTransformations: function (value) {
+      this.lastTransformations = value;
+    },
+    _session: function (value) {
+      this.session = value;
+    },
+    _viewTabs: function (value) {
+      this.viewTabs = value;
+    },
+    optionsInput: function (value) {
+      this.selectedOptions = value.split(",").map((opt) => opt.trim());
+    },
+  },
+  beforeUnmount() {
+    // Clear the plugins interval
+    if (this.pluginsInterval) {
+      clearInterval(this.pluginsInterval);
+    }
+  },
+  created() {
+    this.loadRegisteredPlugins();
+    this.pluginsInterval = setInterval(this.loadRegisteredPlugins, 10000);
+    this.pluginsTimer = setTimeout(this.increasePluginsInterval, 180000);
   },
   methods: {
     handleFileUpload(event) {
@@ -280,12 +487,27 @@ export default {
         this.folderPrefix = folderName + '/';
       }
     },
+    increasePluginsInterval() {
+      console.log("Increasing plugins interval.");
+      this.longInterval = true;
+      clearInterval(this.pluginsInterval);
+      this.pluginsInterval = setInterval(this.loadRegisteredPlugins, 60000);
+    },
     async loadRegisteredPlugins() {
       try {
-        this.technologies = await getRegisteredPlugins();
+        const plugins = await getRegisteredPlugins();
+
+        // Reset timer as long as the list of plugins changes and the short interval is still active
+        if (!this.longInterval && plugins.length !== this.technologies.length) {
+          console.log("Reset timer for plugins interval.");
+          clearTimeout(this.pluginsTimer);
+          this.pluginsTimer = setTimeout(this.increasePluginsInterval, 180000);
+        }
+
+        this.technologies = plugins;
         console.log("Registered extensions successfully received.");
       } catch (error) {
-        console.log("Error while receiving registered extensions.");
+        console.error("Error while receiving registered extensions:", error);
       }
     },
     openTrans(value) {
@@ -315,10 +537,6 @@ export default {
         alert("Please select a technology first.");
         return;
       }
-      // if (this.showFolderInput && !this.startFilePath) {
-      //   alert("Please specify the start file.");
-      //   return;
-      // } --> Removed to allow whole folder transformation
 
       console.log("Session ID:", this.session);
 
@@ -326,20 +544,21 @@ export default {
       this.updateStatus();
 
       try {
-        var transformationProcessName;
-        var tsdm;
+        let transformationProcessName;
+        let tsdm;
 
-        var options = this.selectedOptions; // Create a copy of selectedOptions
+        const options = this.selectedOptions; // Create a copy of selectedOptions
         options.push("flatten=" + this.flatten);
 
         console.log("Selected options: " + options);
 
+        const technology = this.selectedTechnology === "TADM" ? "visualization-service" : this.selectedTechnology;
 
         if (this.uploadedFiles.length === 1) {
           ({ transformationProcessName, tsdm } = await handleSingleFileTransformation(
             this.uploadedFiles[0],
             this.session,
-            this.selectedTechnology,
+            technology,
             this.commands,
             options
           ));
@@ -347,7 +566,7 @@ export default {
           ({ transformationProcessName, tsdm } = await handleMultipleFilesTransformation(
             this.uploadedFiles,
             this.session,
-            this.selectedTechnology,
+            technology,
             this.commands,
             options,
             this.startFilePath
@@ -373,6 +592,11 @@ export default {
             name: transformationProcessName,
             id: transformationProcessId,
           });
+
+          if (technology === "visualization-service") {
+            await moveToTADMS(this.uploadedFiles[0].name, this.session, transformationProcessId);
+          }
+
           this.openTrans(transformationProcessId); // Automatically select the new tab
         } else {
           this.error = true;
@@ -416,25 +640,6 @@ export default {
         this.status.color = "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))";
       }
     }
-  },
-  props: {
-    _lastTransformations: Array, // Prop to store the last transformations
-    _session: String, // Prop to store the session ID
-    _viewTabs: Array,
-  },
-  watch: {
-    _lastTransformations: function (value) {
-      this.lastTransformations = value;
-    },
-    _session: function (value) {
-      this.session = value;
-    },
-    _viewTabs: function (value) {
-      this.viewTabs = value;
-    },
-    optionsInput: function (value) {
-      this.selectedOptions = value.split(",").map((opt) => opt.trim());
-    },
   },
 };
 </script>

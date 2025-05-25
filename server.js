@@ -1,8 +1,9 @@
-const express = require('express');
-const multer = require('multer');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
+import express from 'express';
+import multer from 'multer';
+import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
+
 const app = express();
 const port = 3000; // Port for the Express server
 
@@ -20,6 +21,33 @@ const ensureDirExists = (dir) => {
 const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
+
+// POST endpoint to move a uploaded file to the tadms directory
+app.post('/move-to-tadms', express.json(), (req, res) => {
+  const fileName = req.body.fileName; // Get file name from request body
+  const sessionId = req.body.sessionId; // Get session ID from request body
+  const taskId = req.body.taskId; // Get task ID from request body
+
+  if (!fileName || typeof fileName !== 'string' ||
+    !sessionId || typeof sessionId !== 'string' ||
+    !taskId || typeof taskId !== 'string') {
+    return res.status(400).json({ error: 'Invalid or missing file name, session ID, or task ID.' });
+  }
+
+  const destinationPath = path.join('/usr/share/tadms/', taskId + '.yaml');
+  const sourcePath = path.join('/usr/share/uploads/', sessionId, fileName);
+
+  try {
+    if (!fs.existsSync(sourcePath)) {
+      return res.status(404).json({ error: 'File not found.' });
+    }
+    fs.renameSync(sourcePath, destinationPath);
+    res.status(200).json({ messsage: 'File moved successfully.' });
+  } catch (error) {
+    console.error('Error moving file:', error);
+    res.status(500).json({ error: 'Failed to move file.' });
+  }
+});
 
 // POST endpoint for single file uploads
 app.post('/upload', upload.single('file'), (req, res) => {
@@ -60,6 +88,19 @@ app.post('/upload-multiple', upload.array('files', 1000), (req, res) => {
   res.send('Files uploaded successfully.');
 });
 
+// POST endpoint to check whether a tadm file is available
+app.post('/tadms/exists', express.json(), (req, res) => {
+  const fileName = req.body.fileName; // Get file name from request body
+
+  if (!fileName || typeof fileName !== 'string') {
+    return res.status(400).json({ error: 'Invalid or missing file name.' });
+  }
+
+  const filePath = path.join('/usr/share/tadms/', fileName);
+
+  return res.json({ fileName: fileName, exists: fs.existsSync(filePath) });
+});
+
 // GET endpoint to return a tadm with a given ID
 app.get('/tadms/:fileName', (req, res) => {
   const fileName = req.params.fileName;
@@ -73,7 +114,7 @@ app.get('/tadms/:fileName', (req, res) => {
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
