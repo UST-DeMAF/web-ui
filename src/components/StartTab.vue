@@ -393,11 +393,12 @@
 
 <script>
 import {
+  checkTotalSize,
   getRegisteredPlugins,
   handleSingleFileTransformation,
   handleMultipleFilesTransformation,
-  startTransformationProcess,
-  checkTotalSize
+  moveToTADMS,
+  startTransformationProcess
 } from "@/services/transformationService";
 
 export default {
@@ -486,7 +487,7 @@ export default {
         this.folderPrefix = folderName + '/';
       }
     },
-    increasePluginsInterval(){
+    increasePluginsInterval() {
       console.log("Increasing plugins interval.");
       this.longInterval = true;
       clearInterval(this.pluginsInterval);
@@ -494,7 +495,7 @@ export default {
     },
     async loadRegisteredPlugins() {
       try {
-        let plugins = await getRegisteredPlugins();
+        const plugins = await getRegisteredPlugins();
 
         // Reset timer as long as the list of plugins changes and the short interval is still active
         if (!this.longInterval && plugins.length !== this.technologies.length) {
@@ -506,7 +507,7 @@ export default {
         this.technologies = plugins;
         console.log("Registered extensions successfully received.");
       } catch (error) {
-        console.log("Error while receiving registered extensions.");
+        console.error("Error while receiving registered extensions:", error);
       }
     },
     openTrans(value) {
@@ -591,6 +592,11 @@ export default {
             name: transformationProcessName,
             id: transformationProcessId,
           });
+
+          if (technology === "visualization-service") {
+            await moveToTADMS(this.uploadedFiles[0].name, this.session, transformationProcessId);
+          }
+
           this.openTrans(transformationProcessId); // Automatically select the new tab
         } else {
           this.error = true;

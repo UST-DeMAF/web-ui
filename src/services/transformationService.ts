@@ -83,6 +83,39 @@ export function generateSessionId(): string {
 }
 
 /**
+ * Moves a uploaded file to the TADMS directory.
+ * @param {string} fileName - The name of the file to move.
+ * @param {string} sessionId - The session ID associated with the file.
+ * @param {string} taskId - The task ID associated with the file.
+ */
+export async function moveToTADMS(fileName: string, sessionId: string, taskId: string) {
+  if (!fileName || !taskId) {
+    throw new Error("File name and task ID are required to move file to TADMS");
+  }
+
+  try {
+    const response = await fetch(`/move-to-tadms`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ fileName, sessionId, taskId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to move file to TADMS`);
+    }
+
+    const data = await response.json();
+
+    console.log(data.message);
+  } catch (error) {
+    console.error("Error moving file to TADMS:", error);
+    throw error;
+  }
+}
+
+/**
  * Checks if the total size of the uploaded files exceeds the maximum allowed size.
  * @param {File[]} files - The array of files to check.
  * @returns {boolean} True if the total size is within the limit, false otherwise.
