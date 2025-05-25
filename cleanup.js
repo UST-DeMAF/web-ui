@@ -19,6 +19,7 @@ function isOlder(filePath) {
         const stats = fs.statSync(filePath);
         return now - stats.mtimeMs > age_ms;
     } catch (error) {
+        console.error(`Error checking file age for ${filePath}:`, error);
         return false;
     }
 }
