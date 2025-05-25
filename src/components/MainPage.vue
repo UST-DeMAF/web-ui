@@ -182,7 +182,7 @@ export default {
   created() {
     this.initializeSession();
     this.updateTransformations();
-    this.transformationsInterval = setInterval(this.updateTransformations, 30000);
+    this.transformationsInterval = setInterval(this.updateTransformations, 300000);
   },
   methods: {
     test() {
