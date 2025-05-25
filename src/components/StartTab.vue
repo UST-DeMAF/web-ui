@@ -52,9 +52,9 @@
         </h4>
 
         <v-text-field
+          v-if="showFileInput"
           v-model="fileName"
           class="mx-2 my-4 px-4"
-          v-if="showFileInput"
           color="primary"
           label="File"
           placeholder="No file selected"
@@ -75,9 +75,9 @@
               v-bind="props"
             >
               <v-text-field
+                v-if="showFolderInput"
                 v-model="startFilePath"
                 color="primary"
-                v-if="showFolderInput"
                 label="Start file"
                 placeholder="Relative path to main file"
                 :prefix="folderPrefix"
@@ -416,6 +416,7 @@ export default {
       lastTransformations: this._lastTransformations, // Data to store the last transformations
       selectedOptions: [],
       optionsInput: "",
+      pluginsInterval: null,
       selectedTechnology: null,
       session: this._session,
       showFileInput: false,
@@ -448,8 +449,15 @@ export default {
       this.selectedOptions = value.split(",").map((opt) => opt.trim());
     },
   },
+  beforeUnmount() {
+    // Clear the plugins interval
+    if (this.pluginsInterval) {
+      clearInterval(this.pluginsInterval);
+    }
+  },
   created() {
     this.loadRegisteredPlugins();
+    this.pluginsInterval = setInterval(this.loadRegisteredPlugins, 30000);
   },
   methods: {
     handleFileUpload(event) {

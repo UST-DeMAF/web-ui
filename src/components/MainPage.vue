@@ -153,6 +153,7 @@ import { useTheme } from 'vuetify';
 import StartTab from "./StartTab.vue";
 import ViewTab from "./ViewTab.vue";
 import {
+  existsTADM,
   generateSessionId,
 } from "@/services/transformationService";
 
@@ -167,12 +168,21 @@ export default {
       lastTransformations: [],
       selectedTab: "Start",
       session: null,
-      viewTabs: [],
       theme: useTheme(),
+      transformationsInterval: null,
+      viewTabs: [],
     };
+  },
+  beforeUnmount() {
+    // Clear the transformations interval
+    if (this.transformationsInterval) {
+      clearInterval(this.transformationsInterval);
+    }
   },
   created() {
     this.initializeSession();
+    this.updateTransformations();
+    this.transformationsInterval = setInterval(this.updateTransformations, 30000);
   },
   methods: {
     test() {
@@ -235,6 +245,28 @@ export default {
           break;
         }
       }
+      if (this.selectedTab === value) {
+        this.selectedTab = "Start";
+      }
+    },
+    async updateTransformations() {
+      console.log("Update transformations");
+      const ids = [];
+
+      // Check for transformations that are no longer available
+      for (let i = 0; i < this.lastTransformations.length; i++) {
+        const exists = await existsTADM(this.lastTransformations[i].id);
+        if (!exists) {
+          ids.push(this.lastTransformations[i].id);
+        }
+      }
+
+      // Remove transformations that no longer exist
+      ids.forEach(id => {
+        this.removeTrans(id);
+      });
+
+      localStorage.setItem("lastTransformations", JSON.stringify(this.lastTransformations));
     },
     initializeSession() {
       this.session = localStorage.getItem("session");

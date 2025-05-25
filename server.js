@@ -61,6 +61,22 @@ app.post('/upload-multiple', upload.array('files', 1000), (req, res) => {
   res.send('Files uploaded successfully.');
 });
 
+app.get('/tadms/exists', (req, res) => {
+  const fileName = req.query.fileName; // Get file name from query parameter
+
+  if (!fileName) {
+    return res.status(400).send('File name is required.');
+  }
+
+  const filePath = path.join('/usr/share/tadms/', fileName);
+
+  if (fs.existsSync(filePath)) {
+    return res.json({fileName: fileName, exists: true});
+  } else {
+    return res.json({fileName: fileName, exists: false});
+  }
+});
+
 // GET endpoint to return a tadm with a given ID
 app.get('/tadms/:fileName', (req, res) => {
   const fileName = req.params.fileName;

@@ -19,6 +19,29 @@ function createTSDM(technology: string, location: string, commands: string, opti
 }
 
 /**
+ * Checks if the specified TADM exists on the server.
+ * @param tadm - The technology-agnostic deployment model (TADM) name to check.
+ * @returns {Promise<boolean>} A promise that resolves to true if the TADM exists, false otherwise.
+ */
+export async function existsTADM(tadm: string): Promise<boolean> {
+  let exists = false;
+
+  try {
+    const response = await fetch(`/tadms/exists?fileName=${tadm}.yaml`);
+    if (!response.ok) {
+      throw new Error("Failed to check if TADM exists");
+    }
+    const data = await response.json();
+    exists = data.exists;
+  } catch (error) {
+    console.error("Error while checking if TADM exists:", error);
+    throw error;
+  } finally {
+    return exists;
+  }
+}
+
+/**
  * Fetches the list of registered plugins from the server.
  * @returns {Promise<string[]>} A promise that resolves to an array of plugin names.
  */
