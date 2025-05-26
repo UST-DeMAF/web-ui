@@ -8,6 +8,19 @@ You can find the user guide for the WebUI [here](https://ust-demaf.github.io/web
 The web frontend only works (without customization) in the context of the entire DeMAF application using the [deployment-config](https://github.com/UST-DeMAF/deployment-config).
 The documentation for locally setting up the entire DeMAF application can be found [here](https://github.com/UST-DeMAF/EnPro-Documentation).
 
+### Configurations
+
+The WebUI is configured with the following environment variables:
+
+| Variable | Example Value | Required |
+| :--- | :--- | :---: |
+| `CRON_SCHEDULE` | "*/5 * * * *" | Yes |
+| `DEMAF_ANALYSIS_MANAGER_URL` | *"http://analysismanager:8080"* | Yes |
+| `DEMAF_DOMAIN` | *"localhost"* | Yes |
+| `DEMAF_HTTPS` | *"false"* | No |
+| `DEMAF_FILE_RETENTION` | *"1440"* | Yes |
+| `DEMAF_WINERY_URL` | *"http://winery:8080"*  | Yes |
+
 ## Application Setup
 
 ```shell
