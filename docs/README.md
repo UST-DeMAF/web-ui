@@ -8,7 +8,7 @@ DeMAF is still in development, some features may not work as intended and the be
 
 ## Getting Started
 
-![The initial web UI](figures/initial_ui.png)
+![The initial WebUI](figures/initial_ui.png)
 
 ### Summary
 
@@ -19,8 +19,14 @@ The transformation is started by clicking on the *"Transform"* button and a spin
 This may take some time on the first start, as the plugins have to prepare for the initial transformation.
 After a successful transformation, a new tab is opened with the loading visualization tool.
 This may take some time as well, depending on the amount of prior transformations.
+Previous transformations are listed in the start tab in the list on the left-hand side with the label *"Last transformations"*.
 
-The web UI supports multiple tooltips which can help you get started as well.
+Depending on the deployment of DeMAF, the transformations are saved on the backend for different periods.
+When deploying locally with Docker Compose, the corresponding files are saved for two hours by default before they are automatically deleted.
+When deploying with Kubernetes, the files are stored for one day by default.
+For both deployment methods, the file retention period can be set with an environment variable.
+
+The WebUI supports multiple tooltips which can help you get started as well.
 
 ### Step 1: Uploading
 
